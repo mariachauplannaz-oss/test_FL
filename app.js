@@ -226,7 +226,7 @@ async function init() {
     // Event listeners
     document.getElementById('burgerBtn')?.addEventListener('click', toggleSidebar);
     document.getElementById('sidebarBackdrop')?.addEventListener('click', closeSidebar);
-    document.getElementById('mobileDownload')?.addEventListener('click', doDownload);
+    document.getElementById('mobileTechPack')?.addEventListener('click', doExportTechPack);
     document.getElementById('btnDownload')?.addEventListener('click', doDownload);
     document.getElementById('btnTechPack')?.addEventListener('click', doExportTechPack);
     document.getElementById('btnBack')?.addEventListener('click', () => {
