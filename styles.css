@@ -236,7 +236,7 @@ input[type="color"]{width:32px;height:32px;border:2px solid var(--gray3);border-
 }
 .sidebar-backdrop.show{display:block;opacity:1}
 .mobile-download{
-    display:none;position:fixed;bottom:50px;left:50%;transform:translateX(-50%);z-index:60;
+    display:none;position:fixed;left:50%;transform:translateX(-50%);z-index:60;
     padding:14px 28px;border:none;background:var(--gray1);color:white;
     border-radius:100px;font-size:14px;font-weight:600;cursor:pointer;
     font-family:inherit;box-shadow:0 4px 16px rgba(33,43,49,.2);
@@ -626,3 +626,5 @@ body.iso-mode .man-btn.active {
     text-align: left;
 }
 
+#mobileDownload { bottom: 20px; }
+#mobileTechPack { bottom: 72px; background: var(--surface-dark); }
