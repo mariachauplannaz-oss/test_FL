@@ -171,10 +171,15 @@ export function generate(state, log) {
     const canDownload = true;
     document.getElementById('btnDownload').style.display = canDownload ? '' : 'none';
     if (window.innerWidth <= 800) {
-        const mDl = document.getElementById('mobileDownload');
-        if (canDownload) mDl.classList.add('show');
-        else mDl.classList.remove('show');
+    const mDl = document.getElementById('mobileDownload');
+    const mTp = document.getElementById('mobileTechPack');
+    if (canDownload) mDl.classList.add('show');
+    else mDl.classList.remove('show');
+    if (mTp) {
+        if (!cfg.free) mTp.classList.add('show');
+        else mTp.classList.remove('show');
     }
+}
 
     document.getElementById('topbarTitle').textContent = (DICT[selections.torso]||'T-Shirt') + ' \u2014 Generated';
     log('Done!', 'ok');
