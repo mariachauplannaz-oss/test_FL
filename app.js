@@ -172,10 +172,14 @@ async function handlePaymentReturn() {
 
         // 4. Clean URL — remove payment params
         window.history.replaceState({}, '', '/app.html');
+        const ol = document.getElementById('paymentOverlay');
+        if (ol) ol.style.display = 'none';
 
     } catch (err) {
         log(`Payment verification error: ${err.message}`, 'err');
         alert(`Payment verification error: ${err.message}\n\nIf you were charged, please contact support.`);
+        const ol = document.getElementById('paymentOverlay');
+        if (ol) ol.style.display = 'none';
     }
 }
 
@@ -217,6 +221,11 @@ function showPostPaymentModal(garmentConfig) {
 
 // ═══ INIT ═══
 async function init() {
+    const paymentOverlay = document.getElementById('paymentOverlay');
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+    paymentOverlay.style.display = 'flex';
+    }
     initCategories(state, doUpdateButton);
     initToggles();
     setIsoMode(true);
