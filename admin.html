@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>FlatLabs Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Reset & base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f5f2;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── Login ──────────────────────────────────────────────── */
+    #login-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .login-card {
+      background: #fff;
+      border: 1px solid #e0ddd8;
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .login-card h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .login-card p {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+
+    .login-card label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #555;
+      margin-bottom: 0.4rem;
+    }
+
+    .login-card input[type="password"] {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fafafa;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .login-card input[type="password"]:focus {
+      border-color: #c47c2b;
+    }
+
+    #login-error {
+      font-size: 0.8rem;
+      color: #c0392b;
+      margin-bottom: 1rem;
+      min-height: 1.2em;
+    }
+
+    /* ── Shared button ──────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: opacity 0.15s, background 0.15s;
+    }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary {
+      background: #1a1a1a;
+      color: #fff;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: #333; }
+
+    .btn-secondary {
+      background: transparent;
+      color: #1a1a1a;
+      border-color: #ddd;
+    }
+
+    .btn-secondary:hover:not(:disabled) { background: #f0ede8; }
+
+    .btn-ghost {
+      background: transparent;
+      color: #888;
+      border-color: transparent;
+      font-weight: 500;
+    }
+
+    .btn-ghost:hover { color: #1a1a1a; }
+
+    /* ── Dashboard ──────────────────────────────────────────── */
+    #dashboard-state { display: none; }
+
+    .admin-header {
+      background: #fff;
+      border-bottom: 1px solid #e0ddd8;
+      padding: 0 2rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .admin-header h1 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .admin-header span {
+      font-size: 0.8rem;
+      color: #888;
+      font-weight: 400;
+      margin-left: 0.5rem;
+    }
+
+    .admin-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* ── Error banner ───────────────────────────────────────── */
+    #dash-error {
+      background: #fdf0ee;
+      border: 1px solid #f5c6bb;
+      border-radius: 4px;
+      padding: 0.65rem 1rem;
+      font-size: 0.82rem;
+      color: #c0392b;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    /* ── Stats bar ──────────────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e0ddd8;
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
+      min-width: 100px;
+    }
+
+    .stat-card .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #888;
+    }
+
+    .stat-card.free .stat-number { color: #2d7a4f; }
+    .stat-card.pro .stat-number  { color: #c47c2b; }
+
+    /* ── Toolbar ────────────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .toolbar select {
+      padding: 0.55rem 0.75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      color: #1a1a1a;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .toolbar select:focus { border-color: #c47c2b; }
+
+    /* ── Table ──────────────────────────────────────────────── */
+    .table-wrap {
+      background: #fff;
+      border: 1px solid #e0ddd8;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #888;
+      border-bottom: 1px solid #e0ddd8;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0ede8;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #faf8f5; }
+
+    tbody td {
+      padding: 0.7rem 1rem;
+      color: #333;
+      vertical-align: top;
+    }
+
+    /* Tier badge */
+    .tier-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    .tier-badge.FREE { background: #eaf5ef; color: #2d7a4f; }
+    .tier-badge.PRO  { background: #fef3e6; color: #c47c2b; }
+
+    /* Expanded garment config row */
+    .expanded-row td {
+      padding: 0;
+      cursor: default;
+      background: #faf8f5;
+    }
+
+    .expanded-row:hover { background: #faf8f5; }
+
+    .config-pre {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      padding: 1rem 1.25rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #444;
+      border-top: 1px solid #e0ddd8;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+
+    /* ── Pagination ─────────────────────────────────────────── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+
+    .pagination-info {
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── LOGIN STATE ─────────────────────────────────────────── -->
+  <section id="login-state">
+    <div class="login-card">
+      <h1>FlatLabs Admin</h1>
+      <p>Restricted access.</p>
+      <label for="password-input">Password</label>
+      <input
+        type="password"
+        id="password-input"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="••••••••"
+      >
+      <div id="login-error"></div>
+      <button class="btn btn-primary" id="login-btn">Sign in</button>
+    </div>
+  </section>
+
+  <!-- ── DASHBOARD STATE ─────────────────────────────────────── -->
+  <section id="dashboard-state">
+    <header class="admin-header">
+      <h1>FlatLabs Admin <span id="admin-env"></span></h1>
+      <button class="btn btn-ghost" id="signout-btn">Sign out</button>
+    </header>
+
+    <main class="admin-body">
+      <div id="dash-error"></div>
+
+      <!-- Stats -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-total">—</div>
+          <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-card free">
+          <div class="stat-number" id="stat-free">—</div>
+          <div class="stat-label">Free</div>
+        </div>
+        <div class="stat-card pro">
+          <div class="stat-number" id="stat-pro">—</div>
+          <div class="stat-label">Pro</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <select id="tier-filter">
+          <option value="">All tiers</option>
+          <option value="FREE">FREE</option>
+          <option value="PRO">PRO</option>
+        </select>
+        <button class="btn btn-secondary" id="export-csv-btn">Export CSV</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Email</th>
+              <th>Tier</th>
+              <th>Garment</th>
+              <th>Session ID</th>
+              <th>IP Hash</th>
+            </tr>
+          </thead>
+          <tbody id="downloads-tbody">
+            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <span class="pagination-info" id="pagination-info"></span>
+        <button class="btn btn-secondary" id="prev-btn">Previous</button>
+        <button class="btn btn-secondary" id="next-btn">Next</button>
+      </div>
+    </main>
+  </section>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
