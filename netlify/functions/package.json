@@ -1,0 +1,6 @@
+"dependencies": {
+  "@netlify/neon": "0.1.0",
+  "jsonwebtoken": "^9.0.0",
+  "resend": "^4.0.0",
+  "stripe": "17.7.0"
+}
