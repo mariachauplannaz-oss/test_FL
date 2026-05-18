@@ -27,386 +27,166 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
-<style>
-:root {
-    --ink: #212B31;
-    --ink-soft: #5F7385;
-    --surface: #FFFFFF;
-    --surface-warm: #ffefd4;
-    --surface-dark: #212B31;
-    --accent: #ff9a6e;
-    --accent-hover: #E5A88E;
-    --accent-text: #212B31;
-    --accent-soft: rgba(255,187,158,.15);
-    --gray1: #212B31;
-    --gray2: #5F7385;
-    --gray3: #D2D2D7;
-    --gray4: #F8F8F8;
-    --sans: 'DM Sans', -apple-system, sans-serif;
-    --ease: cubic-bezier(.4,0,.2,1);
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-body {
-    font-family: var(--sans);
-    background: var(--surface);
-    color: var(--ink);
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-::selection { background: rgba(255,187,158,.3); }
-
-/* NAV */
-nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 16px 24px;
-    background: rgba(255,255,255,.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(33,43,49,.08);
-    display: flex; align-items: center; justify-content: space-between;
-}
-.logo { font-size: 20px; font-weight: 700; letter-spacing: -.5px; color: var(--ink); text-decoration: none; }
-.logo span { color: var(--accent); }
-.nav-links { display: flex; gap: 24px; align-items: center; }
-.nav-links a { font-size: 13px; color: var(--ink-soft); text-decoration: none; font-weight: 500; }
-.nav-links a:hover { color: var(--ink); }
-.nav-links a.active { color: var(--ink); font-weight: 600; }
-.nav-cta {
-    background: var(--ink); color: var(--surface) !important;
-    padding: 8px 18px; border-radius: 100px;
-    font-size: 12px; font-weight: 600 !important;
-    transition: all .3s var(--ease);
-}
-.nav-cta:hover { background: var(--accent) !important; color: var(--accent-text) !important; }
-
-/* LAYOUT */
-.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
-
-/* HERO */
-.learn-hero {
-    padding: 120px 0 60px;
-    border-bottom: 1px solid rgba(33,43,49,.08);
-}
-.section-label {
-    font-size: 11px; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--ink-soft);
-    font-weight: 500; margin-bottom: 16px;
-    display: block;
-}
-.learn-hero h1 {
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 700; line-height: 1.1;
-    letter-spacing: -1.5px;
-    margin-bottom: 16px;
-    color: var(--ink);
-}
-.learn-hero h1 em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
-.learn-hero p {
-    font-size: 17px; color: var(--ink-soft);
-    line-height: 1.7; max-width: 560px;
-}
-
-/* STATS ROW */
-.stats-row {
-    display: flex; gap: 32px; flex-wrap: wrap;
-    padding: 32px 0 0;
-}
-.stat { display: flex; flex-direction: column; gap: 2px; }
-.stat-num { font-size: 24px; font-weight: 700; color: var(--accent); letter-spacing: -1px; }
-.stat-label { font-size: 12px; color: var(--ink-soft); font-weight: 500; }
-
-/* TABS */
-.tabs-section { padding: 40px 0 0; }
-
-.gl-tabs {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    margin-bottom: 32px;
-    position: sticky; top: 57px; z-index: 50;
-    background: white;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(33,43,49,.06);
-}
-
-.gl-tab {
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 16px;
-    border: 1.5px solid rgba(33,43,49,.15);
-    border-radius: 100px;
-    background: transparent;
-    font-family: var(--sans);
-    font-size: 13px; font-weight: 500;
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all .2s var(--ease);
-    white-space: nowrap;
-}
-.gl-tab:hover { border-color: var(--accent); color: var(--ink); }
-.gl-tab.active { background: var(--ink); border-color: var(--ink); color: white; }
-.gl-tab-count {
-    font-size: 10px; font-weight: 700;
-    background: rgba(255,255,255,.2);
-    padding: 1px 6px; border-radius: 10px;
-    color: inherit; opacity: .7;
-}
-.gl-tab.active .gl-tab-count { opacity: 1; }
-
-/* GRID */
-.gl-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
-    padding: 32px 0 80px;
-    min-height: 300px;
-}
-
-.gl-card {
-    background: var(--gray4);
-    border: 1.5px solid transparent;
-    border-radius: 16px;
-    padding: 22px;
-    text-decoration: none;
-    display: flex; flex-direction: column; gap: 8px;
-    transition: all .25s var(--ease);
-    animation: fadeIn .25s var(--ease);
-}
-.gl-card:hover {
-    border-color: var(--accent);
-    background: white;
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(255,154,110,.12);
-}
-
-.gl-card-top {
-    display: flex; align-items: center;
-    justify-content: space-between;
-}
-.gl-card-id {
-    font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .08em;
-    color: var(--accent);
-}
-.gl-card-production {
-    font-size: 10px; font-weight: 600;
-    color: var(--gray2);
-    background: rgba(33,43,49,.06);
-    padding: 2px 8px; border-radius: 20px;
-}
-.gl-card-name {
-    font-size: 16px; font-weight: 600;
-    color: var(--ink); line-height: 1.3;
-}
-.gl-card-tooltip {
-    font-size: 13px; color: var(--ink-soft);
-    line-height: 1.55; flex: 1;
-}
-.gl-card-footer {
-    display: flex; align-items: center;
-    justify-content: flex-end;
-    margin-top: 4px;
-}
-.gl-card-link {
-    font-size: 12px; font-weight: 600;
-    color: var(--accent);
-    display: flex; align-items: center; gap: 3px;
-    transition: gap .2s;
-}
-.gl-card:hover .gl-card-link { gap: 6px; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* CTA */
-.cta-band {
-    background: var(--surface-dark);
-    border-radius: 24px;
-    padding: 48px 40px;
-    text-align: center;
-    margin: 0 0 80px;
-}
-.cta-band h2 {
-    font-size: 26px; font-weight: 700;
-    letter-spacing: -.5px;
-    color: var(--surface-warm);
-    margin-bottom: 12px;
-}
-.cta-band p {
-    font-size: 15px; color: rgba(255,255,255,.6);
-    margin-bottom: 28px; line-height: 1.6;
-}
-.btn-primary {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--accent); color: var(--accent-text);
-    padding: 14px 28px; border-radius: 100px;
-    font-size: 15px; font-weight: 600; text-decoration: none;
-    transition: all .3s var(--ease);
-}
-.btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
-
-/* FOOTER */
-footer {
-    padding: 24px;
-    border-top: 1px solid rgba(33,43,49,.08);
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 860px; margin: 0 auto;
-}
-footer span, footer a { font-size: 12px; color: var(--ink-soft); text-decoration: none; }
-footer a:hover { color: var(--ink); }
-
-/* MOBILE */
-@media (max-width: 640px) {
-    nav { padding: 14px 16px; }
-    .nav-links a:not(.nav-cta) { display: none; }
-    .container { padding: 0 16px; }
-    .learn-hero { padding: 100px 0 40px; }
-    .gl-tabs { top: 53px; gap: 6px; padding: 12px 0; }
-    .gl-tab { font-size: 12px; padding: 6px 12px; }
-    .gl-grid { grid-template-columns: 1fr 1fr; gap: 8px; padding: 24px 0 60px; }
-    .gl-card { padding: 16px; }
-    .cta-band { padding: 32px 20px; }
-    footer { flex-direction: column; gap: 8px; text-align: center; }
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="learn.css">
 </head>
 <body>
 
-<nav>
-    <a href="/" class="logo">Flat<span>Labs</span></a>
-    <div class="nav-links">
-        <a href="/#problem">Why</a>
-        <a href="/#how">How it works</a>
-        <a href="/learn/" class="active">Glossary</a>
-        <a href="/app.html" class="nav-cta">Try the studio</a>
-    </div>
+<nav class="site-nav">
+  <a href="/" class="logo">Flat<em>Labs</em></a>
+  <div class="nav-links">
+    <a href="/#problem">Why</a>
+    <a href="/#how">How it works</a>
+    <a href="/learn/" class="active">Glossary</a>
+    <a href="/app.html" class="nav-cta">Try the studio</a>
+  </div>
 </nav>
 
 <main>
-<div class="container">
+  <div class="container">
 
-    <!-- HERO -->
-    <div class="learn-hero">
-        <span class="section-label">Knowledge base</span>
-        <h1>The terms you'll see in <em>every tech pack</em></h1>
-        <p>Fabrics, seams, finishes, labels — explained simply. No jargon, no paywalls. Built for designers, students, and small brands who work with garments.</p>
-        <div class="stats-row">
-            <div class="stat">
-                <span class="stat-num">24</span>
-                <span class="stat-label">Terms covered</span>
-            </div>
-            <div class="stat">
-                <span class="stat-num">12</span>
-                <span class="stat-label">Categories</span>
-            </div>
-            <div class="stat">
-                <span class="stat-num">Free</span>
-                <span class="stat-label">Always</span>
-            </div>
+    <header class="learn-hero">
+      <div>
+        <span class="kicker">Knowledge base · No paywalls</span>
+        <h1>The terms you'll see in <em>every tech pack.</em></h1>
+        <p class="lede">Fabrics, seams, finishes, labels — explained simply. No jargon, no upsell. Built for designers, students, and small brands who actually work with garments.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num">24</span>
+          <span class="stat-label">Terms covered<br>and counting</span>
         </div>
-    </div>
+        <div class="stat">
+          <span class="stat-num">12</span>
+          <span class="stat-label">Categories<br>by use</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">Free</span>
+          <span class="stat-label">Always.<br>No login.</span>
+        </div>
+      </div>
+    </header>
 
-    <!-- TABS + GRID -->
-    <div class="tabs-section">
-        <div class="gl-tabs" role="tablist" id="glTabs"></div>
-        <div class="gl-grid" id="glGrid"></div>
-    </div>
+  </div>
 
-    <!-- CTA -->
-    <div class="cta-band">
-        <h2>Put these terms to work</h2>
-        <p>Select your fabric, seam type, and finish in FlatLabs — and they show up automatically in your spec sheet PDF.</p>
-        <a href="/app.html" class="btn-primary">
-            Try FlatLabs free
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+  <!-- TABS (sticky) -->
+  <div class="tabs-wrap">
+    <div class="tabs-inner">
+      <span class="tabs-label">Browse by</span>
+      <div class="gl-tabs" role="tablist" id="glTabs"></div>
     </div>
+  </div>
 
-</div>
+  <div class="container">
+
+    <section class="grid-section">
+      <div class="section-heading">
+        <h2 id="sectionHeading">Fabric <em>terms</em></h2>
+        <span class="section-count" id="sectionCount">— terms</span>
+      </div>
+      <div class="gl-grid" id="glGrid"></div>
+    </section>
+
+    <section class="cta-section">
+      <div class="kicker">Apply it</div>
+      <h2>From definition <em>to</em> production.</h2>
+      <p>Select your fabric, seam type, and finish inside the FlatLabs studio — and they show up automatically in your spec sheet PDF.</p>
+      <a href="/app.html" class="btn-primary">
+        Try FlatLabs free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </section>
+
+  </div>
 </main>
 
-<footer>
-    <span>&copy; 2026 FlatLabs</span>
-    <div style="display:flex;gap:20px;align-items:center">
-        <a href="https://buymeacoffee.com/flatlabs" target="_blank" rel="noopener">Buy me a coffee</a>
-        <a href="mailto:flatsgenerator@gmail.com">Contact</a>
-    </div>
+<footer class="site-footer">
+  <span>&copy; 2026 FlatLabs</span>
+  <div class="footer-links">
+    <a href="/learn/">Glossary</a>
+    <a href="/legal/contact.html">Contact</a>
+    <a href="/legal/privacy.html">Privacy</a>
+    <a href="/legal/terms.html">Terms</a>
+  </div>
 </footer>
 
 <script>
 const GLOSSARY = [
-    { id:'FT-TEX-001', category:'Fabric',     name:'Lightweight Jersey',      tooltip:'Breathable and soft, perfect for summer garments or inner layers.',         production:'140-150 g/m²', url:'/learn/fabrics/lightweight-jersey' },
-    { id:'FT-TEX-002', category:'Fabric',     name:'Midweight Jersey',        tooltip:'The industry standard for high-quality T-shirts.',                          production:'180 g/m²',     url:'/learn/fabrics/midweight-jersey' },
-    { id:'FT-TEX-003', category:'Fabric',     name:'Heavyweight Jersey',      tooltip:'Thick, structured fabric for a premium "Oversized" look.',                  production:'220-240 g/m²', url:'/learn/fabrics/heavyweight-jersey' },
-    { id:'FT-TEX-004', category:'Fabric',     name:'1×1 Rib',                 tooltip:'Highly elastic knitted fabric used for finishing.',                         production:'95% Cot, 5% Ela', url:'/learn/fabrics/rib-knit-basics' },
-    { id:'ISO-514',    category:'Seam',       name:'4-Thread Overlock',       tooltip:'Secure and elastic seam for joining knitted panels.',                       production:'ISO 514',      url:'/learn/seams/iso-514-overlock' },
-    { id:'ISO-406',    category:'Seam',       name:'Coverseam',               tooltip:'Professional flat finish for hems and sleeve openings.',                    production:'ISO 406',      url:'/learn/seams/iso-406-coverseam' },
-    { id:'ND-BP-01',   category:'Needle',     name:'Ball Point (SES)',        tooltip:'Designed to pass between fabric loops without cutting fibers.',              production:'70/10-80/12',  url:'/learn/needles/ball-point-ses' },
-    { id:'LAB-WVN-01', category:'Label',      name:'Main Brand Label',        tooltip:'Woven label for brand identification.',                                     production:'Woven Polyester', url:'/learn/trims/woven-labels' },
-    { id:'LAB-CARE-01',category:'Label',      name:'Care & Content Label',    tooltip:'Required label for legal and care information.',                            production:'Satin or Nylon', url:'/learn/trims/care-labels-standards' },
-    { id:'LAB-SIZE-01',category:'Label',      name:'Size Label',              tooltip:'Small woven label indicating the garment size.',                            production:'EU/US Sizing', url:'/learn/trims/size-labeling' },
-    { id:'THR-P-27',   category:'Thread',     name:'Polyester Thread Tex 27', tooltip:'Standard high-tenacity thread for general sewing.',                        production:'Tex 27 / Ticket 120', url:'/learn/threads/polyester-tex-27' },
-    { id:'THR-C-18',   category:'Thread',     name:'Coverseam Thread Tex 18', tooltip:'Finer thread for soft, low-profile seams.',                                production:'Tex 18 / Ticket 180', url:'/learn/threads/low-profile-seams' },
-    { id:'SPI-1012',   category:'Stitch',     name:'10-12 SPI',               tooltip:'Standard stitch density for knitted garments.',                            production:'10-12 SPI',    url:'/learn/construction/stitches-per-inch' },
-    { id:'PKG-POLY-01',category:'Packing',    name:'Recycled Polybag',        tooltip:'Protective bag for storage and shipping.',                                  production:'35×45 cm',     url:'/learn/packing/recycled-polybags' },
-    { id:'PKG-FOLD-01',category:'Packing',    name:'Standard Flat Fold',      tooltip:'Garment is folded flat to fit the polybag.',                               production:'Flat Fold',    url:'/learn/packing/folding-guides' },
-    { id:'FT-CLR-001', category:'Color',      name:'Pantone TCX',             tooltip:'The global standard for textile color on cotton.',                         production:'Pantone FHI',  url:'/learn/color/pantone-tcx-system' },
-    { id:'FT-DYE-001', category:'Dyeing',     name:'Piece Dyed',              tooltip:'Fabric is dyed in rolls before the garment is cut.',                       production:'Reactive',     url:'/learn/dyeing/piece-dyed-process' },
-    { id:'FT-DYE-002', category:'Dyeing',     name:'Garment Dyed',            tooltip:'The finished garment is dyed after being sewn.',                           production:'Post-Assembly', url:'/learn/dyeing/garment-dye-guide' },
-    { id:'FT-PRT-001', category:'Print',      name:'Water-based Screen Print',tooltip:'Eco-friendly ink that integrates into the fabric.',                        production:'Pigment Ink',  url:'/learn/printing/water-based-screen' },
-    { id:'FT-PRT-002', category:'Print',      name:'Plastisol Print',         tooltip:'Standard durable ink with vibrant color opacity.',                         production:'PVC-Free',     url:'/learn/printing/plastisol-guide' },
-    { id:'FT-EMB-001', category:'Embroidery', name:'Flat Embroidery',         tooltip:'Classic thread-based logo or design.',                                     production:'Rayon/Poly',   url:'/learn/embellishments/embroidery-basics' },
-    { id:'FT-FIN-001', category:'Finish',     name:'Silicon Wash',            tooltip:'Gives the fabric an ultra-soft, silky touch.',                             production:'Softener',     url:'/learn/finishes/silicon-wash' },
-    { id:'FT-FIN-002', category:'Finish',     name:'Enzyme Wash',             tooltip:'Removes surface fuzz for a clean, pill-resistant look.',                   production:'Bio-Polishing', url:'/learn/finishes/enzyme-wash' },
-    { id:'FT-FIN-003', category:'Finish',     name:'Sanforized',              tooltip:'Pre-shrinking process to ensure dimensional stability.',                   production:'Pre-shrunk',   url:'/learn/finishes/sanforized-standards' },
+  { id:'FT-TEX-001', category:'Fabric',     name:'Lightweight Jersey',      tooltip:'Breathable and soft, perfect for summer garments or inner layers.',         production:'140-150 g/m²', url:'/learn/fabrics/lightweight-jersey' },
+  { id:'FT-TEX-002', category:'Fabric',     name:'Midweight Jersey',        tooltip:'The industry standard for high-quality T-shirts.',                          production:'180 g/m²',     url:'/learn/fabrics/midweight-jersey' },
+  { id:'FT-TEX-003', category:'Fabric',     name:'Heavyweight Jersey',      tooltip:'Thick, structured fabric for a premium "Oversized" look.',                  production:'220-240 g/m²', url:'/learn/fabrics/heavyweight-jersey' },
+  { id:'FT-TEX-004', category:'Fabric',     name:'1×1 Rib',                 tooltip:'Highly elastic knitted fabric used for finishing.',                         production:'95% Cot, 5% Ela', url:'/learn/fabrics/rib-knit-basics' },
+  { id:'ISO-514',    category:'Seam',       name:'4-Thread Overlock',       tooltip:'Secure and elastic seam for joining knitted panels.',                       production:'ISO 514',      url:'/learn/seams/iso-514-overlock' },
+  { id:'ISO-406',    category:'Seam',       name:'Coverseam',               tooltip:'Professional flat finish for hems and sleeve openings.',                    production:'ISO 406',      url:'/learn/seams/iso-406-coverseam' },
+  { id:'ND-BP-01',   category:'Needle',     name:'Ball Point (SES)',        tooltip:'Designed to pass between fabric loops without cutting fibers.',              production:'70/10-80/12',  url:'/learn/needles/ball-point-ses' },
+  { id:'LAB-WVN-01', category:'Label',      name:'Main Brand Label',        tooltip:'Woven label for brand identification.',                                     production:'Woven Polyester', url:'/learn/trims/woven-labels' },
+  { id:'LAB-CARE-01',category:'Label',      name:'Care & Content Label',    tooltip:'Required label for legal and care information.',                            production:'Satin or Nylon', url:'/learn/trims/care-labels-standards' },
+  { id:'LAB-SIZE-01',category:'Label',      name:'Size Label',              tooltip:'Small woven label indicating the garment size.',                            production:'EU/US Sizing', url:'/learn/trims/size-labeling' },
+  { id:'THR-P-27',   category:'Thread',     name:'Polyester Thread Tex 27', tooltip:'Standard high-tenacity thread for general sewing.',                        production:'Tex 27 / Ticket 120', url:'/learn/threads/polyester-tex-27' },
+  { id:'THR-C-18',   category:'Thread',     name:'Coverseam Thread Tex 18', tooltip:'Finer thread for soft, low-profile seams.',                                production:'Tex 18 / Ticket 180', url:'/learn/threads/low-profile-seams' },
+  { id:'SPI-1012',   category:'Stitch',     name:'10-12 SPI',               tooltip:'Standard stitch density for knitted garments.',                            production:'10-12 SPI',    url:'/learn/construction/stitches-per-inch' },
+  { id:'PKG-POLY-01',category:'Packing',    name:'Recycled Polybag',        tooltip:'Protective bag for storage and shipping.',                                  production:'35×45 cm',     url:'/learn/packing/recycled-polybags' },
+  { id:'PKG-FOLD-01',category:'Packing',    name:'Standard Flat Fold',      tooltip:'Garment is folded flat to fit the polybag.',                               production:'Flat Fold',    url:'/learn/packing/folding-guides' },
+  { id:'FT-CLR-001', category:'Color',      name:'Pantone TCX',             tooltip:'The global standard for textile color on cotton.',                         production:'Pantone FHI',  url:'/learn/color/pantone-tcx-system' },
+  { id:'FT-DYE-001', category:'Dyeing',     name:'Piece Dyed',              tooltip:'Fabric is dyed in rolls before the garment is cut.',                       production:'Reactive',     url:'/learn/dyeing/piece-dyed-process' },
+  { id:'FT-DYE-002', category:'Dyeing',     name:'Garment Dyed',            tooltip:'The finished garment is dyed after being sewn.',                           production:'Post-Assembly', url:'/learn/dyeing/garment-dye-guide' },
+  { id:'FT-PRT-001', category:'Print',      name:'Water-based Screen Print',tooltip:'Eco-friendly ink that integrates into the fabric.',                        production:'Pigment Ink',  url:'/learn/printing/water-based-screen' },
+  { id:'FT-PRT-002', category:'Print',      name:'Plastisol Print',         tooltip:'Standard durable ink with vibrant color opacity.',                         production:'PVC-Free',     url:'/learn/printing/plastisol-guide' },
+  { id:'FT-EMB-001', category:'Embroidery', name:'Flat Embroidery',         tooltip:'Classic thread-based logo or design.',                                     production:'Rayon/Poly',   url:'/learn/embellishments/embroidery-basics' },
+  { id:'FT-FIN-001', category:'Finish',     name:'Silicon Wash',            tooltip:'Gives the fabric an ultra-soft, silky touch.',                             production:'Softener',     url:'/learn/finishes/silicon-wash' },
+  { id:'FT-FIN-002', category:'Finish',     name:'Enzyme Wash',             tooltip:'Removes surface fuzz for a clean, pill-resistant look.',                   production:'Bio-Polishing', url:'/learn/finishes/enzyme-wash' },
+  { id:'FT-FIN-003', category:'Finish',     name:'Sanforized',              tooltip:'Pre-shrinking process to ensure dimensional stability.',                   production:'Pre-shrunk',   url:'/learn/finishes/sanforized-standards' },
 ];
 
-// Build category counts
 const cats = {};
 GLOSSARY.forEach(t => { cats[t.category] = (cats[t.category] || 0) + 1; });
 
-// Build tabs
 const tabsEl = document.getElementById('glTabs');
 let activeCat = 'Fabric';
 
 Object.entries(cats).forEach(([cat, count]) => {
-    const btn = document.createElement('button');
-    btn.className = 'gl-tab' + (cat === activeCat ? ' active' : '');
-    btn.dataset.cat = cat;
-    btn.setAttribute('role', 'tab');
-    btn.setAttribute('aria-selected', cat === activeCat ? 'true' : 'false');
-    btn.innerHTML = `${cat} <span class="gl-tab-count">${count}</span>`;
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.gl-tab').forEach(t => {
-            t.classList.remove('active');
-            t.setAttribute('aria-selected', 'false');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        activeCat = cat;
-        renderGrid(cat);
+  const btn = document.createElement('button');
+  btn.className = 'gl-tab' + (cat === activeCat ? ' active' : '');
+  btn.dataset.cat = cat;
+  btn.setAttribute('role', 'tab');
+  btn.setAttribute('aria-selected', cat === activeCat ? 'true' : 'false');
+  btn.innerHTML = `${cat}<span class="gl-tab-count">${String(count).padStart(2, '0')}</span>`;
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.gl-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
     });
-    tabsEl.appendChild(btn);
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    activeCat = cat;
+    renderGrid(cat);
+  });
+  tabsEl.appendChild(btn);
 });
 
 function renderGrid(cat) {
-    const grid = document.getElementById('glGrid');
-    const terms = GLOSSARY.filter(t => t.category === cat);
-    grid.innerHTML = terms.map(t => `
-        <a class="gl-card" href="${t.url}">
-            <div class="gl-card-top">
-                <span class="gl-card-id">${t.id}</span>
-                <span class="gl-card-production">${t.production}</span>
-            </div>
-            <span class="gl-card-name">${t.name}</span>
-            <span class="gl-card-tooltip">${t.tooltip}</span>
-            <div class="gl-card-footer">
-                <span class="gl-card-link">Learn more →</span>
-            </div>
-        </a>
-    `).join('');
+  const grid = document.getElementById('glGrid');
+  const heading = document.getElementById('sectionHeading');
+  const countEl = document.getElementById('sectionCount');
+  const terms = GLOSSARY.filter(t => t.category === cat);
+
+  heading.innerHTML = `${cat} <em>terms</em>`;
+  countEl.textContent = `${String(terms.length).padStart(2, '0')} ${terms.length === 1 ? 'term' : 'terms'}`;
+
+  grid.innerHTML = terms.map(t => `
+    <a class="gl-card" href="${t.url}">
+      <div class="gl-card-top">
+        <span class="gl-card-id">${t.id}</span>
+        <span class="gl-card-production">${t.production}</span>
+      </div>
+      <span class="gl-card-name">${t.name}</span>
+      <span class="gl-card-tooltip">${t.tooltip}</span>
+      <div class="gl-card-footer">
+        <span class="gl-card-link">Read more →</span>
+      </div>
+    </a>
+  `).join('');
 }
 
 renderGrid(activeCat);

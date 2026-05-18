@@ -5,105 +5,104 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flat Embroidery — Thread-Based Logo for Premium Garments | FlatLabs</title>
 <meta name="description" content="Flat embroidery is the standard for premium brand logos on t-shirts and caps. Learn stitch count, placement, and how to spec it in your tech pack BOM.">
+
 <link rel="canonical" href="https://flatsgenerator.com/learn/embellishments/embroidery-basics">
+
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flat Embroidery — Thread-Based Logo for Premium Garments">
 <meta property="og:description" content="Flat embroidery is the standard for premium brand logos. Learn stitch count and how to spec it in your tech pack.">
 <meta property="og:url" content="https://flatsgenerator.com/learn/embellishments/embroidery-basics">
 <meta property="og:site_name" content="FlatLabs">
+
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Flat Embroidery — Thread-Based Logo for Premium Garments","author":{"@type":"Organization","name":"FlatLabs"},"publisher":{"@type":"Organization","name":"FlatLabs","url":"https://flatsgenerator.com"},"mainEntityOfPage":"https://flatsgenerator.com/learn/embellishments/embroidery-basics"}</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-:root{--ink:#212B31;--ink-soft:#5F7385;--surface:#FFFFFF;--surface-warm:#ffefd4;--surface-dark:#212B31;--accent:#ff9a6e;--accent-hover:#E5A88E;--accent-text:#212B31;--gray2:#5F7385;--gray3:#D2D2D7;--gray4:#F8F8F8;--sans:'DM Sans',-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1)}
-*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:var(--sans);background:var(--surface);color:var(--ink);font-size:16px;line-height:1.6;overflow-x:hidden}
-::selection{background:rgba(255,187,158,.3)}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(33,43,49,.08);display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:20px;font-weight:700;letter-spacing:-.5px;color:var(--ink);text-decoration:none}.logo span{color:var(--accent)}
-.nav-links{display:flex;gap:24px;align-items:center}.nav-links a{font-size:13px;color:var(--ink-soft);text-decoration:none;font-weight:500}.nav-links a:hover{color:var(--ink)}
-.nav-cta{background:var(--ink);color:var(--surface)!important;padding:8px 18px;border-radius:100px;font-size:12px;font-weight:600!important;transition:all .3s var(--ease)}.nav-cta:hover{background:var(--accent)!important;color:var(--accent-text)!important}
-.container{max-width:720px;margin:0 auto;padding:0 24px}
-.breadcrumb{padding-top:96px;padding-bottom:8px}.breadcrumb nav{position:static;padding:0;background:none;backdrop-filter:none;border:none;display:flex;gap:6px;align-items:center}
-.breadcrumb a{font-size:12px;color:var(--gray2);text-decoration:none;transition:color .2s}.breadcrumb a:hover{color:var(--accent)}.breadcrumb span{font-size:12px;color:var(--gray3)}
-.article-header{padding:24px 0 48px}
-.article-tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);background:rgba(255,154,110,.1);padding:4px 12px;border-radius:100px;margin-bottom:20px}
-.article-header h1{font-size:clamp(28px,5vw,44px);font-weight:700;line-height:1.15;letter-spacing:-1px;margin-bottom:20px;color:var(--ink)}.article-header h1 em{font-style:italic;font-weight:400;color:var(--ink-soft)}
-.article-meta{display:flex;gap:20px;flex-wrap:wrap;padding:16px 20px;background:var(--gray4);border-radius:12px;margin-top:24px}
-.meta-item{display:flex;flex-direction:column;gap:2px}.meta-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray2)}.meta-value{font-size:14px;font-weight:600;color:var(--ink)}
-.article-body{padding-bottom:80px}
-.article-body h2{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1.3;margin:48px 0 16px;color:var(--ink)}.article-body h2:first-child{margin-top:0}
-.article-body p{font-size:16px;color:var(--ink-soft);line-height:1.8;margin-bottom:20px}.article-body strong{font-weight:600;color:var(--ink)}
-.highlight{padding:20px 24px;background:var(--surface-warm);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;margin:32px 0}.highlight p{margin:0;color:var(--ink);font-weight:500}.highlight p+p{margin-top:8px}
-.spec-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}
-.spec-table th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray2);background:var(--gray4);border-bottom:1px solid var(--gray3)}
-.spec-table td{padding:12px 16px;color:var(--ink-soft);border-bottom:1px solid rgba(33,43,49,.06);line-height:1.5}.spec-table td:first-child{font-weight:500;color:var(--ink)}.spec-table tr:last-child td{border-bottom:none}
-.pro-note{padding:20px 24px;background:var(--surface-dark);border-radius:16px;margin:40px 0;display:flex;gap:16px;align-items:flex-start}
-.pro-note-icon{font-size:22px;flex-shrink:0;margin-top:2px}.pro-note-text p{color:rgba(255,255,255,.75);font-size:14px;line-height:1.6;margin:0}.pro-note-text p+p{margin-top:8px}.pro-note-text strong{color:white}
-.cta-section{background:var(--surface-dark);border-radius:24px;padding:48px 40px;text-align:center;margin:0 0 80px}
-.cta-section h2{font-size:26px;font-weight:700;letter-spacing:-.5px;color:var(--surface-warm);margin-bottom:12px}
-.cta-section p{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:28px;line-height:1.6}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-text);padding:14px 28px;border-radius:100px;font-size:15px;font-weight:600;text-decoration:none;transition:all .3s var(--ease)}.btn-primary:hover{background:var(--accent-hover);transform:translateY(-2px)}
-.related{margin-bottom:80px}.related h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray2);margin-bottom:16px}
-.related-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.related-card{display:block;text-decoration:none;background:var(--gray4);border-radius:12px;padding:16px 20px;border:1.5px solid transparent;transition:all .25s var(--ease)}.related-card:hover{border-color:var(--accent);background:rgba(255,154,110,.04);transform:translateY(-2px)}
-.related-card-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:4px}.related-card-name{font-size:14px;font-weight:600;color:var(--ink)}.related-card-desc{font-size:12px;color:var(--gray2);margin-top:4px}
-footer{padding:24px;border-top:1px solid rgba(33,43,49,.08);display:flex;justify-content:space-between;align-items:center;max-width:720px;margin:0 auto}
-footer span,footer a{font-size:12px;color:var(--ink-soft);text-decoration:none}footer a:hover{color:var(--ink)}
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease)}.reveal.visible{opacity:1;transform:translateY(0)}
-@media(max-width:640px){nav{padding:14px 16px}.nav-links a:not(.nav-cta){display:none}.container{padding:0 20px}.related-grid{grid-template-columns:1fr}.cta-section{padding:32px 24px}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../learn.css">
 </head>
 <body>
-<nav>
-    <a href="../../" class="logo">Flat<span>Labs</span></a>
-    <div class="nav-links">
-        <a href="../../#problem">Why</a>
-        <a href="../../#how">How it works</a>
-        <a href="../">Glossary</a>
-        <a href="../../app.html" class="nav-cta">Try the studio</a>
-    </div>
+
+<nav class="site-nav">
+  <a href="/" class="logo">Flat<em>Labs</em></a>
+  <div class="nav-links">
+    <a href="/#problem">Why</a>
+    <a href="/#how">How it works</a>
+    <a href="/learn/">Glossary</a>
+    <a href="/app.html" class="nav-cta">Try the studio</a>
+  </div>
 </nav>
+
 <main>
-<div class="container">
-    <div class="breadcrumb">
-        <nav aria-label="breadcrumb">
-            <a href="../../">Home</a><span>›</span>
-            <a href="../">Learn</a><span>›</span>
-            <a href="./">Embellishments</a><span>›</span>
-            <a href="embroidery-basics" aria-current="page">Flat Embroidery</a>
-        </nav>
-    </div>
+  <div class="container container--narrow">
+
+    <!-- BREADCRUMB — "Embellishments" is text (no index page) -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <div class="breadcrumb-trail">
+        <a href="/">Home</a>
+        <span class="sep">/</span>
+        <a href="/learn/">Glossary</a>
+        <span class="sep">/</span>
+        <span class="crumb-static">Embellishments</span>
+        <span class="sep">/</span>
+        <span aria-current="page">Flat Embroidery</span>
+      </div>
+    </nav>
+
     <header class="article-header reveal">
-        <div class="article-tag">Embroidery · FT-EMB-001</div>
-        <h1>Flat Embroidery — <em>Classic thread-based logo or design</em></h1>
-        <div class="article-meta">
-            <div class="meta-item"><span class="meta-label">Thread</span><span class="meta-value">Rayon or Polyester</span></div>
-            <div class="meta-item"><span class="meta-label">Pricing unit</span><span class="meta-value">Stitch count</span></div>
-            <div class="meta-item"><span class="meta-label">Durability</span><span class="meta-value">Very high</span></div>
-            <div class="meta-item"><span class="meta-label">Best for</span><span class="meta-value">Logos, chest badges</span></div>
+      <div class="article-tag">
+        <span>Embroidery</span>
+        <span class="sep">·</span>
+        <span class="id">FT-EMB-001</span>
+      </div>
+      <h1>Flat Embroidery — <em>Classic thread-based logo or design</em></h1>
+
+      <div class="article-meta">
+        <div class="meta-item">
+          <span class="meta-label">Thread</span>
+          <span class="meta-value">Rayon or Polyester</span>
         </div>
+        <div class="meta-item">
+          <span class="meta-label">Pricing unit</span>
+          <span class="meta-value">Stitch count</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Durability</span>
+          <span class="meta-value">Very high</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Best for</span>
+          <span class="meta-value">Logos, chest badges</span>
+        </div>
+      </div>
     </header>
+
     <article class="article-body">
-        <div class="reveal">
-            <p>Flat embroidery is what separates a premium garment from a printed one. A woven or screen-printed logo sits on the surface — embroidery is stitched into the fabric, creating a three-dimensional texture that signals quality before the customer even reads the brand name. It doesn't crack, fade, or peel. Done well, it lasts longer than the garment itself.</p>
-            <p>The "flat" in flat embroidery distinguishes it from 3D or puff embroidery, where foam is placed under the stitching to create a raised effect. Flat embroidery lies close to the fabric surface — the standard approach for chest logos, sleeve badges, and collar embellishments.</p>
-        </div>
-        <div class="highlight reveal">
-            <p>💡 <strong>Quick answer:</strong> Embroidery is priced by stitch count. A simple small logo runs 3,000–7,000 stitches. A detailed chest badge can reach 15,000+. Always include stitch count in your BOM — it's the unit your supplier quotes against.</p>
-        </div>
-        <h2 class="reveal">Understanding stitch count</h2>
-        <div class="reveal">
-            <p>Stitch count is exactly what it sounds like — the total number of individual stitches in the embroidered design. It determines production time, thread consumption, and therefore cost. A small, simple logo (like a text wordmark or minimal icon) at 4 cm width typically runs 3,000–5,000 stitches. A larger, more detailed badge with fill stitching and multiple colors can reach 10,000–20,000 stitches.</p>
-            <p>Your embroidery supplier will provide the stitch count when they digitize your artwork — the process of converting a vector logo into a machine-readable stitch file (.DST or .EMB format). <strong>Always request the stitch count at digitizing stage</strong>, before approving the design for production. It's how you verify you're getting what you specified.</p>
-        </div>
-        <h2 class="reveal">Rayon vs. polyester thread</h2>
-        <div class="reveal">
-            <p>Most embroidery thread is either rayon or polyester. Rayon has a slightly higher sheen and is traditional for decorative embroidery. Polyester is more colorfast, more resistant to washing, and increasingly preferred for garment embroidery. For a t-shirt that will be washed repeatedly, <strong>specify polyester thread</strong> — it holds color better over the long term.</p>
-        </div>
-        <h2 class="reveal">Production specs for your tech pack BOM</h2>
-        <table class="spec-table reveal">
+
+      <div class="lede-block reveal">
+        <p>Flat embroidery is what separates a premium garment from a printed one. A woven or screen-printed logo sits on the surface — embroidery is stitched into the fabric, creating a three-dimensional texture that signals quality before the customer even reads the brand name. It doesn't crack, fade, or peel. Done well, it lasts longer than the garment itself.</p>
+        <p class="lede-secondary">The "flat" in flat embroidery distinguishes it from 3D or puff embroidery, where foam is placed under the stitching to create a raised effect. Flat embroidery lies close to the fabric surface — the standard approach for chest logos, sleeve badges, and collar embellishments.</p>
+      </div>
+
+      <div class="highlight reveal" style="margin-left: 0 !important;">
+        <span class="highlight-label">Quick answer</span>
+        <p>Embroidery is priced by stitch count. A simple small logo runs 3,000–7,000 stitches. A detailed chest badge can reach 15,000+. Always include stitch count in your BOM — it's the unit your supplier quotes against.</p>
+      </div>
+
+      <section class="reveal">
+        <h2 data-num="01">Understanding stitch count</h2>
+        <p>Stitch count is exactly what it sounds like — the total number of individual stitches in the embroidered design. It determines production time, thread consumption, and therefore cost. A small, simple logo (like a text wordmark or minimal icon) at 4 cm width typically runs 3,000–5,000 stitches. A larger, more detailed badge with fill stitching and multiple colors can reach 10,000–20,000 stitches.</p>
+        <p>Your embroidery supplier will provide the stitch count when they digitize your artwork — the process of converting a vector logo into a machine-readable stitch file (.DST or .EMB format). <strong>Always request the stitch count at digitizing stage</strong>, before approving the design for production. It's how you verify you're getting what you specified.</p>
+      </section>
+
+      <section class="reveal">
+        <h2 data-num="02">Rayon vs. polyester thread</h2>
+        <p>Most embroidery thread is either rayon or polyester. Rayon has a slightly higher sheen and is traditional for decorative embroidery. Polyester is more colorfast, more resistant to washing, and increasingly preferred for garment embroidery. For a t-shirt that will be washed repeatedly, <strong>specify polyester thread</strong> — it holds color better over the long term.</p>
+      </section>
+
+      <section class="reveal">
+        <h2 data-num="03">Production specs for your tech pack BOM</h2>
+        <table class="spec-table">
             <thead><tr><th>Spec</th><th>Value</th><th>Notes</th></tr></thead>
             <tbody>
                 <tr><td>Technique</td><td>Flat embroidery</td><td>Not puff/3D embroidery</td></tr>
@@ -115,40 +114,80 @@ footer span,footer a{font-size:12px;color:var(--ink-soft);text-decoration:none}f
                 <tr><td>Sew-out sample</td><td>Required</td><td>Physical embroidered sample for approval before bulk</td></tr>
             </tbody>
         </table>
-        <div class="pro-note reveal">
-            <div class="pro-note-icon">📋</div>
-            <div class="pro-note-text">
-                <p><strong>Important: always use cut-away backing on jersey.</strong> Tear-away backing is removed after embroidery — on a stretchy knit fabric, this can distort the stitching or damage the fabric. Cut-away backing stays permanently in place and stabilizes the embroidery on the stretch of the jersey.</p>
-            </div>
+        <div class="pro-note">
+          <div class="pro-note-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="pro-note-text">
+            <span class="pro-note-label">Inside the studio</span>
+            <p><strong>Important: always use cut-away backing on jersey.</strong> Tear-away backing is removed after embroidery — on a stretchy knit fabric, this can distort the stitching or damage the fabric. Cut-away backing stays permanently in place and stabilizes the embroidery on the stretch of the jersey.</p>
+          </div>
         </div>
+      </section>
+
     </article>
-    <div class="cta-section reveal">
-        <h2>Generate a spec sheet in 2 minutes</h2>
-        <p>FlatLabs PRO includes embellishment placement and spec fields in your tech pack — ready for your embroidery supplier.</p>
-        <a href="../../app.html" class="btn-primary">Try FlatLabs free <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
+
+    <section class="cta-section reveal">
+      <span class="kicker">Put it to work</span>
+      <h2></h2>
+      <p></p>
+      <a href="/app.html" class="btn-primary">
+        Try FlatLabs free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </section>
+
     <div class="related reveal">
-        <h3>Related topics</h3>
-        <div class="related-grid">
-            <a href="../printing/water-based-screen" class="related-card"><div class="related-card-cat">Print</div><div class="related-card-name">Water-Based Screen Print</div><div class="related-card-desc">Printed alternative for large graphics</div></a>
-            <a href="../printing/plastisol-guide" class="related-card"><div class="related-card-cat">Print</div><div class="related-card-name">Plastisol Print</div><div class="related-card-desc">High-opacity printed alternative for dark fabrics</div></a>
-            <a href="../color/pantone-tcx-system" class="related-card"><div class="related-card-cat">Color</div><div class="related-card-name">Pantone TCX</div><div class="related-card-desc">Thread color reference standard</div></a>
-            <a href="../fabrics/midweight-jersey" class="related-card"><div class="related-card-cat">Fabric</div><div class="related-card-name">Midweight Jersey</div><div class="related-card-desc">Most common substrate for chest embroidery</div></a>
-        </div>
+      <div class="related-header">
+        <h3>Related <em>topics</em></h3>
+        <span class="label">04 entries</span>
+      </div>
+      <div class="related-grid">
+        <a href="../printing/water-based-screen" class="related-card">
+          <div class="related-card-cat">Print</div>
+          <div class="related-card-name">Water-Based Screen Print</div>
+          <div class="related-card-desc">Printed alternative for large graphics</div>
+        </a>
+        <a href="../printing/plastisol-guide" class="related-card">
+          <div class="related-card-cat">Print</div>
+          <div class="related-card-name">Plastisol Print</div>
+          <div class="related-card-desc">High-opacity printed alternative for dark fabrics</div>
+        </a>
+        <a href="../color/pantone-tcx-system" class="related-card">
+          <div class="related-card-cat">Color</div>
+          <div class="related-card-name">Pantone TCX</div>
+          <div class="related-card-desc">Thread color reference standard</div>
+        </a>
+        <a href="../fabrics/midweight-jersey" class="related-card">
+          <div class="related-card-cat">Fabric</div>
+          <div class="related-card-name">Midweight Jersey</div>
+          <div class="related-card-desc">Most common substrate for chest embroidery</div>
+        </a>
+      </div>
     </div>
-</div>
+
+  </div>
 </main>
-<footer>
-    <span>&copy; 2026 FlatLabs</span>
-    <div style="display:flex;gap:20px;align-items:center">
-        <a href="https://buymeacoffee.com/flatlabs" target="_blank" rel="noopener">Buy me a coffee</a>
-        <a href="mailto:flatsgenerator@gmail.com">Contact</a>
-    </div>
+
+<footer class="site-footer">
+  <span>&copy; 2026 FlatLabs</span>
+  <div class="footer-links">
+    <a href="/learn/">Glossary</a>
+    <a href="/legal/contact.html">Contact</a>
+    <a href="/legal/privacy.html">Privacy</a>
+    <a href="/legal/terms.html">Terms</a>
+  </div>
 </footer>
+
 <script>
-const reveals=document.querySelectorAll('.reveal');
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});},{threshold:0.08,rootMargin:'0px 0px -20px 0px'});
-reveals.forEach(el=>observer.observe(el));
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+reveals.forEach(el => observer.observe(el));
 </script>
+
 </body>
 </html>
