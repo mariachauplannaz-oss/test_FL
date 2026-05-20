@@ -419,6 +419,9 @@ export const HOODIE_CONFIG = {
     // Materials — placeholder lists. Heavyweight fabrics & 2×2 rib expected
     // once hoodie-specific entries are added to universal/fabrics.js.
     allowedFabrics:     ['french_terry_300', 'brushed_fleece_320', 'brushed_fleece_400', 'heavyweight_fleece_500', 'rib_1x1', 'rib_2x2'],
+    allowedEyelets:     ['eyelet_brass_10mm', 'eyelet_xl_matte_black', 'eyelet_invisible_embroidered'],
+    allowedDrawcords:   ['drawcord_flat_cotton', 'drawcord_tubular_thick', 'drawcord_reflective'],
+    allowedAglets:      ['aglet_metal', 'aglet_heat_shrink', 'aglet_self_sewn'],
     allowedNeedles:     ['ballpoint_80_12', 'ballpoint_90_14'],
     allowedThreads:     ['poly_tex_27', 'poly_tex_40', 'cotton_tex_30'],
     allowedStitches:    ['overlock_4t', 'coverseam_3n', 'flatlock'],
@@ -435,6 +438,9 @@ export const HOODIE_CONFIG = {
         hem:        'reg',
         pocket:     'reg',
         fabric:     'brushed_fleece_320',
+        eyelet:     'eyelet_brass_10mm',
+        drawcord:   'drawcord_flat_cotton',
+        aglet:      'aglet_metal',
         needle:     'ballpoint_80_12',
         thread:     'poly_tex_27',
         stitch:     'overlock_4t',
@@ -467,6 +473,35 @@ export const HOODIE_CONFIG = {
             message: 'Eyelets require a drawcord — they would have no functional purpose without one.'
         }
     ],
+
+// Style presets — cohesive hardware kits per aesthetic.
+    // Used by the UI to offer one-click "style" selection that fills hardware fields.
+    stylePresets: {
+        luxury: {
+            label:    'Luxury / Premium',
+            eyelet:   'eyelet_brass_10mm',
+            drawcord: 'drawcord_flat_cotton',
+            aglet:    'aglet_metal'
+        },
+        streetwear: {
+            label:    'Streetwear Pro',
+            eyelet:   'eyelet_xl_matte_black',
+            drawcord: 'drawcord_tubular_thick',
+            aglet:    'aglet_heat_shrink'
+        },
+        minimalist: {
+            label:    'Minimalist / Clean',
+            eyelet:   'eyelet_invisible_embroidered',
+            drawcord: 'drawcord_flat_cotton',
+            aglet:    'aglet_self_sewn'
+        },
+        athleisure: {
+            label:    'Athleisure / Sport',
+            eyelet:   'eyelet_brass_10mm',
+            drawcord: 'drawcord_reflective',
+            aglet:    'aglet_heat_shrink'
+        }
+    },
 
     defaultBOM: {
         fabric_main:    { value: 1.8,  unit: 'm',    editable: false, description: 'Main fabric for body, sleeves, hood' },
