@@ -418,7 +418,7 @@ export const HOODIE_CONFIG = {
 
     // Materials — placeholder lists. Heavyweight fabrics & 2×2 rib expected
     // once hoodie-specific entries are added to universal/fabrics.js.
-    allowedFabrics:     ['jersey_200', 'rib_1x1'],  // TEMPORARY — expand when heavyweight fleece added
+    allowedFabrics:     ['french_terry_300', 'brushed_fleece_320', 'brushed_fleece_400', 'heavyweight_fleece_500', 'rib_1x1', 'rib_2x2'],
     allowedNeedles:     ['ballpoint_80_12', 'ballpoint_90_14'],
     allowedThreads:     ['poly_tex_27', 'poly_tex_40', 'cotton_tex_30'],
     allowedStitches:    ['overlock_4t', 'coverseam_3n', 'flatlock'],
@@ -434,7 +434,7 @@ export const HOODIE_CONFIG = {
         cuff:       'reg',
         hem:        'reg',
         pocket:     'reg',
-        fabric:     'jersey_200',
+        fabric:     'brushed_fleece_320',
         needle:     'ballpoint_80_12',
         thread:     'poly_tex_27',
         stitch:     'overlock_4t',
