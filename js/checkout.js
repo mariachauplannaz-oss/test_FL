@@ -1,3 +1,4 @@
+import { track } from './tracker.js';
 import { getProductConfig } from './config/pricing.js';
 
 // ─── Read context from URL + sessionStorage ───────────────────────────────────
@@ -84,6 +85,9 @@ btnPay.addEventListener('click', async () => {
   const errEl = document.getElementById('checkoutError');
   errEl.hidden = true;
 
+  // Track checkout initiated (user clicked Pay, before Stripe redirect)
+  track('checkout_started', { product_key: productKey, garment, type });
+  
   try {
     const response = await fetch('/api/create-checkout', {
       method:  'POST',
