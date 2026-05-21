@@ -3,6 +3,7 @@
 import { DICT, GARMENT_ICONS, CATEGORIES, FABRIC_SPECS, STITCH_SPECS } from './config.js';
 import { NEEDLES, THREADS, CARE_LABELS, BRAND_LABELS, checkCompatibility, isOptionCompatible, TSHIRT_CONFIG } from './config/index.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
+import { track } from './tracker.js';
 
 export function initCategories(state, updateButton) {
     const grid = document.getElementById('catGrid');
@@ -27,6 +28,16 @@ export function initCategories(state, updateButton) {
 }
 
 export function goStep(n, state, updateButton) {
+    // Track step transition: completed the previous step, now viewing the new one
+    const prevStep = state.currentStep;
+    if (typeof prevStep === 'number' && prevStep !== n) {
+        // Only fire "completed" when moving FORWARD (not when going back)
+        if (n > prevStep) {
+            track('step_completed', { step: prevStep, garment: state.selectedCategory || null });
+        }
+    }
+    track('step_viewed', { step: n, garment: state.selectedCategory || null });
+
     state.currentStep = n;
     const pct = n * (100 / 3);
     document.getElementById('stepsTrack').style.transform = 'translateX(-' + pct + '%)';
