@@ -1,5 +1,6 @@
 // ═══ download.js — FREE SVG download flow with backend gating ═══
 
+import { track } from './tracker.js';
 import { MANNEQUIN_CFG } from './config.js';
 const LS_EMAIL_KEY = 'fl_user_email';
 
@@ -123,6 +124,7 @@ async function _registerFreeDownload(email, state, log) {
 
     if (data.status === 'allowed') {
       localStorage.setItem(LS_EMAIL_KEY, email);
+      track('email_submitted', { outcome: 'allowed' });
       _hideEmailModal();
       log('Free download approved', 'ok');
       triggerDownload(state, log);
@@ -131,6 +133,7 @@ async function _registerFreeDownload(email, state, log) {
 
     if (data.status === 'already_used_free') {
       localStorage.setItem(LS_EMAIL_KEY, email); // remember them anyway
+      track('email_submitted', { outcome: 'already_used' });
       _hideEmailModal();
       log('Email already used free download — showing upsell', 'warn');
       document.getElementById('alreadyUsedModal')?.classList.add('show');
@@ -138,6 +141,7 @@ async function _registerFreeDownload(email, state, log) {
     }
 
     if (data.status === 'ip_blocked') {
+      track('email_submitted', { outcome: 'ip_blocked' });
       _hideEmailModal();
       log('IP blocked — showing block modal', 'warn');
       document.getElementById('ipBlockedModal')?.classList.add('show');
