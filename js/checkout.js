@@ -1,5 +1,5 @@
 import { track } from './tracker.js';
-import { getProductConfig } from './config/pricing.js';
+import { getProductConfig } from '../config/pricing.js';
 
 // ─── Read context from URL + sessionStorage ───────────────────────────────────
 
