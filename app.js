@@ -3,6 +3,7 @@
 import { MANNEQUIN_CFG } from './config.js';
 import { parseSVG } from './parser.js';
 import { generate } from './generator.js';
+import { track } from './tracker.js';
 import { initCategories, goStep, updateButton, buildStep1, buildStep2, initToggles, toggleSidebar, closeSidebar, setIsoMode } from './ui.js';
 import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
@@ -214,6 +215,12 @@ function showPostPaymentModal(garmentConfig) {
 
         // Generate and auto-download the PDF
         await exportSpecSheet(state, { brand, name, sku, season });
+
+        // Track PRO conversion completed (user has paid AND downloaded the PDF)
+        track('pdf_downloaded', {
+            garment: state.selectedCategory || 'tshirt',
+            sku: sku || null
+        });
 
         log('Tech Pack PDF generated and downloaded', 'ok');
     });
