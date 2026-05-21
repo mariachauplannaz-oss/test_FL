@@ -723,7 +723,7 @@ footer a:hover { color: var(--accent); }
     <a href="#problem">Why</a>
     <a href="#how">How it works</a>
     <a href="learn/">Glossary</a>
-    <a href="app.html" class="nav-cta">Enter the Studio</a>
+    <a href="app.html" class="nav-cta" onclick="track('landing_cta_clicked', { location: 'nav' })">Enter the Studio</a>
   </div>
 </nav>
 
@@ -737,7 +737,7 @@ footer a:hover { color: var(--accent); }
       FlatLabs delivers the technical drawing — production-ready, ISO-measured, properly constructed. You bring the design decisions. Need full custom? That's a different conversation. Need a clean professional flat for your tech pack, fast? That's this.
     </p>
     <div class="hero-actions reveal reveal-delay-3">
-      <a href="app.html" class="btn-primary">
+      <a href="app.html" class="btn-primary" onclick="track('landing_cta_clicked', { location: 'hero' })">
         Enter the Studio — first export is free
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
@@ -957,7 +957,7 @@ footer a:hover { color: var(--accent); }
   <div class="final-cta-inner reveal">
     <h2>Stop wasting time on flats.</h2>
     <p>Enter the Studio. First export is free.</p>
-    <a href="app.html" class="btn-primary">
+    <a href="app.html" class="btn-primary" onclick="track('landing_cta_clicked', { location: 'final_cta' })">
       Enter the Studio
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
@@ -982,7 +982,10 @@ footer a:hover { color: var(--accent); }
 <script type="module">
 import { track } from './js/tracker.js';
 
-// Fire one test event on page load (Session 6.5a verification)
+// Expose track() so inline onclick="track(...)" handlers can call it
+window.track = track;
+
+// Fire one test event on page load
 track('app_loaded', { page: 'landing' });
 
 const reveals = document.querySelectorAll('.reveal');
