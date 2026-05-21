@@ -979,7 +979,12 @@ footer a:hover { color: var(--accent); }
   </div>
 </footer>
 
-<script>
+<script type="module">
+import { track } from './js/tracker.js';
+
+// Fire one test event on page load (Session 6.5a verification)
+track('app_loaded', { page: 'landing' });
+
 const reveals = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
