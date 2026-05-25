@@ -94,12 +94,66 @@ function doDownload()      { downloadSVG(state, log); }
 function doTriggerDownload() { triggerDownload(state, log); }
 function doEmailSubmit(e)  { handleEmailSubmit(e, state, log); }
 
+// Captures the current front-view SVG canvas as a PNG dataURL.
+// Returns null if capture fails — caller must handle gracefully.
+async function captureCanvasAsPNG() {
+    const svgEl = document.querySelector('#svg-preview svg');
+    if (!svgEl) return null;
+
+    const svgString = new XMLSerializer().serializeToString(svgEl);
+    const viewBox = svgEl.viewBox.baseVal;
+    const width = viewBox.width || 600;
+    const height = viewBox.height || 800;
+
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    try {
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = () => reject(new Error('SVG image load failed'));
+            img.src = svgUrl;
+        });
+
+        // Render at 2x for retina; cap at 800px on longest side to keep sessionStorage <500KB
+        const longest = Math.max(width, height);
+        const scale = Math.min(800 / longest, 2);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(width * scale);
+        canvas.height = Math.round(height * scale);
+        const ctx = canvas.getContext('2d');
+
+        // White background (better contrast for the garment + clean look)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        return canvas.toDataURL('image/png');
+    } finally {
+        URL.revokeObjectURL(svgUrl);
+    }
+}
+
 // CHANGE 1 — doExportTechPack now saves state and redirects to /checkout.html
-function doExportTechPack() {
+async function doExportTechPack() {
     // Guard: require completed design before purchasing
     if (!state.selections.torso || !state.selections.neck) {
         alert('⚠ Please complete your design before purchasing the Tech Pack.');
         return;
+    }
+
+    // Capture preview PNG (best-effort, non-blocking on failure)
+    try {
+        const previewPng = await captureCanvasAsPNG();
+        if (previewPng) {
+            sessionStorage.setItem('flatlabs_preview_png', previewPng);
+        } else {
+            sessionStorage.removeItem('flatlabs_preview_png');
+        }
+    } catch (err) {
+        console.warn('Preview capture failed (non-blocking):', err);
+        sessionStorage.removeItem('flatlabs_preview_png');
     }
 
     // Save full state to sessionStorage so /checkout.html can read it
