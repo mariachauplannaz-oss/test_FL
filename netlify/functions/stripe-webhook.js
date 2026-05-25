@@ -2,6 +2,20 @@ import Stripe from "stripe";
 import { neon } from "@netlify/neon";
 import crypto from "node:crypto";
 
+// Returns "FL-XXXXXX" where X is an uppercase letter or digit (A-Z0-9).
+// Uses crypto.randomBytes with rejection sampling to avoid modulo bias.
+function generateOrderNumber() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  while (result.length < 6) {
+    const byte = crypto.randomBytes(1)[0];
+    if (byte < 252) { // 252 = 7 * 36; discard to avoid bias
+      result += chars[byte % 36];
+    }
+  }
+  return `FL-${result}`;
+}
+
 export default async function handler(req, context) {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
@@ -72,23 +86,39 @@ export default async function handler(req, context) {
     const downloadToken = crypto.randomBytes(32).toString("hex");
 
     // TODO: when subscriptions are added, derive tier from product_key
-    await sql`
-      INSERT INTO downloads (
-        user_email, 
-        tier, 
-        garment_config, 
-        tc_version_accepted, 
-        stripe_session_id,
-        download_token
-      ) VALUES (
-        ${email},
-        'PRO',
-        ${garmentConfig},
-        ${tcVersion},
-        ${stripeSessionId},
-        ${downloadToken}
-      )
-    `;
+    let inserted = false;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const orderNumber = generateOrderNumber();
+      try {
+        await sql`
+          INSERT INTO downloads (
+            user_email,
+            tier,
+            garment_config,
+            tc_version_accepted,
+            stripe_session_id,
+            download_token,
+            order_number
+          ) VALUES (
+            ${email},
+            'PRO',
+            ${garmentConfig},
+            ${tcVersion},
+            ${stripeSessionId},
+            ${downloadToken},
+            ${orderNumber}
+          )
+        `;
+        inserted = true;
+        break;
+      } catch (err) {
+        if (err.code === "23505") continue; // unique constraint on order_number; retry
+        throw err;
+      }
+    }
+    if (!inserted) {
+      throw new Error("Failed to generate a unique order_number after 5 attempts");
+    }
 
     // Send purchase emails — awaited so the runtime doesn't kill the request,
     // but bounded by a 3s timeout via AbortController. If it times out or fails,

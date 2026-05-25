@@ -1,3 +1,6 @@
+// 15-day reusable token model: customers may re-download their PDF as many times
+// as they want within 15 days of purchase. last_accessed_at is updated on every
+// successful verification. Expired tokens return 410 Gone.
 import { neon } from "@netlify/neon";
 
 export default async function handler(req, context) {
@@ -26,14 +29,16 @@ export default async function handler(req, context) {
 
     // 1. Find the download record by Stripe session ID
     const result = await sql`
-      SELECT 
-        id, 
-        user_email, 
-        tier, 
-        garment_config, 
+      SELECT
+        id,
+        user_email,
+        tier,
+        garment_config,
         download_token,
-        used_at
-      FROM downloads 
+        used_at,
+        created_at,
+        order_number
+      FROM downloads
       WHERE stripe_session_id = ${session_id}
       LIMIT 1
     `;
@@ -50,32 +55,34 @@ export default async function handler(req, context) {
 
     const download = result[0];
 
-    // 2. Check if token already used
-    if (download.used_at) {
-      return new Response(JSON.stringify({ 
-        ok: false, 
-        error: "This download has already been used",
-        used_at: download.used_at
+    // 2. Check if token has expired (15-day window from purchase)
+    const expiresAt = new Date(download.created_at);
+    expiresAt.setDate(expiresAt.getDate() + 15);
+    if (Date.now() > expiresAt.getTime()) {
+      return new Response(JSON.stringify({
+        ok: false,
+        error: "This download link has expired. Links are valid for 15 days after purchase.",
+        expired_at: expiresAt.toISOString()
       }), {
-        status: 410, // Gone
+        status: 410,
         headers: { "Content-Type": "application/json" }
       });
     }
 
-    // 3. Mark as used (atomic operation)
+    // 3. Record access time
     await sql`
-      UPDATE downloads 
-      SET used_at = NOW() 
-      WHERE id = ${download.id} 
-      AND used_at IS NULL
+      UPDATE downloads
+      SET last_accessed_at = NOW()
+      WHERE id = ${download.id}
     `;
 
     // 4. Return data needed to generate the PDF
-    return new Response(JSON.stringify({ 
-      ok: true, 
+    return new Response(JSON.stringify({
+      ok: true,
       tier: download.tier,
       garment_config: download.garment_config,
-      email: download.user_email
+      email: download.user_email,
+      order_number: download.order_number
     }), {
       headers: { "Content-Type": "application/json" }
     });
