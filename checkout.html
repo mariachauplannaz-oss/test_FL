@@ -735,22 +735,5 @@
   </footer>
 
   <script type="module" src="/js/checkout.js"></script>
-  <script>
-    // Inject design preview if captured before redirect
-    (function injectPreview() {
-      const previewEl = document.getElementById('flatPreview');
-      if (!previewEl) return;
-
-      const previewPng = sessionStorage.getItem('flatlabs_preview_png');
-      if (!previewPng) return; // graceful fallback to placeholder
-
-      const img = document.createElement('img');
-      img.src = previewPng;
-      img.alt = 'Your design preview';
-      previewEl.innerHTML = ''; // remove any placeholder content
-      previewEl.appendChild(img);
-      previewEl.classList.add('has-preview');
-    })();
-  </script>
 </body>
 </html>

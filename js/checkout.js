@@ -50,10 +50,19 @@ function renderPage() {
   document.getElementById('productTitle').textContent = titles[productKey] || productKey;
   document.getElementById('productPrice').textContent = prices[productKey] || '—';
 
-  // TODO: render SVG preview from checkoutState.selections
-  // Use parser.js + generator.js once preview integration is ready
-  document.getElementById('flatPreview').innerHTML = 
-    `<span style="opacity:0.5;font-size:0.8rem;">${titles[productKey] || 'Product'} preview</span>`;
+  // Inject design preview captured before redirect (from app.js doExportTechPack)
+  const previewEl = document.getElementById('flatPreview');
+  const previewPng = sessionStorage.getItem('flatlabs_preview_png');
+  if (previewPng) {
+    const img = document.createElement('img');
+    img.src = previewPng;
+    img.alt = 'Your design preview';
+    previewEl.innerHTML = '';
+    previewEl.appendChild(img);
+    previewEl.classList.add('has-preview');
+  }
+  // If no PNG in sessionStorage, leave element empty — checkout.html CSS shows the
+  // dashed-border "Flat preview" placeholder via :empty pseudo-class.
 }
 
 renderPage();
