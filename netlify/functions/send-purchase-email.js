@@ -20,9 +20,9 @@ export default async function handler(req) {
     });
   }
 
-  const { email, session_id, garment_config, download_token } = body;
+  const { email, session_id, garment_config, download_token, order_number, created_at } = body;
 
-  if (!email || !session_id) {
+  if (!email || !session_id || !order_number || !created_at) {
     return new Response(JSON.stringify({ error: "Missing required fields" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -33,6 +33,7 @@ export default async function handler(req) {
   const garmentSummary = garment_config
     ? `${garment_config.garment || "Garment"} · ${garment_config.gender || ""}`.trim().replace(/·\s*$/, "")
     : "Tech Pack";
+  const expiresAt = formatExpirationDate(created_at);
 
   let sent_to_customer = false;
   let sent_to_admin = false;
@@ -42,9 +43,9 @@ export default async function handler(req) {
     await resend.emails.send({
       from: FROM,
       to: email,
-      subject: "Your FlatLabs Tech Pack is ready",
-      html: customerEmailHtml(recoveryUrl, garmentSummary),
-      text: customerEmailText(recoveryUrl, garmentSummary),
+      subject: `Your FlatLabs Tech Pack — Order ${order_number}`,
+      html: customerEmailHtml({ recoveryUrl, garmentSummary, orderNumber: order_number, expiresAt }),
+      text: customerEmailText({ recoveryUrl, garmentSummary, orderNumber: order_number, expiresAt }),
     });
     sent_to_customer = true;
   } catch (err) {
@@ -84,92 +85,211 @@ export const config = {
 
 // ── Templates ──────────────────────────────────────────────────────────────
 
-function customerEmailHtml(recoveryUrl, garmentSummary) {
+function formatExpirationDate(createdAtIso) {
+  const date = new Date(createdAtIso);
+  date.setDate(date.getDate() + 15);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC'
+  });
+}
+
+function customerEmailHtml({ recoveryUrl, garmentSummary, orderNumber, expiresAt }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your FlatLabs Tech Pack</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-<body style="margin:0;padding:0;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 0;">
+<body style="margin:0;padding:0;background:#FCFCFA;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#111111;-webkit-font-smoothing:antialiased;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FCFCFA;padding:40px 16px;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:560px;">
 
-          <!-- Header -->
+        <table width="560" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border:1px solid #E8E8E3;border-radius:8px;overflow:hidden;max-width:560px;">
+
+          <!-- HEADER -->
           <tr>
-            <td style="background:#0a0a0c;padding:28px 40px;">
-              <p style="margin:0;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:#ffffff;">FlatLabs</p>
+            <td style="padding:28px 36px 24px;border-bottom:1px solid #E8E8E3;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <span style="font-family:'DM Sans',Arial,sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.4px;color:#111111;">Flat</span><span style="font-family:'DM Sans',Arial,sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.4px;color:#FF6B57;">Labs</span>
+                  </td>
+                  <td align="right" style="font-family:'JetBrains Mono',Courier,monospace;font-size:10px;font-weight:500;letter-spacing:1.5px;color:#6B6B66;text-transform:uppercase;">
+                    Order&nbsp;${orderNumber}
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
-          <!-- Body -->
+          <!-- HERO -->
           <tr>
-            <td style="padding:40px 40px 32px;">
-              <p style="margin:0 0 24px;font-size:22px;font-weight:600;color:#1d1d1f;letter-spacing:-0.02em;">
+            <td style="padding:40px 36px 8px;">
+              <div style="font-family:'JetBrains Mono',Courier,monospace;font-size:10px;font-weight:600;letter-spacing:2px;color:#FF6B57;text-transform:uppercase;margin-bottom:18px;">
+                — Tech Pack · Ready
+              </div>
+              <h1 style="margin:0 0 12px;font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;letter-spacing:-0.8px;line-height:1.1;color:#111111;">
                 Your tech pack is ready.
+              </h1>
+              <p style="margin:0;font-family:'DM Sans',Arial,sans-serif;font-size:15px;line-height:1.6;color:#6B6B66;">
+                Thanks for your purchase. Click below to return to the app and download your spec sheet.
               </p>
-              <p style="margin:0 0 8px;font-size:14px;color:#6e6e73;">Garment</p>
-              <p style="margin:0 0 32px;font-size:16px;font-weight:500;color:#1d1d1f;">${garmentSummary}</p>
+            </td>
+          </tr>
 
-              <p style="margin:0 0 20px;font-size:15px;color:#3d3d3f;line-height:1.6;">
-                Click the button below to return to the app and download your PDF spec sheet.
-                If you closed the tab before downloading, this link will recover your session.
-                <strong>Single use.</strong>
-              </p>
+          <!-- ORDER SUMMARY -->
+          <tr>
+            <td style="padding:32px 36px 0;">
+              <div style="font-family:'JetBrains Mono',Courier,monospace;font-size:10px;font-weight:600;letter-spacing:2px;color:#6B6B66;text-transform:uppercase;margin-bottom:12px;">
+                Order Summary
+              </div>
 
-              <!-- CTA -->
-              <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #E8E8E3;">
                 <tr>
-                  <td style="background:#0a0a0c;border-radius:8px;">
+                  <td style="padding:14px 0 12px;border-bottom:1px solid #E8E8E3;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <div style="font-family:'DM Sans',Arial,sans-serif;font-size:15px;font-weight:600;color:#111111;line-height:1.4;">
+                            Tech Pack PDF — T-Shirt
+                          </div>
+                          <div style="font-family:'JetBrains Mono',Courier,monospace;font-size:11px;color:#6B6B66;letter-spacing:0.3px;margin-top:4px;">
+                            ${garmentSummary}
+                          </div>
+                        </td>
+                        <td align="right" valign="top" style="font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:#111111;letter-spacing:-0.3px;">
+                          10,00&nbsp;€
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 0 0;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-family:'DM Sans',Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;color:#6B6B66;text-transform:uppercase;">
+                          Total · incl. VAT
+                        </td>
+                        <td align="right" style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#111111;letter-spacing:-0.6px;">
+                          10,00&nbsp;€
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="padding:36px 36px 8px;">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td align="center" style="background:#111111;border-radius:6px;">
                     <a href="${recoveryUrl}"
-                       style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;letter-spacing:-0.01em;">
+                       style="display:block;padding:16px 32px;font-family:'DM Sans',Arial,sans-serif;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;letter-spacing:-0.1px;">
                       Download Tech Pack →
                     </a>
                   </td>
                 </tr>
               </table>
-
-              <p style="margin:0;font-size:13px;color:#6e6e73;line-height:1.6;">
-                If the button doesn't work, copy and paste this URL into your browser:<br>
-                <span style="color:#0a0a0c;word-break:break-all;">${recoveryUrl}</span>
-              </p>
             </td>
           </tr>
 
-          <!-- Footer -->
+          <!-- EXPIRATION NOTICE -->
           <tr>
-            <td style="padding:24px 40px;border-top:1px solid #e5e5ea;">
-              <p style="margin:0;font-size:12px;color:#6e6e73;line-height:1.6;">
-                Questions? Reply to this email or contact us at
-                <a href="mailto:flatsgenerator@gmail.com" style="color:#0a0a0c;">flatsgenerator@gmail.com</a>
-              </p>
+            <td style="padding:20px 36px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FCFCFA;border:1px solid #E8E8E3;border-radius:6px;">
+                <tr>
+                  <td style="padding:16px 18px;">
+                    <div style="font-family:'JetBrains Mono',Courier,monospace;font-size:10px;font-weight:600;letter-spacing:1.8px;color:#FF6B57;text-transform:uppercase;margin-bottom:6px;">
+                      Download Window
+                    </div>
+                    <div style="font-family:'DM Sans',Arial,sans-serif;font-size:14px;color:#111111;line-height:1.55;">
+                      This link is valid until <strong style="font-weight:600;">${expiresAt}</strong>. After this date the link expires permanently and the order cannot be re-issued automatically.
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FALLBACK URL -->
+          <tr>
+            <td style="padding:28px 36px 0;">
+              <div style="font-family:'JetBrains Mono',Courier,monospace;font-size:10px;font-weight:600;letter-spacing:1.8px;color:#6B6B66;text-transform:uppercase;margin-bottom:8px;">
+                Button not working?
+              </div>
+              <div style="font-family:'JetBrains Mono',Courier,monospace;font-size:11px;color:#6B6B66;line-height:1.5;word-break:break-all;">
+                <a href="${recoveryUrl}" style="color:#111111;text-decoration:underline;text-decoration-color:#FF6B57;">
+                  ${recoveryUrl}
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="padding:36px 36px 32px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #E8E8E3;">
+                <tr>
+                  <td style="padding-top:24px;">
+                    <p style="margin:0 0 8px;font-family:'DM Sans',Arial,sans-serif;font-size:13px;color:#6B6B66;line-height:1.6;">
+                      Need help with this order or a late re-issue?
+                    </p>
+                    <p style="margin:0;font-family:'DM Sans',Arial,sans-serif;font-size:13px;color:#111111;line-height:1.6;">
+                      Reply to this email or write to <a href="mailto:flatsgenerator@gmail.com" style="color:#111111;text-decoration:underline;text-decoration-color:#FF6B57;font-weight:500;">flatsgenerator@gmail.com</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
         </table>
+
+        <table width="560" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;max-width:560px;">
+          <tr>
+            <td align="center" style="font-family:'JetBrains Mono',Courier,monospace;font-size:10px;font-weight:500;letter-spacing:1.8px;color:#9C9C95;text-transform:uppercase;">
+              FlatLabs · flatsgenerator.com
+            </td>
+          </tr>
+        </table>
+
       </td>
     </tr>
   </table>
+
 </body>
 </html>`;
 }
 
-function customerEmailText(recoveryUrl, garmentSummary) {
+function customerEmailText({ recoveryUrl, garmentSummary, orderNumber, expiresAt }) {
   return `Your FlatLabs Tech Pack is ready.
 
-Garment: ${garmentSummary}
+Order: ${orderNumber}
+Item: Tech Pack PDF — T-Shirt (${garmentSummary})
+Total: 10,00 € (incl. VAT)
 
-Click the link below to return to the app and download your PDF spec sheet.
-If you closed the tab before downloading, use this link to recover your session. Single use.
-
+Download your spec sheet:
 ${recoveryUrl}
 
-Questions? Contact us at flatsgenerator@gmail.com
+DOWNLOAD WINDOW
+This link is valid until ${expiresAt}. After this date the link expires permanently and the order cannot be re-issued automatically.
 
-— FlatLabs`;
+Need help with this order or a late re-issue?
+Reply to this email or write to flatsgenerator@gmail.com
+
+— FlatLabs · flatsgenerator.com`;
 }
 
 function adminEmailText(email, session_id, garment_config) {
