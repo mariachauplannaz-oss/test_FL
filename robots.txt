@@ -4,5 +4,12 @@
 User-agent: *
 Allow: /
 
+# Block common WordPress paths that don't exist on this site
+# (silences crawler 404 noise — does not affect real bot blocking,
+#  which is handled at the CDN level)
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /xmlrpc.php
+
 # Sitemap location
 Sitemap: https://flatsgenerator.com/sitemap.xml
