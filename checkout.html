@@ -162,7 +162,7 @@
 
     #flatPreview {
       width: 100%;
-      min-height: 220px;
+      aspect-ratio: 1 / 1;
       background: var(--surface-paper);
       border-radius: 14px;
       display: flex;
@@ -175,6 +175,10 @@
       font-weight: 600;
       position: relative;
       overflow: hidden;
+      transition: background 0.2s ease;
+    }
+    #flatPreview.has-preview {
+      background: #ffffff;
     }
     #flatPreview:empty::before {
       content: 'Flat preview';
@@ -191,10 +195,12 @@
       border-radius: 8px;
       pointer-events: none;
     }
-    #flatPreview svg, #flatPreview img {
-      max-width: 80%;
-      max-height: 200px;
+    #flatPreview img {
+      max-width: 90%;
+      max-height: 90%;
+      width: auto;
       height: auto;
+      object-fit: contain;
       display: block;
     }
 
@@ -729,5 +735,22 @@
   </footer>
 
   <script type="module" src="/js/checkout.js"></script>
+  <script>
+    // Inject design preview if captured before redirect
+    (function injectPreview() {
+      const previewEl = document.getElementById('flatPreview');
+      if (!previewEl) return;
+
+      const previewPng = sessionStorage.getItem('flatlabs_preview_png');
+      if (!previewPng) return; // graceful fallback to placeholder
+
+      const img = document.createElement('img');
+      img.src = previewPng;
+      img.alt = 'Your design preview';
+      previewEl.innerHTML = ''; // remove any placeholder content
+      previewEl.appendChild(img);
+      previewEl.classList.add('has-preview');
+    })();
+  </script>
 </body>
 </html>
