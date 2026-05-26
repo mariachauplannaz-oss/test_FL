@@ -17,7 +17,7 @@ function mkEl(tag, attrs) {
 // component: object with { rib: [pathD, ...], ribClip: pathD|null }
 // strokeWidth: stroke width for the rib lines
 let ribClipCounter = 0;
-function renderRibBlock(svgEl, idPrefix, component, strokeWidth) {
+function renderRibBlock(parentGroup, svgRoot, idPrefix, component, strokeWidth) {
     if (!component || !component.rib || !component.rib.length) return;
 
     const ribStyle = { fill:'none', stroke:'#1a1a1a', 'stroke-width': strokeWidth, 'stroke-linecap':'round', 'stroke-linejoin':'round' };
@@ -26,7 +26,7 @@ function renderRibBlock(svgEl, idPrefix, component, strokeWidth) {
         const clipId = `ribClip-${idPrefix}-${++ribClipCounter}`;
 
         // 1) Render the rib_shape as a visible gray fill (like Illustrator's cls-15)
-        svgEl.appendChild(mkEl('path', {
+        parentGroup.appendChild(mkEl('path', {
             id: `${idPrefix}_rib_shape`,
             d: component.ribClip,
             fill: '#414042',
@@ -34,11 +34,11 @@ function renderRibBlock(svgEl, idPrefix, component, strokeWidth) {
             stroke: 'none'
         }));
 
-        // 2) Ensure <defs> exists for the clipPath
-        let defs = svgEl.querySelector('defs');
+        // 2) Ensure <defs> exists for the clipPath (always at svg root)
+        let defs = svgRoot.querySelector('defs');
         if (!defs) {
             defs = mkEl('defs', {});
-            svgEl.insertBefore(defs, svgEl.firstChild);
+            svgRoot.insertBefore(defs, svgRoot.firstChild);
         }
 
         // 3) Create clipPath using the same shape
@@ -51,11 +51,11 @@ function renderRibBlock(svgEl, idPrefix, component, strokeWidth) {
         component.rib.forEach((d, i) => {
             clippedGroup.appendChild(mkEl('path', { id: `${idPrefix}_rib_${i+1}`, d, ...ribStyle }));
         });
-        svgEl.appendChild(clippedGroup);
+        parentGroup.appendChild(clippedGroup);
     } else {
         // No clip shape — render lines directly (legacy/simple case)
         component.rib.forEach((d, i) => {
-            svgEl.appendChild(mkEl('path', { id: `${idPrefix}_rib_${i+1}`, d, ...ribStyle }));
+            parentGroup.appendChild(mkEl('path', { id: `${idPrefix}_rib_${i+1}`, d, ...ribStyle }));
         });
     }
 }
@@ -73,7 +73,7 @@ function fitViewBoxToContent(svgEl, paddingRatio = 0.1) {
     svgEl.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
 }
 
-function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
+function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup, viewName) {
     const fill = document.getElementById('cFill').value;
     const showSeams = document.getElementById('togSeams').classList.contains('on');
 
@@ -82,7 +82,10 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
     const gA = { fill, stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linejoin':'round', 'stroke-linecap':'round' };
     const seamA = { fill:'none', stroke:'#1a1a1a', 'stroke-width':seamSw, 'stroke-linecap':'round' };
 
-// Ghost mannequin — hidden in ISO mode (production view = garment only)
+    // Prefix for ids based on view (front/back)
+    const v = viewName || 'front';
+
+    // Ghost mannequin — hidden in ISO mode (production view = garment only)
     const isIsoMode = document.body.classList.contains('iso-mode');
     if (ghostMarkup && !isIsoMode) {
         const tmp = new DOMParser().parseFromString(
@@ -94,7 +97,7 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
         });
         svgEl.appendChild(ghost);
     }
-    
+
     // Get component names for IDs
     const torsoName = selections.torso || Object.keys(components.torsos)[0] || 'torso';
     const neckName = selections.neck || 'neck';
@@ -105,69 +108,106 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
     const neck = selections.neck && selections.neck !== 'none' ? components.necks[selections.neck] : null;
     const sleeve = selections.sleeve && selections.sleeve !== 'none' ? components.sleeves[selections.sleeve] : null;
 
-    // MERGE torso + neck
+    // Create top-level view group
+    const viewGroup = mkEl('g', { id: v });
+    svgEl.appendChild(viewGroup);
+
+    // MERGE torso + neck (visual: one outline)
     let merged = null;
     if (torso && torso.main && neck && neck.main) {
         log('Merging torso + neck...', 'info');
         merged = merge2(torso.main, neck.main, log);
     }
 
+    // ═══ TORSO GROUP ═══
+    const torsoGroup = mkEl('g', { id: `${v}_torso_${torsoName}` });
     if (merged) {
-        svgEl.appendChild(mkEl('path', { id:'torso_' + torsoName + '_nck_' + neckName, d:merged, ...gA }));
+        torsoGroup.appendChild(mkEl('path', { id: `torso_${torsoName}_shape`, d: merged, ...gA }));
         log('Merge OK', 'ok');
     } else if (torso && torso.main) {
-        svgEl.appendChild(mkEl('path', { id:'torso_' + torsoName, d:torso.main, ...gA }));
-        if (neck && neck.main) svgEl.appendChild(mkEl('path', { id:'nck_' + neckName, d:neck.main, ...gA }));
+        torsoGroup.appendChild(mkEl('path', { id: `torso_${torsoName}_shape`, d: torso.main, ...gA }));
         log('Rendered separate', 'warn');
     }
-
-    // Rib binding on torso hem — handles gray fill + clipPath if rib_shape present
-    renderRibBlock(svgEl, 'torso_' + torsoName, torso, seamSw);
-
-    // Neck fills
-    if (neck && neck.fills) {
-        neck.fills.forEach((d,i) => {
-            svgEl.appendChild(mkEl('path', { id:'nck_' + neckName + '_fill_' + (i+1), d, fill:'#939598', stroke:'#1a1a1a', 'stroke-width': String(parseFloat(sw)*0.3), 'stroke-linejoin':'bevel' }));
+    // Torso hem rib (uses ribClip if present)
+    renderRibBlock(torsoGroup, svgEl, `torso_${torsoName}`, torso, seamSw);
+    // Torso seams
+    if (showSeams && torso?.seams?.length) {
+        torso.seams.forEach((d, i) => {
+            torsoGroup.appendChild(mkEl('path', { id: `torso_${torsoName}_sem_${i+1}`, d, ...seamA, 'stroke-dasharray': cfg.seamDash }));
         });
     }
+    viewGroup.appendChild(torsoGroup);
 
-    // Rib binding on neck — handles gray fill + clipPath if rib_shape present
-    renderRibBlock(svgEl, 'nck_' + neckName, neck, seamSw);
-
-    // Sleeves (OVERLAY)
-    if (sleeve) {
-        log('Adding sleeves...', 'info');
-        if (sleeve.main_l) svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_shape_l', d:sleeve.main_l, ...gA }));
-        if (sleeve.main_r) svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_shape_r', d:sleeve.main_r, ...gA }));
-        if (sleeve.borders) {
-            sleeve.borders.forEach((d,i) => {
-                svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_border_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+    // ═══ NECK GROUP ═══
+    if (neck) {
+        const neckGroup = mkEl('g', { id: `${v}_neck_${neckName}` });
+        // Neck fills (inside neck color)
+        if (neck.fills) {
+            neck.fills.forEach((d, i) => {
+                neckGroup.appendChild(mkEl('path', { id: `neck_${neckName}_fill_${i+1}`, d, fill:'#939598', stroke:'#1a1a1a', 'stroke-width': String(parseFloat(sw)*0.3), 'stroke-linejoin':'bevel' }));
             });
         }
-        // Rib binding on sleeve cuff — handles gray fill + clipPath if rib_shape present
-        renderRibBlock(svgEl, 'slv_' + sleeveName, sleeve, seamSw);
+        // If torso+neck weren't merged, render neck outline separately
+        if (!merged && neck.main) {
+            neckGroup.appendChild(mkEl('path', { id: `neck_${neckName}_outline`, d: neck.main, ...gA }));
+        }
+        // Neck rib (uses ribClip if present)
+        renderRibBlock(neckGroup, svgEl, `neck_${neckName}`, neck, seamSw);
+        // Neck seams
+        if (showSeams && neck.seams?.length) {
+            neck.seams.forEach((d, i) => {
+                neckGroup.appendChild(mkEl('path', { id: `neck_${neckName}_sem_${i+1}`, d, ...seamA, 'stroke-dasharray': cfg.seamDash }));
+            });
+        }
+        viewGroup.appendChild(neckGroup);
     }
 
-    // Seams
-    if (showSeams) {
-        const torsoSeams = (torso?.seams||[]).map(d => ({d, src:'torso'}));
-        const neckSeams = (neck?.seams||[]).map(d => ({d, src:'nck'}));
-        const sleeveSeams = (sleeve?.seams||[]).map(d => ({d, src:'slv'}));
-        const allSeams = [...torsoSeams, ...neckSeams, ...sleeveSeams];
-        const seamCount = { torso:0, nck:0, slv:0 };
-        allSeams.forEach(({d, src}) => {
-            seamCount[src]++;
-            svgEl.appendChild(mkEl('path', { id:'sem_' + src + '_' + seamCount[src], d, ...seamA, 'stroke-dasharray': cfg.seamDash }));
-        });
-        if (allSeams.length) log('Seams: ' + allSeams.length, 'ok');
+    // ═══ SLEEVES GROUP ═══
+    if (sleeve) {
+        log('Adding sleeves...', 'info');
+        const sleevesGroup = mkEl('g', { id: `${v}_sleeves_${sleeveName}` });
+
+        // Left sleeve sub-group
+        const sleeveL = mkEl('g', { id: `${v}_sleeve_${sleeveName}_l` });
+        if (sleeve.main_l) sleeveL.appendChild(mkEl('path', { id: `sleeve_${sleeveName}_shape_l`, d: sleeve.main_l, ...gA }));
+        if (sleeve.borders && sleeve.borders[0]) {
+            sleeveL.appendChild(mkEl('path', { id: `sleeve_${sleeveName}_border_l`, d: sleeve.borders[0], fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+        }
+
+        // Right sleeve sub-group
+        const sleeveR = mkEl('g', { id: `${v}_sleeve_${sleeveName}_r` });
+        if (sleeve.main_r) sleeveR.appendChild(mkEl('path', { id: `sleeve_${sleeveName}_shape_r`, d: sleeve.main_r, ...gA }));
+        if (sleeve.borders && sleeve.borders[1]) {
+            sleeveR.appendChild(mkEl('path', { id: `sleeve_${sleeveName}_border_r`, d: sleeve.borders[1], fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+        }
+
+        // Sleeve seams (distributed by side: even indexes to left, odd to right)
+        if (showSeams && sleeve.seams?.length) {
+            sleeve.seams.forEach((d, i) => {
+                const target = (i % 2 === 0) ? sleeveL : sleeveR;
+                const side = (i % 2 === 0) ? 'l' : 'r';
+                target.appendChild(mkEl('path', { id: `sleeve_${sleeveName}_sem_${side}_${Math.floor(i/2)+1}`, d, ...seamA, 'stroke-dasharray': cfg.seamDash }));
+            });
+        }
+
+        // Sleeve rib (cuff) — rendered at sleeves group level
+        if (sleeve.rib?.length || sleeve.ribClip) {
+            renderRibBlock(sleevesGroup, svgEl, `sleeve_${sleeveName}`, sleeve, seamSw);
+        }
+
+        sleevesGroup.appendChild(sleeveL);
+        sleevesGroup.appendChild(sleeveR);
+        viewGroup.appendChild(sleevesGroup);
     }
 
-    // Pockets (only if toggle exists and is on)
+    // ═══ POCKET (optional toggle) ═══
     const togPocket = document.getElementById('togPocket');
     if (togPocket && togPocket.classList.contains('on') && Object.keys(components.pockets).length) {
         const pkt = components.pockets[Object.keys(components.pockets)[0]];
         if (pkt && pkt.main) {
-            svgEl.appendChild(mkEl('path', { id:'pocket', d:pkt.main, fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linejoin':'round', 'stroke-linecap':'round' }));
+            const pocketGroup = mkEl('g', { id: `${v}_pocket` });
+            pocketGroup.appendChild(mkEl('path', { id: 'pocket_shape', d: pkt.main, fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linejoin':'round', 'stroke-linecap':'round' }));
+            viewGroup.appendChild(pocketGroup);
             log('Pocket added', 'ok');
         }
     }
@@ -196,7 +236,7 @@ export function generate(state, log) {
     svgFront.setAttribute('width', '100%');
     svgFront.setAttribute('height', '100%');
 
-    renderGarment(svgFront, svgData.front, selections, cfg, log, svgData.mannequin);
+    renderGarment(svgFront, svgData.front, selections, cfg, log, svgData.mannequin, 'front');
     previewFront.appendChild(svgFront);
     fitViewBoxToContent(svgFront);
 
@@ -210,7 +250,7 @@ export function generate(state, log) {
             svgBack.setAttribute('width', '100%');
             svgBack.setAttribute('height', '100%');
 
-            renderGarment(svgBack, svgData.back, selections, cfg, log, svgData.mannequinBack);
+            renderGarment(svgBack, svgData.back, selections, cfg, log, svgData.mannequinBack, 'back');
             previewBack.appendChild(svgBack);
             fitViewBoxToContent(svgBack);
             log('Back view rendered', 'ok');
