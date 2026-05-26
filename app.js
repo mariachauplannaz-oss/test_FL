@@ -267,16 +267,20 @@ function showPostPaymentModal(garmentConfig) {
         // Regenerate flat from restored state before exporting
         generate(state, log);
 
+        // Download the SVG flat (PRO includes SVG + PDF — model defined post-launch)
+        triggerDownload(state, log);
+
         // Generate and auto-download the PDF
         await exportSpecSheet(state, { brand, name, sku, season });
 
-        // Track PRO conversion completed (user has paid AND downloaded the PDF)
+        // Track PRO conversion completed (user has paid AND downloaded both files)
         track('pdf_downloaded', {
             garment: state.selectedCategory || 'tshirt',
-            sku: sku || null
+            sku: sku || null,
+            includes_svg: true
         });
 
-        log('Tech Pack PDF generated and downloaded', 'ok');
+        log('Tech Pack PDF + SVG generated and downloaded', 'ok');
     });
 }
 
