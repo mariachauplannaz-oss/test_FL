@@ -72,6 +72,13 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
         log('Rendered separate', 'warn');
     }
 
+    // Rib binding on torso hem (continuous lines, only if present)
+    if (torso && torso.rib && torso.rib.length) {
+        torso.rib.forEach((d,i) => {
+            svgEl.appendChild(mkEl('path', { id:'torso_' + torsoName + '_rib_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width': seamSw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+        });
+    }
+
     // Neck fills
     if (neck && neck.fills) {
         neck.fills.forEach((d,i) => {
@@ -94,6 +101,12 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
         if (sleeve.borders) {
             sleeve.borders.forEach((d,i) => {
                 svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_border_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+            });
+        }
+        // Rib binding on sleeve cuff (continuous lines, only if present)
+        if (sleeve.rib && sleeve.rib.length) {
+            sleeve.rib.forEach((d,i) => {
+                svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_rib_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width': seamSw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
             });
         }
     }
