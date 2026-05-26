@@ -235,6 +235,8 @@ function extractFromGroup(g, cleanId) {
             const parentId = cleanId(el.parentElement?.getAttribute('id') || el.parentElement?.parentElement?.getAttribute('id') || '');
             if (parentId.includes('_sem_')) {
                 extracted.seams.push(pathD);
+            } else if (parentId.includes('_rib_')) {
+                extracted.rib.push(pathD);
             }
             return;
         }
