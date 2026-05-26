@@ -108,12 +108,17 @@
                         <p class="step-desc">Configure shape, color, and details</p>
                         <div id="componentsContainer"></div>
 
-                        <div class="sec-label">Style</div>
-                        <div class="color-row">
-                            <label for="cFill">Fill</label>
-                            <input type="color" id="cFill" value="#4A90D9" aria-label="Fill color">
-                            <span class="hex" id="hFill">#4A90D9</span>
-                        </div>
+                        <div class="sec-label">Color</div>
+                        <label class="pantone-chip" for="cFill" id="pantoneChip" style="--pantone:#4A90D9">
+                            <span class="pantone-swatch" aria-hidden="true">
+                                <input type="color" id="cFill" value="#4A90D9" aria-label="Fill color">
+                            </span>
+                            <span class="pantone-meta">
+                                <span class="pantone-brand">PANTONE<sup>®</sup></span>
+                                <span class="pantone-code" id="hFill">4A-90D9 HEX</span>
+                                <span class="pantone-name" id="pantoneHex">#4A90D9</span>
+                            </span>
+                        </label>
 
                         <div class="tog-row" style="display:none">
                             <span class="tog-label">Pocket</span>

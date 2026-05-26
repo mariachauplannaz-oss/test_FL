@@ -396,7 +396,17 @@ export function initToggles() {
     };
     const cFill = document.getElementById('cFill');
     if (cFill) cFill.oninput = function() {
-        document.getElementById('hFill').textContent = this.value;
+        const hex = this.value.toUpperCase();
+        // Pseudo-Pantone code derived from hex (e.g. "#4A90D9" → "4A-90D9 HEX")
+        const stripped = hex.replace('#', '');
+        const pseudoCode = stripped.slice(0, 2) + '-' + stripped.slice(2) + ' HEX';
+        // Update the Pantone chip
+        const hFill = document.getElementById('hFill');
+        const pantoneHex = document.getElementById('pantoneHex');
+        const pantoneChip = document.getElementById('pantoneChip');
+        if (hFill) hFill.textContent = pseudoCode;
+        if (pantoneHex) pantoneHex.textContent = hex;
+        if (pantoneChip) pantoneChip.style.setProperty('--pantone', hex);
     };
 }
 
