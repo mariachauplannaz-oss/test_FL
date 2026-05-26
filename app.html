@@ -109,14 +109,14 @@
                         <div id="componentsContainer"></div>
 
                         <div class="sec-label">Color</div>
-                        <label class="pantone-chip" for="cFill" id="pantoneChip" style="--pantone:#4A90D9">
+                        <label class="pantone-chip" for="cFill" id="pantoneChip" style="--pantone:#FFFFFF">
                             <span class="pantone-swatch" aria-hidden="true">
-                                <input type="color" id="cFill" value="#4A90D9" aria-label="Fill color">
+                                <input type="color" id="cFill" value="#FFFFFF" aria-label="Fill color">
                             </span>
                             <span class="pantone-meta">
                                 <span class="pantone-brand">PANTONE<sup>®</sup></span>
-                                <span class="pantone-code" id="hFill">4A-90D9 HEX</span>
-                                <span class="pantone-name" id="pantoneHex">#4A90D9</span>
+                                <span class="pantone-code" id="hFill">FF-FFFF HEX</span>
+                                <span class="pantone-name" id="pantoneHex">#FFFFFF</span>
                             </span>
                         </label>
 
@@ -162,12 +162,10 @@
                 <div class="canvas-label">FRONT</div>
                 <div id="svg-preview" role="img" aria-label="Front garment preview">
                     <div class="empty">
-                        <div class="empty-icon">✨</div>
-                        <p>Choose a garment category<br>and configure your design</p>
-                        <button class="fab-create" id="fabCreate">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                            Ready to create
-                        </button>
+                        <div class="empty-icon" aria-hidden="true"></div>
+                        <h3>Ready to create</h3>
+                        <p>Choose a garment category<br>and configure your design.</p>
+                        <button class="empty-start-btn" id="emptyStartBtn">Start designing →</button>
                     </div>
                 </div>
             </div>
