@@ -137,20 +137,20 @@ function _buildCombinedSvg(frontSvgEl, backSvgEl) {
       });
     }
 
-    // Wrap back content in a <g> with translate transform
-    const backWrapper = document.createElementNS(_NS, 'g');
-    backWrapper.setAttribute('transform', `translate(${translateX}, 0)`);
-
+    // Append back content directly, applying translate to each top-level group
+    // (avoids an extra unnamed wrapper that shows up as "<Group>" in Illustrator)
     Array.from(backSvgEl.childNodes).forEach(node => {
       if (node.nodeType !== 1) return;
       if (node.tagName && node.tagName.toLowerCase() === 'defs') return;
       const clone = node.cloneNode(true);
       // Update any clip-path references that point to renamed ids
       _remapClipPathRefs(clone, idMap);
-      backWrapper.appendChild(clone);
+      // Apply translate directly to the cloned group (e.g. <g id="back">)
+      const existingTransform = clone.getAttribute('transform') || '';
+      const newTransform = `translate(${translateX}, 0) ${existingTransform}`.trim();
+      clone.setAttribute('transform', newTransform);
+      combined.appendChild(clone);
     });
-
-    combined.appendChild(backWrapper);
 
     // Update combined bounding box to include translated back
     const translatedBackX = backBBox.x + translateX;
