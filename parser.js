@@ -224,7 +224,7 @@ function parseView(viewPrefix, root, store) {
 }
 
 function extractFromGroup(g, cleanId) {
-    const extracted = { main:null, main_l:null, main_r:null, seams:[], fills:[], borders:[], shapes:[], rib:[] };
+    const extracted = { main:null, main_l:null, main_r:null, seams:[], fills:[], borders:[], shapes:[], rib:[], ribClip:null };
  
     g.querySelectorAll('path, polyline, line').forEach(el => {
         const childId = cleanId(el.getAttribute('id') || '');
@@ -241,7 +241,9 @@ function extractFromGroup(g, cleanId) {
             return;
         }
  
-        if (childId.includes('_rib_')) {
+        if (childId.includes('_rib_shape')) {
+            extracted.ribClip = pathD;
+        } else if (childId.includes('_rib_')) {
             extracted.rib.push(pathD);
         } else if (childId.includes('_sem_') || childId.match(/_sem$/)) {
             extracted.seams.push(pathD);

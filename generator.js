@@ -11,6 +11,55 @@ function mkEl(tag, attrs) {
     return el;
 }
 
+// Render a rib block — works for neck, sleeve cuff, torso hem, hoodie hood,
+// pants waistband, or any future component that has a _rib_ group.
+// idPrefix: prefix used for path ids (e.g. "nck_rnd", "slv_set", "torso_reg")
+// component: object with { rib: [pathD, ...], ribClip: pathD|null }
+// strokeWidth: stroke width for the rib lines
+let ribClipCounter = 0;
+function renderRibBlock(svgEl, idPrefix, component, strokeWidth) {
+    if (!component || !component.rib || !component.rib.length) return;
+
+    const ribStyle = { fill:'none', stroke:'#1a1a1a', 'stroke-width': strokeWidth, 'stroke-linecap':'round', 'stroke-linejoin':'round' };
+
+    if (component.ribClip) {
+        const clipId = `ribClip-${idPrefix}-${++ribClipCounter}`;
+
+        // 1) Render the rib_shape as a visible gray fill (like Illustrator's cls-15)
+        svgEl.appendChild(mkEl('path', {
+            id: `${idPrefix}_rib_shape`,
+            d: component.ribClip,
+            fill: '#414042',
+            'fill-opacity': '0.25',
+            stroke: 'none'
+        }));
+
+        // 2) Ensure <defs> exists for the clipPath
+        let defs = svgEl.querySelector('defs');
+        if (!defs) {
+            defs = mkEl('defs', {});
+            svgEl.insertBefore(defs, svgEl.firstChild);
+        }
+
+        // 3) Create clipPath using the same shape
+        const clipPath = mkEl('clipPath', { id: clipId });
+        clipPath.appendChild(mkEl('path', { d: component.ribClip }));
+        defs.appendChild(clipPath);
+
+        // 4) Wrap rib lines in a clipped group so they don't escape the shape
+        const clippedGroup = mkEl('g', { 'clip-path': `url(#${clipId})` });
+        component.rib.forEach((d, i) => {
+            clippedGroup.appendChild(mkEl('path', { id: `${idPrefix}_rib_${i+1}`, d, ...ribStyle }));
+        });
+        svgEl.appendChild(clippedGroup);
+    } else {
+        // No clip shape — render lines directly (legacy/simple case)
+        component.rib.forEach((d, i) => {
+            svgEl.appendChild(mkEl('path', { id: `${idPrefix}_rib_${i+1}`, d, ...ribStyle }));
+        });
+    }
+}
+
 // Calculate viewBox from the actual rendered content's bounding box
 function fitViewBoxToContent(svgEl, paddingRatio = 0.1) {
     // svgEl needs to be in the DOM for getBBox to work
@@ -72,12 +121,8 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
         log('Rendered separate', 'warn');
     }
 
-    // Rib binding on torso hem (continuous lines, only if present)
-    if (torso && torso.rib && torso.rib.length) {
-        torso.rib.forEach((d,i) => {
-            svgEl.appendChild(mkEl('path', { id:'torso_' + torsoName + '_rib_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width': seamSw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
-        });
-    }
+    // Rib binding on torso hem — handles gray fill + clipPath if rib_shape present
+    renderRibBlock(svgEl, 'torso_' + torsoName, torso, seamSw);
 
     // Neck fills
     if (neck && neck.fills) {
@@ -86,12 +131,8 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
         });
     }
 
-    // Rib binding (continuous lines, only on V/round necks)
-    if (neck && neck.rib && neck.rib.length) {
-        neck.rib.forEach((d,i) => {
-            svgEl.appendChild(mkEl('path', { id:'nck_' + neckName + '_rib_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width': seamSw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
-        });
-    }
+    // Rib binding on neck — handles gray fill + clipPath if rib_shape present
+    renderRibBlock(svgEl, 'nck_' + neckName, neck, seamSw);
 
     // Sleeves (OVERLAY)
     if (sleeve) {
@@ -103,12 +144,8 @@ function renderGarment(svgEl, components, selections, cfg, log, ghostMarkup) {
                 svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_border_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width':sw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
             });
         }
-        // Rib binding on sleeve cuff (continuous lines, only if present)
-        if (sleeve.rib && sleeve.rib.length) {
-            sleeve.rib.forEach((d,i) => {
-                svgEl.appendChild(mkEl('path', { id:'slv_' + sleeveName + '_rib_' + (i+1), d, fill:'none', stroke:'#1a1a1a', 'stroke-width': seamSw, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
-            });
-        }
+        // Rib binding on sleeve cuff — handles gray fill + clipPath if rib_shape present
+        renderRibBlock(svgEl, 'slv_' + sleeveName, sleeve, seamSw);
     }
 
     // Seams
