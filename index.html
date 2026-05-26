@@ -3,64 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='DM Sans, -apple-system, sans-serif' font-weight='700' fill='%23FF6B57'%3EF%3C/text%3E%3C/svg%3E">
-<title>FlatLabs — Stop drawing flats. Start designing.</title>
-<meta name="description" content="FlatLabs builds your technical fashion flats instantly. Pick a garment, choose components, export a clean SVG or a production-ready tech pack with real ISO measurements. - Fashion Tech Packs">
+<title>FlatLabs — Editable Technical Fashion Flats &amp; Tech Pack Generator</title>
+<meta name="description" content="Generate editable technical fashion flats, ISO measurements, and factory-ready clothing templates in minutes. The smart CAD alternative for fashion designers who hate fighting Illustrator.">
 <link rel="canonical" href="https://flatsgenerator.com/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="FlatLabs — Stop drawing flats. Start designing.">
-<meta property="og:description" content="FlatLabs builds your technical fashion flats instantly. Pick a garment, choose components, export a clean SVG or a production-ready tech pack with real ISO measurements.">
+<meta property="og:title" content="FlatLabs | Instant Technical Fashion Flats (Illustrator Alternative)">
+<meta property="og:description" content="Stop redrawing flats from scratch. Generate clean, editable SVG vectors, ISO standard measurements, and factory-ready tech pack templates in minutes.">
 <meta property="og:url" content="https://flatsgenerator.com/">
 <meta property="og:site_name" content="FlatLabs">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --ink: #212B31;
-  --ink-soft: #5F7385;
-  --surface: #FFFFFF;
-  --surface-warm: #ffefd4;
-  --surface-dark: #212B31;
-  --accent: #ff9a6e;
-  --accent-hover: #f08860;
-  --accent-text: #212B31;
-  --accent-soft: rgba(255,154,110,.12);
-  --cool-mist: #A8B5C0;
-  --cool-mist-soft: rgba(168,181,192,.18);
+  /* Neutrals — WHITE base */
+  --bg:           #FFFFFF;
+  --surface:      #F7F7F5;
+  --surface-2:    #F2F2EE;
+  --border:       #E8E8E3;
+  --ink:          #111111;
+  --ink-soft:     #6B7280;
+  --ink-dim:      #9CA3AF;
+  --surface-dark: #111111;
+
+  /* Brand accent — coral anchors the brand */
+  --accent:       #FF6B57;
+  --accent-hover: #E85946;
+  --accent-soft:  rgba(255,107,87,.10);
+  --accent-text:  #111111;
+
+  /* Functional accents — now used as section backgrounds + step themes */
+  --cyan:         #2BA8D6;
+  --cyan-soft:    #E8F4FA;
+  --cyan-bg:      #F0F7FB;
+  --cyan-deep:    #1A6A8C;
+
+  --lime:         #C6FF3D;
+  --lime-soft:    #F4FFE3;
+  --lime-deep:    #5A7A1A;
+
+  --peach:        #FFB89F;
+  --peach-soft:   #FFF1E8;
+  --peach-bg:     #FFF5EE;
+
+  --butter:       #FFE48A;
+  --butter-soft:  #FFF8DB;
+  --butter-bg:    #FFFAEB;
+
+  --violet:       #8B7BC4;
+  --violet-soft:  #F0EDF8;
+  --violet-deep:  #4A3D7A;
+
   --serif: 'Playfair Display', Georgia, serif;
-  --sans: 'DM Sans', -apple-system, sans-serif;
-  --ease: cubic-bezier(.4,0,.2,1);
+  --sans:  'DM Sans', -apple-system, sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, monospace;
+  --ease:  cubic-bezier(.4,0,.2,1);
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
   font-family: var(--sans);
-  background: var(--surface);
+  background: var(--bg);
   color: var(--ink);
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
 }
-::selection { background: rgba(255,154,110,.25); }
+::selection { background: var(--lime); color: var(--ink); }
 
 /* ── NAV ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   padding: 0 40px;
-  height: 60px;
-  background: rgba(255,255,255,.96);
+  height: 64px;
+  background: rgba(255,255,255,.92);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(33,43,49,.07);
+  border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
 }
 .logo {
   font-family: var(--sans);
-  font-size: 17px; font-weight: 700;
-  letter-spacing: -.4px; color: var(--ink);
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -.5px; color: var(--ink);
   text-decoration: none;
 }
 .logo em { font-style: normal; color: var(--accent); }
@@ -68,89 +95,116 @@ nav {
 .nav-links a {
   font-size: 13px; color: var(--ink-soft);
   text-decoration: none; font-weight: 500;
-  letter-spacing: .1px;
   transition: color .2s;
 }
 .nav-links a:hover { color: var(--ink); }
 .nav-cta {
   background: var(--ink); color: white !important;
-  padding: 9px 20px; border-radius: 100px;
+  padding: 10px 22px; border-radius: 100px;
   font-size: 12px !important; font-weight: 600 !important;
-  letter-spacing: .3px;
+  letter-spacing: .2px;
   transition: background .25s var(--ease) !important;
 }
-.nav-cta:hover { background: var(--accent) !important; color: var(--ink) !important; }
+.nav-cta:hover { background: var(--accent); color: white !important; }
 
 /* ── HERO ── */
 .hero {
   min-height: 100vh;
-  padding-top: 60px;
+  padding-top: 64px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.15fr 1fr;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding-left: 60px;
   padding-right: 40px;
-  gap: 40px;
+  gap: 60px;
 }
 .hero-text { padding: 80px 0; }
 .hero-kicker {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 32px;
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 36px;
+  padding: 6px 12px 6px 8px;
+  background: var(--peach-soft);
+  border: 1px solid var(--peach);
+  border-radius: 100px;
 }
-.hero-kicker::before {
-  content: '';
-  display: block; width: 28px; height: 1.5px;
+.hero-kicker .dot {
+  width: 7px; height: 7px; border-radius: 50%;
   background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 .hero h1 {
   font-family: var(--serif);
-  font-size: clamp(36px, 4.5vw, 62px);
+  font-size: clamp(44px, 6.4vw, 92px);
   font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -1.5px;
+  line-height: .98;
+  letter-spacing: -2.5px;
   color: var(--ink);
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+  text-wrap: balance;
 }
-.hero h1 em {
+.hero h1 .line-2 {
+  display: block;
   font-style: italic;
   font-weight: 400;
   color: var(--ink-soft);
-}
-.hero h1 .accent-word {
-  color: var(--accent);
-  font-style: italic;
+  font-size: .58em;
+  letter-spacing: -1px;
+  margin-top: 14px;
+  line-height: 1.15;
+  max-width: 18ch;
 }
 .hero-body {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--ink-soft);
-  line-height: 1.75;
-  max-width: 460px;
-  margin-bottom: 40px;
+  line-height: 1.65;
+  max-width: 520px;
+  margin-bottom: 14px;
 }
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-body:last-of-type { margin-bottom: 40px; }
+.hero-body strong { color: var(--ink); font-weight: 600; }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--accent); color: var(--accent-text);
-  padding: 14px 28px; border-radius: 100px;
+  background: var(--ink); color: #fff;
+  padding: 15px 26px; border-radius: 100px;
   font-size: 14px; font-weight: 600; text-decoration: none;
-  transition: all .3s var(--ease);
+  transition: all .25s var(--ease);
   border: none; cursor: pointer; font-family: var(--sans);
 }
-.btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,154,110,.3); }
+.btn-primary:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 6px;
-  background: transparent; color: var(--ink-soft);
-  padding: 14px 24px; border-radius: 100px;
+  background: transparent; color: var(--ink);
+  padding: 14px 22px; border-radius: 100px;
   font-size: 14px; font-weight: 500; text-decoration: none;
-  border: 1.5px solid rgba(33,43,49,.15);
+  border: 1px solid var(--border);
   transition: all .25s; cursor: pointer; font-family: var(--sans);
 }
-.btn-ghost:hover { border-color: var(--accent); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--ink); background: var(--surface); }
+
+.btn-text {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--ink-soft);
+  padding: 14px 8px;
+  font-size: 13px; font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all .2s;
+}
+.btn-text .pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 0 3px var(--cyan-soft);
+}
+.btn-text:hover { color: var(--ink); }
 
 /* Hero illustration */
 .hero-visual {
@@ -158,7 +212,6 @@ nav {
   display: flex; align-items: center; justify-content: center;
   padding: 60px 20px;
 }
-.hero-bg-block { display: none; }
 .hero-flat-wrap {
   position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: center;
@@ -166,463 +219,894 @@ nav {
 }
 .hero-flat-wrap img {
   width: 100%;
-  max-width: 420px;
+  max-width: 460px;
   height: auto;
   display: block;
-  filter: drop-shadow(0 16px 40px rgba(33,43,49,.1));
+  filter: drop-shadow(0 18px 50px rgba(17,17,17,.08));
+}
+.hero-tick {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-dim);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.hero-tick.t1 { top: 18%; right: 6%; }
+.hero-tick.t2 { bottom: 22%; left: 4%; }
+.hero-tick.t3 { top: 50%; right: 2%; }
+
+/* ── SECTION CHROME ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; font-weight: 500;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--ink-soft);
+}
+.section-label .num {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 600;
+}
+.section-label::before {
+  content: '';
+  display: block; width: 24px; height: 1px;
+  background: currentColor; flex-shrink: 0; opacity: .4;
 }
 
-/* Scroll hint */
-.scroll-hint {
-  margin-top: 52px;
-  font-size: 11px; color: var(--accent);
-  letter-spacing: 2px; text-transform: uppercase;
-  animation: floatDown 2.5s ease-in-out infinite;
-  display: inline-block;
+/* ── HOW IT WORKS ── */
+.how {
+  padding: 140px 0 120px;
+  position: relative;
+  overflow: hidden;
+  background: var(--peach-bg);
+  border-top: 1px solid var(--border);
 }
-@keyframes floatDown {
-  0%,100% { transform: translateY(0); opacity: .5; }
-  50% { transform: translateY(6px); opacity: 1; }
+.how-bg-num {
+  position: absolute;
+  top: -40px; right: -20px;
+  font-family: var(--serif);
+  font-size: clamp(180px, 26vw, 380px);
+  font-weight: 900;
+  color: rgba(17,17,17,.035);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -10px;
+}
+.how-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 60px;
+  position: relative;
+  z-index: 1;
+}
+.how-header {
+  max-width: 720px;
+  margin-bottom: 80px;
+}
+.how h2 {
+  font-family: var(--serif);
+  font-size: clamp(40px, 4.6vw, 68px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.how h2 em { font-style: italic; font-weight: 400; color: var(--accent); }
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 80px;
+}
+.step-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 22px;
+  padding: 32px 28px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  align-items: start;
+  transition: border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.step-item:hover {
+  border-color: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(17,17,17,.06);
+}
+.step-num-label { color: var(--accent); }
+.step-item .step-illustration {
+  background: transparent;
+  padding: 0;
+  display: flex; align-items: flex-start; justify-content: center;
+}
+.step-item .step-illustration svg {
+  width: 64px; height: auto;
+}
+.step-illustration {
+  display: flex; align-items: center; justify-content: flex-start;
+}
+.step-content { display: flex; flex-direction: column; gap: 8px; }
+.step-num-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.step-item h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -.8px;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.step-item p {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.step-pro-tag {
+  display: inline-flex; align-self: flex-start;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5A7A1A;
+  background: var(--lime-soft);
+  padding: 5px 10px;
+  border-radius: 100px;
+}
+
+/* Trinity */
+.trinity {
+  border-top: 1px solid var(--border);
+  padding-top: 56px;
+}
+.trinity-header {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  margin-bottom: 48px;
+  max-width: 640px;
+  text-align: center;
+  align-items: center;
+  margin-left: auto; margin-right: auto;
+}
+.trinity-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.trinity-tagline {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -.5px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.trinity-grid {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  flex-wrap: wrap;
+}
+.trinity-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  text-align: center;
+}
+.trinity-item svg { flex-shrink: 0; }
+.trinity-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.trinity-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--lime-deep);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 5px 12px 5px 10px;
+  border-radius: 100px;
+}
+.trinity-status::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 0 3px var(--lime-soft);
 }
 
 /* ── PROBLEM ── */
 .problem {
   background: var(--surface-dark);
-  color: white;
-  padding: 120px 0;
+  color: #fff;
+  padding: 140px 0 120px;
   position: relative;
   overflow: hidden;
 }
 .problem-bg-num {
   position: absolute;
-  top: -20px; left: -10px;
+  top: -40px; left: -10px;
   font-family: var(--serif);
-  font-size: clamp(140px, 22vw, 320px);
+  font-size: clamp(180px, 26vw, 380px);
   font-weight: 900;
-  color: rgba(255,255,255,.03);
+  color: rgba(255,255,255,.025);
   line-height: 1;
   pointer-events: none;
   user-select: none;
-  letter-spacing: -8px;
-  max-width: 100%;
-  overflow: hidden;
+  letter-spacing: -10px;
 }
 .problem-inner {
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 0 60px;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 360px 1fr;
   gap: 80px;
   align-items: start;
   position: relative;
   z-index: 1;
 }
-.section-label {
-  font-size: 11px; letter-spacing: 2px;
-  text-transform: uppercase; font-weight: 600;
-  margin-bottom: 20px;
-  display: flex; align-items: center; gap: 10px;
-}
-.section-label::before {
-  content: '';
-  display: block; width: 20px; height: 1.5px;
-  background: currentColor; flex-shrink: 0;
-}
-.problem .section-label { color: var(--cool-mist); }
+.problem .section-label { color: rgba(255,255,255,.5); }
+.problem .section-label .num { color: var(--accent); }
+
 .problem h2 {
   font-family: var(--serif);
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(40px, 4.6vw, 64px);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -.8px;
-  color: white;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  color: #fff;
   margin-bottom: 0;
+  text-wrap: balance;
 }
 .problem h2 em {
   font-style: italic; font-weight: 400;
-  color: rgba(255,255,255,.5);
+  color: var(--accent);
 }
-.problem-narrative p {
-  font-size: 16px; color: rgba(255,255,255,.7);
-  line-height: 1.8; margin-bottom: 20px;
-}
-.problem-narrative p:last-child { margin-bottom: 0; }
-.problem-narrative strong { font-weight: 600; color: white; }
-.price-callout {
-  margin-top: 36px;
-  padding: 28px 32px;
-  border: 1px solid rgba(168,181,192,.2);
-  border-left: 3px solid var(--cool-mist);
-  border-radius: 2px;
-}
-.price-callout p {
-  font-size: 15px; color: rgba(255,255,255,.65);
-  line-height: 1.7; margin-bottom: 12px;
-}
-.price-callout p:last-child { margin-bottom: 0; color: rgba(255,255,255,.9); font-weight: 500; }
 
-.problem-block { margin-bottom: 32px; }
+.problem-block { margin-bottom: 36px; }
 .problem-block:last-child { margin-bottom: 0; }
 .problem-block-label {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--cool-mist);
-  margin-bottom: 12px;
+  font-family: var(--mono);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
   display: block;
 }
 .problem-block p {
-  font-size: 16px;
-  color: rgba(255,255,255,.7);
-  line-height: 1.8;
+  font-size: 17px;
+  color: rgba(255,255,255,.72);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.problem-block p:last-child { margin-bottom: 0; }
+.problem-block p strong { font-weight: 600; color: #fff; }
+
+.price-callout {
+  margin-top: 44px;
+  padding: 28px 32px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.1);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+}
+.price-callout p {
+  font-size: 15px; color: rgba(255,255,255,.7);
+  line-height: 1.65; margin-bottom: 10px;
+}
+.price-callout p:last-child {
   margin-bottom: 0;
-}
-.problem-block p strong { font-weight: 600; color: white; }
-
-.problem-deco {
-  position: absolute;
-  bottom: -60px; right: -40px;
-  opacity: .07;
-  pointer-events: none;
+  color: #fff; font-weight: 500;
 }
 
-/* ── HOW IT WORKS ── */
-.how {
-  background: var(--surface-warm);
-  padding: 120px 0;
+/* ── PRICING ── */
+.pricing {
+  padding: 140px 0 120px;
+  background: var(--bg);
   position: relative;
   overflow: hidden;
 }
-.how-bg-num {
+.price-card[data-tier="free"] {
+  background: #fff;
+  border-color: var(--border);
+}
+.price-card[data-tier="free"]:hover { border-color: var(--ink); }
+.price-card[data-tier="free"] .price-name { color: var(--ink-soft); }
+.price-card[data-tier="free"] .price-features li::before { background: var(--ink); }
+
+.price-card[data-tier="ppd"] {
+  background: rgba(255, 107, 87, 0.07);
+  border-color: rgba(255, 107, 87, 0.22);
+}
+.price-card[data-tier="ppd"]:hover { border-color: var(--accent); }
+.price-card[data-tier="ppd"] .price-name { color: var(--accent); }
+.price-card[data-tier="ppd"] .price-features li::before { background: var(--accent); }
+.pricing-bg-num {
   position: absolute;
-  top: -30px; right: -20px;
+  top: -40px; right: -20px;
   font-family: var(--serif);
-  font-size: clamp(140px, 22vw, 320px);
+  font-size: clamp(180px, 26vw, 380px);
   font-weight: 900;
-  color: rgba(33,43,49,.04);
+  color: rgba(17,17,17,.035);
   line-height: 1;
   pointer-events: none;
   user-select: none;
-  letter-spacing: -8px;
-  max-width: 100%;
-  overflow: hidden;
+  letter-spacing: -10px;
 }
-.how-inner {
-  max-width: 1100px;
+.pricing-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 60px;
+  position: relative; z-index: 1;
+}
+.pricing-header {
+  max-width: 720px;
+  margin-bottom: 64px;
+}
+.pricing h2 {
+  font-family: var(--serif);
+  font-size: clamp(40px, 4.6vw, 68px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  color: var(--ink);
+  margin-bottom: 24px;
+  text-wrap: balance;
+}
+.pricing h2 em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
+.pricing-intro {
+  font-size: 17px; color: var(--ink-soft);
+  line-height: 1.65; max-width: 620px;
+}
+.pricing-intro strong { color: var(--ink); font-weight: 500; }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+.price-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px 28px 32px;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.price-card:hover {
+  border-color: var(--ink);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(17,17,17,.06);
+}
+.price-card.featured {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.price-card.featured:hover { background: #000; }
+.price-tag {
+  position: absolute;
+  top: 18px; right: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 100px;
+}
+.price-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+}
+.price-card.featured .price-name { color: rgba(255,255,255,.6); }
+.price-amount {
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.price-card.featured .price-amount { color: #fff; }
+.price-amount .price-period {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+  margin-left: 4px;
+}
+.price-card.featured .price-period { color: rgba(255,255,255,.55); }
+.price-tier-range {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.6px;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.price-tier-range + .price-tier-range { margin-top: 4px; }
+.price-desc {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 14px 0 24px;
+}
+.price-card.featured .price-desc { color: rgba(255,255,255,.7); }
+.price-included {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.price-card.featured .price-included { color: rgba(255,255,255,.55); }
+.price-features {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.price-features li {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+  display: flex; align-items: flex-start; gap: 10px;
+  padding-left: 0;
+}
+.price-card.featured .price-features li { color: rgba(255,255,255,.85); }
+.price-features li::before {
+  content: '';
+  flex-shrink: 0;
+  margin-top: 7px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.price-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  line-height: 1.55;
+  margin: -10px 0 24px;
+  letter-spacing: .2px;
+}
+.price-card.featured .price-note { color: rgba(255,255,255,.4); }
+.price-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: auto;
+  padding: 14px 22px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: var(--sans);
+  transition: all .25s var(--ease);
+  background: var(--ink);
+  color: #fff;
+}
+.price-cta:hover { background: var(--accent); transform: translateY(-1px); }
+.price-card.featured .price-cta {
+  background: var(--accent);
+  color: #fff;
+}
+.price-card.featured .price-cta:hover { background: var(--accent-hover); }
+.price-card.outlined .price-cta {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.price-card.outlined .price-cta:hover {
+  background: var(--ink); color: #fff; border-color: var(--ink);
+}
+
+.pricing-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  max-width: 760px;
+}
+.pricing-footer p {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+.pricing-footer p strong { color: var(--ink); font-weight: 500; }
+
+/* ── GLOSSARY ── */
+.glossary {
+  background: var(--cyan-bg);
+  padding: 140px 0 120px;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.glossary-bg-num {
+  position: absolute;
+  top: -40px; left: -10px;
+  font-family: var(--serif);
+  font-size: clamp(180px, 26vw, 380px);
+  font-weight: 900;
+  color: rgba(17,17,17,.04);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -10px;
+}
+.glossary-inner {
+  max-width: 1180px;
   margin: 0 auto;
   padding: 0 60px;
   position: relative;
   z-index: 1;
 }
-.how-header { max-width: 620px; margin-bottom: 72px; }
-.how .section-label { color: var(--ink-soft); margin-bottom: 20px; }
-.how h2 {
-  font-family: var(--serif);
-  font-size: clamp(28px, 3vw, 44px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -.8px;
-  color: var(--ink);
+.glossary-header {
+  max-width: 760px;
+  margin-bottom: 64px;
 }
-.how h2 em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
-.steps-grid {
+.glossary h2 {
+  font-family: var(--serif);
+  font-size: clamp(40px, 4.6vw, 68px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  color: var(--ink);
+  margin-bottom: 24px;
+  text-wrap: balance;
+}
+.glossary h2 em {
+  font-style: italic; font-weight: 400; color: var(--ink-soft);
+}
+.glossary-body {
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  max-width: 620px;
+}
+.glossary-body strong { color: var(--ink); font-weight: 500; }
+
+.glossary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border-top: 1px solid rgba(33,43,49,.12);
+  gap: 14px;
+  margin-top: 8px;
 }
-.step-item {
-  padding: 44px 40px 44px 0;
-  border-right: 1px solid rgba(33,43,49,.12);
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-.step-item:last-child { border-right: none; padding-right: 0; padding-left: 40px; }
-.step-item:nth-child(2) { padding: 44px 40px; }
-.step-illustration {
-  flex-shrink: 0;
-  width: 72px;
-  height: 72px;
-  display: flex; align-items: flex-start; justify-content: flex-start;
-}
-.step-illustration svg { height: 72px; width: auto; }
-.step-content { flex: 1; min-width: 0; }
-.step-num-label {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 10px;
-}
-.step-item h3 {
-  font-family: var(--serif);
-  font-size: 22px; font-weight: 700;
-  line-height: 1.2; letter-spacing: -.3px;
-  color: var(--ink); margin-bottom: 12px;
-}
-.step-item p {
-  font-size: 14px; color: var(--ink-soft);
-  line-height: 1.7;
-}
-.step-pro-tag {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 700;
-  padding: 3px 8px;
-  border: 1px solid var(--accent);
-  border-radius: 4px;
-}
-
-.trinity {
-  margin-top: 80px;
-  padding-top: 56px;
-  border-top: 1px solid rgba(33,43,49,.12);
-  text-align: center;
-}
-.trinity-header { margin-bottom: 40px; }
-.trinity-label {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--accent);
-  display: block;
-  margin-bottom: 10px;
-}
-.trinity-tagline {
-  font-family: var(--serif);
-  font-size: 18px; font-style: italic;
-  color: var(--ink-soft);
-  font-weight: 400;
-}
-.trinity-grid {
-  display: flex;
-  justify-content: center;
-  gap: 64px;
-  flex-wrap: wrap;
-}
-.trinity-item {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 10px;
-  min-width: 80px;
-}
-.trinity-item svg { color: var(--ink); }
-.trinity-name {
-  font-size: 13px; font-weight: 700;
+.gl-term-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 22px 20px;
+  text-decoration: none;
   color: var(--ink);
-  letter-spacing: .3px;
-  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  position: relative;
 }
-.trinity-status {
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--cool-mist);
-  padding: 2px 8px;
-  border: 1px solid var(--cool-mist);
+.gl-term-card:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(17,17,17,.06);
+}
+.gl-term-cat {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 9px;
   border-radius: 100px;
+  align-self: flex-start;
+  background: var(--surface);
+  color: var(--ink-soft);
+}
+.gl-term-card[data-cat="fabric"] .gl-term-cat { background: var(--cyan-soft); color: #0078A8; }
+.gl-term-card[data-cat="seam"]   .gl-term-cat { background: var(--lime-soft); color: #5A7A1A; }
+.gl-term-card[data-cat="color"]  .gl-term-cat { background: var(--accent-soft); color: #C24433; }
+.gl-term-card[data-cat="label"]  .gl-term-cat { background: var(--surface-2); color: var(--ink); }
+.gl-term-card[data-cat="print"]  .gl-term-cat { background: var(--cyan-soft); color: #0078A8; }
+.gl-term-card[data-cat="finish"] .gl-term-cat { background: var(--lime-soft); color: #5A7A1A; }
+
+.gl-term-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.6px;
+  color: var(--ink);
+  margin-top: 2px;
+}
+.gl-term-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.gl-term-link {
+  margin-top: auto;
+  padding-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* ── DISCLAIMER ── */
-.disclaimer {
-  padding: 120px 0;
+.glossary-cta {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.glossary-cta a {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 3px;
+  transition: color .2s, border-color .2s;
+}
+.glossary-cta a:hover { color: var(--accent); border-color: var(--accent); }
+.glossary-cta-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: .5px;
+}
+
+/* ── STATUS ── */
+.status {
+  padding: 140px 0 120px;
+  background: var(--bg);
   position: relative;
   overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-.disclaimer-inner {
-  max-width: 1100px;
+.status-bg-num {
+  position: absolute;
+  top: -40px; right: -20px;
+  font-family: var(--serif);
+  font-size: clamp(180px, 26vw, 380px);
+  font-weight: 900;
+  color: rgba(17,17,17,.035);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -10px;
+}
+.status-inner {
+  max-width: 1180px;
   margin: 0 auto;
   padding: 0 60px;
   display: grid;
   grid-template-columns: 1fr 440px;
   gap: 80px;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
-.disclaimer .section-label { color: var(--ink-soft); margin-bottom: 20px; }
-.disclaimer h2 {
+.status h2 {
   font-family: var(--serif);
-  font-size: clamp(30px, 3.5vw, 50px);
+  font-size: clamp(40px, 4.6vw, 72px);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -1.2px;
+  line-height: .98;
+  letter-spacing: -1.8px;
   color: var(--ink);
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+  text-wrap: balance;
 }
-.disclaimer h2 em { font-style: italic; font-weight: 400; }
-.disclaimer p {
-  font-size: 16px; color: var(--ink-soft);
-  line-height: 1.8; margin-bottom: 16px;
+.status h2 em {
+  font-style: italic; font-weight: 400; color: var(--ink-soft);
 }
-.disclaimer-quote {
+.status p {
+  font-size: 17px; color: var(--ink-soft);
+  line-height: 1.65; margin-bottom: 18px;
+  max-width: 560px;
+}
+.status p strong { color: var(--ink); font-weight: 500; }
+.status-prompt {
+  margin-top: 32px;
+  padding: 24px 28px;
+  background: var(--butter-bg);
+  border: 1px solid var(--butter);
+  border-radius: 14px;
+  max-width: 560px;
+}
+.status-prompt p {
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 0;
+  line-height: 1.6;
+  font-style: italic;
   font-family: var(--serif);
-  font-size: 22px; font-style: italic;
-  color: var(--accent);
-  line-height: 1.5;
-  padding-left: 24px;
-  border-left: 3px solid var(--cool-mist);
-  margin: 36px 0;
+  font-size: 18px;
 }
-.disclaimer-visual {
+.status-visual {
   display: flex; align-items: center; justify-content: center;
   position: relative;
 }
-.disclaimer-pocket-wrap { position: relative; }
-.disclaimer-pocket-wrap svg { width: 320px; max-width: 100%; }
-
-/* ── VALIDATION ── */
-.validation {
-  padding: 100px 0 80px;
-  text-align: center;
-  border-top: 1px solid rgba(33,43,49,.07);
-}
-.validation-inner {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-.validation h2 {
-  font-family: var(--serif);
-  font-size: clamp(26px, 3vw, 40px);
-  font-weight: 700;
-  letter-spacing: -.8px;
-  line-height: 1.2;
-  margin-bottom: 12px;
-  color: var(--ink);
-}
-.validation h2 em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
-.validation-sub {
-  font-size: 16px; color: var(--ink-soft);
-  margin-bottom: 40px; line-height: 1.6;
-}
-.validation-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-.btn-validate {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 26px; border-radius: 100px;
-  font-size: 14px; font-weight: 600;
-  border: none; cursor: pointer;
-  font-family: var(--sans);
-  transition: all .3s var(--ease);
-}
-.btn-yes { background: var(--surface-dark); color: white; }
-.btn-yes:hover { background: var(--accent); color: var(--accent-text); }
-.btn-yes.clicked {
-  background: var(--accent-soft); color: var(--accent-text);
-  border: 1.5px solid var(--accent); pointer-events: none;
-}
-.btn-email { background: var(--accent); color: var(--accent-text); }
-.btn-email:hover { background: var(--accent-hover); transform: translateY(-2px); }
-.email-form {
-  display: none; max-width: 360px; margin: 0 auto;
-  animation: slideUp .4s var(--ease);
-}
-.email-form.show { display: block; }
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.email-row { display: flex; gap: 8px; }
-.email-input {
-  flex: 1; padding: 13px 18px;
-  border: 1.5px solid rgba(33,43,49,.15);
-  border-radius: 100px;
-  font-size: 14px; font-family: var(--sans);
-  outline: none; background: white;
-  transition: border .2s;
-}
-.email-input:focus { border-color: var(--accent); }
-.email-submit {
-  padding: 13px 22px;
-  background: var(--ink); color: white;
-  border: none; border-radius: 100px;
-  font-size: 13px; font-weight: 600; cursor: pointer;
-  transition: all .3s; font-family: var(--sans);
-}
-.email-submit:hover { background: var(--accent); color: var(--accent-text); }
-.email-note { font-size: 11px; color: var(--ink-soft); margin-top: 10px; }
-.email-success {
-  display: none; padding: 16px;
-  background: var(--accent-soft); color: var(--accent-text);
-  border-radius: 12px; font-size: 14px; font-weight: 500;
-  animation: slideUp .4s var(--ease);
-}
-.email-success.show { display: block; }
-.validation-count { font-size: 12px; color: var(--ink-soft); margin-top: 16px; }
+.status-pocket-wrap svg { width: 360px; max-width: 100%; }
 
 /* ── FINAL CTA ── */
 .final-cta {
+  padding: 160px 0 140px;
   background: var(--surface-dark);
-  color: white;
-  padding: 100px 24px;
-  text-align: center;
+  color: #fff;
   position: relative;
   overflow: hidden;
+  text-align: center;
 }
-.final-cta::before {
-  content: '';
+.final-cta-bg-num {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(168,181,192,.10), transparent 60%);
+  top: -40px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: clamp(200px, 30vw, 460px);
+  font-weight: 900;
+  color: rgba(255,255,255,.025);
+  line-height: 1;
   pointer-events: none;
+  user-select: none;
+  letter-spacing: -10px;
 }
 .final-cta-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px;
   position: relative;
   z-index: 1;
-  max-width: 720px;
-  margin: 0 auto;
 }
+.final-cta .section-label { color: rgba(255,255,255,.5); justify-content: center; }
+.final-cta .section-label::before { display: none; }
+.final-cta .section-label .num { color: var(--accent); }
 .final-cta h2 {
   font-family: var(--serif);
-  font-size: clamp(32px, 4vw, 56px);
+  font-size: clamp(44px, 6vw, 80px);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -1px;
-  color: white;
-  margin-bottom: 16px;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: #fff;
+  margin-bottom: 28px;
+  text-wrap: balance;
 }
+.final-cta h2 em { font-style: italic; font-weight: 400; color: var(--accent); }
 .final-cta p {
   font-size: 17px;
-  color: rgba(255,255,255,.65);
-  margin-bottom: 40px;
+  color: rgba(255,255,255,.7);
+  line-height: 1.65;
+  margin: 0 auto 40px;
+  max-width: 580px;
 }
-.final-cta .btn-primary {
-  font-size: 15px;
-  padding: 16px 32px;
+.final-cta p strong { color: #fff; font-weight: 500; }
+.final-cta-buttons {
+  display: flex; gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
+.btn-primary-light {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; color: var(--ink);
+  padding: 15px 26px; border-radius: 100px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: all .25s var(--ease);
+}
+.btn-primary-light:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+.btn-ghost-dark {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: #fff;
+  padding: 14px 22px; border-radius: 100px;
+  font-size: 14px; font-weight: 500; text-decoration: none;
+  border: 1px solid rgba(255,255,255,.2);
+  transition: all .25s;
+}
+.btn-ghost-dark:hover { border-color: #fff; background: rgba(255,255,255,.05); }
 
 /* ── FOOTER ── */
 footer {
-  padding: 32px 60px;
-  border-top: 1px solid rgba(33,43,49,.07);
-  display: flex; justify-content: space-between; align-items: center;
-  max-width: 1200px; margin: 0 auto;
-  flex-wrap: wrap;
-  gap: 16px;
+  padding: 48px 60px 32px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
 }
-footer span, footer a {
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: .5px;
+}
+.footer-links {
+  display: flex; gap: 28px; flex-wrap: wrap;
+  justify-content: center;
+}
+.footer-links a {
   font-size: 12px; color: var(--ink-soft); text-decoration: none;
   transition: color .2s;
 }
-footer a:hover { color: var(--accent); }
-.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a:hover { color: var(--accent); }
 .footer-legal {
   display: flex; gap: 20px; flex-wrap: wrap;
-  padding-top: 4px;
+  justify-content: center;
 }
 .footer-legal a {
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-dim);
+  text-decoration: none;
   letter-spacing: .5px;
+  text-transform: uppercase;
+  transition: color .2s;
 }
+.footer-legal a:hover { color: var(--ink-soft); }
 
 /* ── REVEAL ── */
-.reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity .65s var(--ease), transform .65s var(--ease);
+.fade {
+  opacity: 0;
+  transition: opacity .55s var(--ease);
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: .1s; }
-.reveal-delay-2 { transition-delay: .2s; }
-.reveal-delay-3 { transition-delay: .3s; }
+.fade.visible { opacity: 1; }
 
 /* ── MOBILE ── */
 @media (max-width: 900px) {
@@ -633,176 +1117,136 @@ footer a:hover { color: var(--accent); }
   .hero {
     grid-template-columns: 1fr;
     padding: 96px 20px 60px;
-    gap: 32px;
+    gap: 24px;
     min-height: auto;
   }
   .hero-text { padding: 0; }
-  .hero-visual { justify-content: center; padding: 20px 0; }
-  .hero-flat-wrap img { max-width: 280px; }
-  .scroll-hint { margin-top: 32px; }
+  .hero-visual { justify-content: center; padding: 12px 0; order: -1; }
+  .hero-flat-wrap img { max-width: 260px; }
+  .hero-tick { display: none; }
 
-  .problem { padding: 80px 0; }
-  .problem-inner {
-    grid-template-columns: 1fr;
-    padding: 0 20px; gap: 32px;
-  }
-  .problem-bg-num { font-size: clamp(120px, 30vw, 200px); top: -10px; left: -8px; }
-
-  .how { padding: 80px 0; }
+  .how { padding: 88px 0; }
   .how-inner { padding: 0 20px; }
   .how-header { margin-bottom: 48px; }
-  .how-bg-num { font-size: clamp(120px, 30vw, 200px); }
-  .steps-grid { grid-template-columns: 1fr; border-top: none; }
-  .step-item,
-  .step-item:last-child,
-  .step-item:nth-child(2) {
-    border-right: none;
-    border-top: 1px solid rgba(33,43,49,.12);
-    padding: 32px 0 !important;
-    gap: 18px;
-  }
-  .step-illustration { width: 60px; height: 60px; }
-  .step-illustration svg { height: 60px; }
+  .how-bg-num { font-size: clamp(120px, 32vw, 200px); }
+  .steps-grid { grid-template-columns: 1fr; gap: 14px; margin-bottom: 56px; }
+  .trinity-grid { grid-template-columns: 1fr; }
 
-  .disclaimer { padding: 80px 0; }
-  .disclaimer-inner {
+  .problem { padding: 88px 0; }
+  .problem-inner {
+    grid-template-columns: 1fr;
+    padding: 0 20px; gap: 36px;
+  }
+  .problem-bg-num { font-size: clamp(120px, 32vw, 200px); top: -10px; left: -8px; }
+
+  .pricing { padding: 88px 0; }
+  .pricing-inner { padding: 0 20px; }
+  .pricing-header { margin-bottom: 48px; }
+  .pricing-bg-num { font-size: clamp(120px, 32vw, 200px); }
+  .pricing-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  .glossary { padding: 88px 0; }
+  .glossary-inner { padding: 0 20px; }
+  .glossary-header { margin-bottom: 48px; }
+  .glossary-bg-num { font-size: clamp(120px, 32vw, 200px); }
+  .glossary-grid { grid-template-columns: 1fr; }
+
+  .status { padding: 88px 0; }
+  .status-inner {
     grid-template-columns: 1fr;
     padding: 0 20px;
     gap: 40px;
   }
-  .disclaimer-visual { display: none; }
+  .status-bg-num { font-size: clamp(120px, 32vw, 200px); }
+  .status-visual { display: none; }
 
-  .validation { padding: 72px 0 56px; }
-  .validation-inner { padding: 0 20px; }
+  .final-cta { padding: 100px 0 80px; }
+  .final-cta-inner { padding: 0 20px; }
 
-  .trinity { margin-top: 56px; padding-top: 40px; }
-  .trinity-grid { gap: 36px; }
-  .trinity-tagline { font-size: 16px; }
-
-  .final-cta { padding: 72px 24px; }
-  .final-cta p { font-size: 15px; margin-bottom: 32px; }
-
-  footer { padding: 24px 20px; flex-direction: column; gap: 16px; text-align: center; align-items: center; }
-  .footer-links, .footer-legal { justify-content: center; }
+  footer { padding: 36px 20px 28px; }
 }
 
 @media (max-width: 600px) {
   .hero h1 {
-    font-size: clamp(30px, 8vw, 38px);
-    letter-spacing: -.6px;
-    line-height: 1.12;
+    font-size: clamp(38px, 9.5vw, 54px);
+    letter-spacing: -1.2px;
+    line-height: 1.02;
   }
-  .hero-body { font-size: 15px; }
-  .hero-actions { gap: 10px; }
+  .hero h1 .line-2 { font-size: .62em; }
+  .hero-body { font-size: 16px; }
+  .hero-actions { gap: 8px; width: 100%; }
   .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
-  .hero-flat-wrap img { max-width: 240px; }
+  .btn-text { width: 100%; justify-content: center; }
 
-  .price-callout { padding: 20px 22px; }
-  .disclaimer-quote { font-size: 19px; padding-left: 18px; margin: 28px 0; }
+  .price-callout { padding: 22px 22px; }
+  .price-card { padding: 28px 24px; }
+  .price-amount { font-size: 48px; }
 
-  .problem-block { margin-bottom: 24px; }
-  .trinity-grid { gap: 28px; }
-
-  .final-cta .btn-primary { width: 100%; justify-content: center; }
-
-  .email-row { flex-direction: column; }
-  .validation-buttons { flex-direction: column; align-items: stretch; }
-  .btn-validate { width: 100%; justify-content: center; }
+  .final-cta-buttons { flex-direction: column; align-items: stretch; }
+  .btn-primary-light, .btn-ghost-dark { width: 100%; justify-content: center; }
 }
 </style>
 </head>
 <body>
 
-<form name="validation" data-netlify="true" netlify-honeypot="bot-field" hidden>
-  <input name="form-name" value="validation">
-  <input name="action" value="this-makes-sense">
-</form>
-
 <nav>
   <a href="/" class="logo">Flat<em>Labs</em></a>
   <div class="nav-links">
-    <a href="#problem">Why</a>
-    <a href="#how">How it works</a>
-    <a href="learn/">Glossary</a>
-    <a href="app.html" class="nav-cta" onclick="track('landing_cta_clicked', { location: 'nav' })">Enter the Studio</a>
+    <a href="#problem">Why FlatLabs</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#glossary">Open Glossary</a>
+    <a href="#status">Product Status</a>
+    <a href="app.html" class="nav-cta">Launch App (Free)</a>
   </div>
 </nav>
 
-<section class="hero">
+<!-- ───── HERO ───── -->
+<section class="hero" data-screen-label="01 Hero">
   <div class="hero-text">
-    <div class="hero-kicker reveal">Skip the technical drawing. Keep the creative decisions.</div>
-    <h1 class="reveal reveal-delay-1">
-      Your tech pack <em>shouldn't take</em> a whole afternoon <span class="accent-word">to draw.</span>
+    <div class="hero-kicker">
+      <span class="dot"></span>
+      Open Beta · SS27 Production Ready
+    </div>
+    <h1>
+      Technical flats
+      <span class="line-2">are not supposed to take half your day.</span>
     </h1>
-    <p class="hero-body reveal reveal-delay-2">
-      FlatLabs delivers the technical drawing — production-ready, ISO-measured, properly constructed. You bring the design decisions. Need full custom? That's a different conversation. Need a clean professional flat for your tech pack, fast? That's this.
+    <p class="hero-body">
+      FlatLabs generates <strong>editable technical flats</strong>, ISO measurements, and factory-ready exports in minutes — without rebuilding the same damn garment foundations from scratch every single season.
     </p>
-    <div class="hero-actions reveal reveal-delay-3">
-      <a href="app.html" class="btn-primary" onclick="track('landing_cta_clicked', { location: 'hero' })">
-        Enter the Studio — first export is free
+    <p class="hero-body">
+      Built for fashion designers, independent apparel brands, and clothing production teams working on real timelines.
+    </p>
+    <div class="hero-actions">
+      <a href="app.html" class="btn-primary">
+        Start Designing (Free)
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a href="#problem" class="btn-ghost">Why this exists</a>
+      <a href="#glossary" class="btn-ghost">Browse Tech Pack Glossary</a>
     </div>
-    <div class="scroll-hint reveal" style="transition-delay:.5s">↓ Why this exists</div>
   </div>
 
   <div class="hero-visual">
-    <div class="hero-flat-wrap reveal reveal-delay-2">
+    <div class="hero-flat-wrap fade">
       <img src="assets/img/T-shirt_example.png" alt="Technical flat — T-shirt">
+      <span class="hero-tick t1">↳ ISO 8559</span>
+      <span class="hero-tick t2">▢ Editable SVG</span>
+      <span class="hero-tick t3">12 cm</span>
     </div>
   </div>
 </section>
 
-<section class="problem" id="problem">
-  <div class="problem-bg-num">01</div>
-  <div class="problem-inner">
-    <div class="problem-left">
-      <div class="section-label reveal">The problem</div>
-      <h2 class="reveal reveal-delay-1">This is where your <em>time</em> gets wasted.</h2>
-    </div>
-    <div class="problem-right">
-      <div class="problem-narrative reveal">
-        <div class="problem-block">
-          <span class="problem-block-label">The reality</span>
-          <p>You designed the collection. You sourced the fabric. You're ready to produce. And now? You're stuck dragging anchor points for three hours to draw a t-shirt that already exists in a thousand variations on the internet.</p>
-        </div>
-        <div class="problem-block">
-          <span class="problem-block-label">The pain point</span>
-          <p>Free templates are unusable. <strong>Ungrouped. Misproportioned. Fragile.</strong> They aren't built for production — they're built to frustrate you.</p>
-        </div>
-        <div class="problem-block">
-          <span class="problem-block-label">The gap</span>
-          <p>You shouldn't have to choose between <strong>"free templates that don't work"</strong> and <strong>"enterprise software priced like a luxury car."</strong> FlatLabs fills the gap with technically correct flats for the 80% of cases where you need a clean, professional drawing — fast. <strong>Need full custom construction or a unique silhouette? That still belongs with your patternmaker.</strong> This is for everything else.</p>
-        </div>
-      </div>
-      <div class="price-callout reveal reveal-delay-1">
-        <p>The professional alternative? Real measurements, proper construction, full kit. <strong>€3,000 — minimum.</strong> More if you want the whole suite.</p>
-        <p style="margin-top:12px;color:rgba(255,255,255,.85);font-weight:500;">FlatLabs is the tool that should have existed between those two extremes. <strong>Now it does.</strong></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="problem-deco">
-    <svg width="420" height="340" viewBox="0 0 420 340" fill="none">
-      <path d="M 60 30 L 380 60 L 420 300 L 30 340 Z" stroke="white" stroke-width="2" fill="none" opacity=".6"/>
-      <path d="M 65 40 L 375 69 L 414 295 L 38 332 Z" stroke="white" stroke-width="1" stroke-dasharray="6 4" fill="none" opacity=".5"/>
-      <line x1="30" y1="340" x2="60" y2="30" stroke="white" stroke-width="1" stroke-dasharray="5 4" opacity=".4"/>
-      <line x1="420" y1="300" x2="380" y2="60" stroke="white" stroke-width="1" stroke-dasharray="5 4" opacity=".4"/>
-    </svg>
-  </div>
-</section>
-
-<section class="how" id="how">
-  <div class="how-bg-num">02</div>
+<!-- ───── HOW IT WORKS ───── -->
+<section class="how" id="how" data-screen-label="02 How it works">
+  <div class="how-bg-num">/01</div>
   <div class="how-inner">
     <div class="how-header">
-      <div class="section-label reveal">How it works</div>
-      <h2 class="reveal reveal-delay-1">Pick. Snap. <em>Export.</em></h2>
+      <div class="section-label">How it works</div>
+      <h2>Pick. Snap. <em>Export.</em></h2>
     </div>
 
     <div class="steps-grid">
-      <div class="step-item reveal">
+      <div class="step-item" data-step="01">
         <div class="step-illustration">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" style="height:72px;width:auto">
             <path fill="none" stroke="#fb8f6c" stroke-width="9" stroke-miterlimit="10" d="M192.51,57.41s-.92,41.73-42.4,41.73-42.26-42.29-42.26-42.29"/>
@@ -818,7 +1262,7 @@ footer a:hover { color: var(--accent); }
         </div>
       </div>
 
-      <div class="step-item reveal reveal-delay-1">
+      <div class="step-item" data-step="02">
         <div class="step-illustration">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" style="height:72px;width:auto">
             <path fill="none" stroke="#fb8f6c" stroke-width="11" stroke-linejoin="round" d="M185.81,62.56s47.8,16.51,76.06,7.85"/>
@@ -835,11 +1279,11 @@ footer a:hover { color: var(--accent); }
         <div class="step-content">
           <div class="step-num-label">Step 02</div>
           <h3>Snap</h3>
-          <p>Necklines, sleeves, fits, details — the production-ready variants that cover most real projects. Everything connects cleanly. No fixing seams. No rebuilding shapes.</p>
+          <p>Necklines, sleeves, fits, details — production-ready variants that cover most real projects. Everything connects cleanly. No fixing seams. No rebuilding shapes.</p>
         </div>
       </div>
 
-      <div class="step-item reveal reveal-delay-2">
+      <div class="step-item" data-step="03">
         <div class="step-illustration">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" style="height:72px;width:auto">
             <line fill="none" stroke="#fb8f6c" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" x1="66.99" y1="239.75" x2="233.01" y2="239.65"/>
@@ -855,27 +1299,27 @@ footer a:hover { color: var(--accent); }
       </div>
     </div>
 
-    <div class="trinity reveal">
+    <div class="trinity">
       <div class="trinity-header">
         <span class="trinity-label">Available now · The Holy Trinity</span>
         <p class="trinity-tagline">The foundation of every collection. Built properly.</p>
       </div>
       <div class="trinity-grid">
-        <div class="trinity-item">
+        <div class="trinity-item" data-garment="tshirt">
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
             <path d="M32.5894 41.9812H12.2318C11.3024 41.9803 10.424 41.8895 9.96697 40.8777L9.94967 40.8385C9.57552 40.0081 9.95347 39.4707 10.2095 38.7151C10.889 36.7098 11.1382 34.5185 11.3283 32.4223L11.4789 29.9422C11.4929 29.6738 11.5369 29.4083 11.5451 29.1395L11.5438 23.1286C11.4935 22.068 11.2869 21.0138 11.2436 19.9546C9.22086 19.862 9.46986 22.2818 7.81175 21.9943C5.1695 21.5363 3.30809 18.9185 1.77831 16.9334C1.43204 16.484 0.92864 15.98 0.784673 15.4207C0.32562 13.6374 2.79601 12.712 4.00676 12.0412L8.13809 9.71224C8.6082 9.43525 9.07827 9.16089 9.52686 8.84946C10.5791 8.11891 11.5957 7.25875 12.927 7.14044L13.7573 7.10655C15.255 6.99044 16.6423 6.42967 18.0818 6.05083C18.6583 5.99505 18.9269 6.54175 19.2718 6.90508C20.5876 8.29127 22.2906 8.65356 24.1229 8.64283C25.9008 8.63238 27.8 8.19208 28.9716 6.75663C29.6863 5.88105 29.4636 5.94377 30.6301 6.27414L33.0581 6.92524C33.4586 7.01247 33.8553 7.07317 34.2651 7.10125C35.853 7.2101 36.4692 7.40927 37.842 8.39027L39.125 9.25708L45.4384 12.8368C46.0444 13.1912 47.1305 13.7534 47.2425 14.5516L47.2603 14.6496C47.4394 15.3698 46.9317 15.9498 46.5134 16.4606L44.9036 18.5623C43.8075 19.9259 42.0232 21.8012 40.2482 21.9885L40.2065 21.9927C39.4198 22.0762 39.1632 21.8225 38.7942 21.2212C38.341 20.4827 37.6409 19.6242 36.71 20.129C36.6543 20.3867 36.6555 20.6584 36.6348 20.9208L36.4944 22.3123C36.448 22.6531 36.4554 23.0058 36.4505 23.3494L36.4578 29.4632C36.4667 29.7263 36.5255 29.975 36.5355 30.2364L36.5647 31.5362C36.5712 31.6265 36.6025 31.7076 36.6093 31.7958L36.6571 32.5779L37.1772 36.2147C37.2759 36.7998 37.3663 37.4034 37.5469 37.9685C37.6908 38.4186 38.084 39.343 38.1447 39.694C38.1503 39.7263 38.1543 39.7563 38.1654 39.7876C38.5007 40.7285 37.5651 41.7612 36.6814 41.9361L36.641 41.9439C36.2045 42.0311 35.6843 41.9809 35.2362 41.9811L32.5894 41.9812Z" fill="#212B31"/>
           </svg>
           <span class="trinity-name">T-Shirt</span>
           <span class="trinity-status">Live</span>
         </div>
-        <div class="trinity-item">
+        <div class="trinity-item" data-garment="pants">
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
             <path d="M25.8 30.5809L24.0272 22.0138C23.8861 22.3255 23.8519 22.6787 23.778 23.0111L22.2237 30.4218L21.466 34.5598L20.4073 41.302C20.2097 42.4318 19.0706 42.3686 18.2404 42.3691L12.4416 42.3701C12.2562 42.37 12.0524 42.381 11.8708 42.3402L11.8361 42.3319C10.6125 42.0537 10.6719 41.1105 10.6725 40.1356L10.6831 31.5095L10.7899 27.5976C10.7997 27.231 10.8622 26.8642 10.8792 26.4966L10.8914 24.6537C10.9009 24.2719 10.9698 23.8956 10.982 23.5162L11.0015 21.5742C11.01 21.3021 11.0602 21.0346 11.0704 20.7622L11.1881 17.6689L11.3765 14.8799C11.4661 13.8102 11.6452 12.7353 11.8594 11.684L12.2532 9.71786C12.3126 9.42405 12.2936 9.10338 12.2935 8.80403L12.2924 7.47705C12.2923 7.18844 12.2506 6.79896 12.3836 6.53678C12.7005 5.91185 13.1171 5.63331 13.8406 5.58799L33.5629 5.58203C35.1583 5.58105 35.7035 5.91011 35.7073 7.50372L35.7098 8.68028C35.7111 9.07417 35.7576 9.45592 35.8191 9.8455L35.995 10.8356C36.0053 10.8972 36.0326 10.9547 36.0463 11.0156L36.2448 11.948C36.3884 12.6854 36.4822 13.434 36.5453 14.1828L36.6881 16.2233C36.7042 16.4748 36.6846 16.7786 36.7402 17.0215L36.7701 17.1562C36.8792 17.6553 36.8283 18.2263 36.8519 18.7383C36.8611 18.9374 36.9061 19.1353 36.9126 19.3323L36.9328 20.8307C36.9448 21.0554 36.9905 21.2787 36.9978 21.504L37.0144 23.0844C37.0256 23.3708 37.0909 23.6529 37.1037 23.9414L37.1323 25.8809C37.1383 26.0432 37.171 26.2033 37.1758 26.3654L37.2283 28.654C37.2349 28.8338 37.2792 29.0088 37.2842 29.1888L37.2908 30.7932C37.2966 30.9853 37.3404 31.1733 37.3453 31.3645L37.3522 39.6626C37.3526 40.7783 37.6006 41.9018 36.2228 42.3199L36.155 42.3401C36.0127 42.3733 35.8587 42.3656 35.7136 42.3667L30.2397 42.3695C28.2167 42.3686 27.7933 42.5797 27.4682 40.2539L25.8 30.5809Z" fill="#212B31"/>
           </svg>
           <span class="trinity-name">Pants</span>
           <span class="trinity-status">Live</span>
         </div>
-        <div class="trinity-item">
+        <div class="trinity-item" data-garment="hoodie">
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
             <path d="M24.4577 42.0266L24.0868 41.6265C22.6719 43.081 21.8215 43.1016 19.8489 43.1026L16.2541 43.1028C14.125 43.1014 12.1325 41.96 11.5668 39.8001C11.4874 39.4969 11.4669 39.186 11.4 38.881L10.9561 39.111C9.15933 39.9526 6.85589 39.3165 6.04059 37.433C5.86031 37.0165 5.4562 35.4373 5.45428 35.0085L5.34961 33.3292L5.35027 28.4307C5.35866 28.2157 5.40905 28.0065 5.42259 27.7912C5.64741 24.2085 6.25945 20.4827 7.58128 17.1279C8.81217 14.0038 10.549 11.7122 13.8047 10.444L15.6684 9.80206C16.084 9.67953 16.5033 9.58222 16.9022 9.40855L16.8542 9.19428C16.3033 7.48447 18.0863 5.51005 19.7463 5.17503C20.1068 5.10228 20.4659 5.08287 20.8291 5.03633L21.7501 4.95083C21.9107 4.9363 22.0686 4.90236 22.2301 4.89495L23.2507 4.88867L26.3159 4.96395C28.1066 5.08452 30.4005 5.555 31.046 7.5222L31.1252 7.76975C31.2723 8.24206 31.2434 8.9668 31.0569 9.43756L33.4228 10.191C35.8927 10.9957 38.1141 12.6057 39.3746 14.9065L40.605 17.6701C40.8233 18.1244 40.9078 18.6473 41.0777 19.1182L42.0097 23.15C42.0558 23.3015 42.0648 23.4519 42.0894 23.6073L42.5068 26.7353L42.5745 27.869C42.6537 28.6648 42.6578 29.2462 42.6584 30.0476L42.6331 33.5665C42.6236 33.7575 42.573 33.941 42.5621 34.132C42.5408 34.5048 42.5765 34.9085 42.5183 35.275C42.4475 35.7209 42.1541 36.9104 42.0046 37.3093C41.5813 38.4384 40.5204 39.2975 39.3213 39.4515C38.4672 39.5612 37.3152 39.399 36.624 38.8611L36.6015 38.8432C36.5689 39.0441 36.5549 39.251 36.5103 39.4494C36.0231 41.617 34.2799 43.0109 32.0513 43.0975L27.7875 43.1027C26.5206 43.1018 25.576 43.0715 24.5611 42.1253L24.4577 42.0266Z" fill="#212B31"/>
           </svg>
@@ -887,179 +1331,254 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<section class="disclaimer" id="disclaimer">
-  <div class="disclaimer-inner">
-    <div>
-      <div class="section-label reveal">Launch status</div>
-      <h2 class="reveal reveal-delay-1">You're <em>early.</em><br>That's the point.</h2>
-      <p class="reveal reveal-delay-2"><strong style="color:var(--ink);">Built for the SS27 season.</strong> FlatLabs is live and focused on the foundation — t-shirts, pants, and hoodies are fully functional with ISO measurements and tech pack exports ready to go.</p>
-      <div class="disclaimer-quote reveal reveal-delay-2">If you've ever redrawn the same flat twice, you already understand this.</div>
-      <p class="reveal reveal-delay-3">Use it now. Break it. Tell us what's missing. The people here early decide what this becomes.</p>
+<!-- ───── PROBLEM (01) ───── -->
+<section class="problem" id="problem" data-screen-label="03 Problem">
+  <div class="problem-bg-num">01</div>
+  <div class="problem-inner">
+    <div class="problem-left">
+      <div class="section-label"><span class="num">01</span> The workflow problem</div>
+      <h2>Why are we still redrawing the exact same garments <em>every season?</em></h2>
+    </div>
+    <div class="problem-right">
+      <div class="problem-narrative">
+        <div class="problem-block">
+          <span class="problem-block-label">The industry reality</span>
+          <p>Most collections are built on the exact same garment foundations — t-shirts, hoodies, pants, and standard silhouettes.</p>
+          <p>Yet development teams still spend hours rebuilding technical flats manually, <strong>anchor point by anchor point, version after version.</strong></p>
+        </div>
+        <div class="problem-block">
+          <span class="problem-block-label">The template pain point</span>
+          <p>Let's be honest: most free fashion flat templates are completely unreliable. <strong>Bad proportions, broken vector groups, and random construction.</strong></p>
+          <p>They are not built for professional manufacturing workflows — they are built to be downloaded and abandoned.</p>
+        </div>
+        <div class="problem-block">
+          <span class="problem-block-label">The software gap</span>
+          <p>The alternative isn't much better. <strong>Professional fashion CAD tools are overly complex, wildly expensive, and require bloated enterprise suites.</strong></p>
+          <p>Free templates solve speed, but ruin consistency.</p>
+        </div>
+        <div class="problem-block">
+          <span class="problem-block-label">The missing middle layer</span>
+          <p>FlatLabs delivers <strong>technically correct fashion flats built for everyday garment production.</strong> You get reusable base constructions, editable SVG vectors, and clean specs designed to move faster from concept to clothing factory.</p>
+        </div>
+        <div class="problem-block">
+          <span class="problem-block-label">Patternmaker positioning</span>
+          <p>To be clear: custom pattern engineering, specialized draping, and advanced silhouette development still belong with master patternmakers.</p>
+          <p>FlatLabs handles the standardized layer underneath — the technical foundations most collections already rely on — so development starts further downstream, not from zero.</p>
+        </div>
+      </div>
+      <div class="price-callout">
+        <p>Professional fashion CAD tools are often <strong>complex, expensive, or oversized</strong> for everyday flat work. Free templates solve speed, but not consistency.</p>
+        <p>FlatLabs was built right between those two extremes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── PRICING (02) ───── -->
+<section class="pricing" id="pricing" data-screen-label="04 Pricing">
+  <div class="pricing-bg-num">02</div>
+  <div class="pricing-inner">
+    <div class="pricing-header">
+      <div class="section-label"><span class="num">02</span> Transparent pricing</div>
+      <h2>Flexible pricing for <em>growing fashion brands.</em></h2>
+      <p class="pricing-intro"><strong>Design for free. Download only when you need production-ready vectors.</strong> No enterprise contracts. No bloated CAD suites. Just technically correct fashion flats, ready when you need them.</p>
     </div>
 
-    <div class="disclaimer-visual reveal reveal-delay-2">
-      <div class="disclaimer-pocket-wrap">
+    <div class="pricing-grid">
+      <!-- FREE -->
+      <div class="price-card outlined" data-tier="free">
+        <div class="price-name">Free</div>
+        <div class="price-amount">€0<span class="price-period">/ forever</span></div>
+        <p class="price-desc">Preview the entire system and test your workflows before paying for anything.</p>
+        <div class="price-included">Included</div>
+        <ul class="price-features">
+          <li>Full garment configurator preview</li>
+          <li>Open-access glossary</li>
+          <li>1 free T-shirt SVG download</li>
+        </ul>
+        <a href="app.html" class="price-cta">Open Configurator</a>
+      </div>
+
+      <!-- PAY PER DOWNLOAD -->
+      <div class="price-card outlined" data-tier="ppd">
+        <div class="price-name">Pay per export</div>
+        <div class="price-tier-range">From €6 <span class="price-period">/ download</span></div>
+        <p class="price-desc">Need a single flat for a quick tech pack? Export it and move on.</p>
+        <div class="price-included">What you get</div>
+        <ul class="price-features">
+          <li>Editable SVG export (€6–10)</li>
+          <li>SVG + Tech Pack PDF bundle (€12–18)</li>
+        </ul>
+        <p class="price-note">// Pricing varies depending on garment complexity.</p>
+        <a href="app.html" class="price-cta">Start a Project</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card featured">
+        <span class="price-tag">Most popular</span>
+        <div class="price-name">Pro Subscription</div>
+        <div class="price-amount">€25<span class="price-period">/ month</span></div>
+        <p class="price-desc">Built for fashion designers and apparel brands scaling recurring collections.</p>
+        <div class="price-included">Included</div>
+        <ul class="price-features">
+          <li>15 downloads per month</li>
+          <li>Unlimited garment combinations</li>
+          <li>Full SVG + Tech Pack PDF exports</li>
+          <li>Faster multi-style workflows across recurring styles</li>
+        </ul>
+        <a href="app.html" class="price-cta">Upgrade to Pro</a>
+      </div>
+    </div>
+
+    <div class="pricing-footer">
+      <p><strong>No enterprise contracts. No bloated CAD suites.</strong> Just technically correct fashion flats, ready when you need them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───── GLOSSARY (03) ───── -->
+<section class="glossary" id="glossary" data-screen-label="05 Glossary">
+  <div class="glossary-bg-num">03</div>
+  <div class="glossary-inner">
+    <div class="glossary-header">
+      <div class="section-label"><span class="num">03</span> Free Tech Pack Glossary</div>
+      <h2>Master the technical language of <em>apparel manufacturing.</em></h2>
+      <p class="glossary-body">The FlatLabs glossary is <strong>completely open.</strong> Fabrics, seams, finishes, and specs — explained clearly, without paywalls or inflated industry jargon. Built for apparel designers, fashion students, and independent brands.</p>
+    </div>
+
+    <div class="glossary-grid fade">
+      <a href="learn/fabrics/midweight-jersey.html" class="gl-term-card" data-cat="fabric">
+        <span class="gl-term-cat">Fabric</span>
+        <span class="gl-term-name">Midweight Jersey</span>
+        <span class="gl-term-desc">The apparel industry standard for premium retail T-shirts.</span>
+        <span class="gl-term-link">Read more →</span>
+      </a>
+
+      <a href="learn/seams/iso-514-overlock.html" class="gl-term-card" data-cat="seam">
+        <span class="gl-term-cat">Seam</span>
+        <span class="gl-term-name">4-Thread Overlock</span>
+        <span class="gl-term-desc">Elastic ISO reinforcement seam for knitwear manufacturing.</span>
+        <span class="gl-term-link">Read more →</span>
+      </a>
+
+      <a href="learn/color/pantone-tcx-system.html" class="gl-term-card" data-cat="color">
+        <span class="gl-term-cat">Color</span>
+        <span class="gl-term-name">Pantone TCX</span>
+        <span class="gl-term-desc">The global standard for textile color specification on cotton.</span>
+        <span class="gl-term-link">Read more →</span>
+      </a>
+
+      <a href="learn/trims/care-labels-standards.html" class="gl-term-card" data-cat="label">
+        <span class="gl-term-cat">Label</span>
+        <span class="gl-term-name">Care &amp; Content Label</span>
+        <span class="gl-term-desc">Required garment information label for legal and care compliance.</span>
+        <span class="gl-term-link">Read more →</span>
+      </a>
+
+      <a href="learn/printing/water-based-screen.html" class="gl-term-card" data-cat="print">
+        <span class="gl-term-cat">Print</span>
+        <span class="gl-term-name">Water-based Screen Print</span>
+        <span class="gl-term-desc">Softer print finish where eco-friendly ink is absorbed into the fabric.</span>
+        <span class="gl-term-link">Read more →</span>
+      </a>
+
+      <a href="learn/finishes/sanforized-standards.html" class="gl-term-card" data-cat="finish">
+        <span class="gl-term-cat">Finish</span>
+        <span class="gl-term-name">Sanforized</span>
+        <span class="gl-term-desc">Pre-shrinking textile treatment to ensure dimensional stability.</span>
+        <span class="gl-term-link">Read more →</span>
+      </a>
+    </div>
+
+    <div class="glossary-cta">
+      <a href="learn/index.html">Browse all 24 terms →</a>
+      <span class="glossary-cta-count">// 24 entries · open access</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───── STATUS (04) ───── -->
+<section class="status" id="status" data-screen-label="06 Status">
+  <div class="status-bg-num">04</div>
+  <div class="status-inner">
+    <div>
+      <div class="section-label"><span class="num">04</span> Product roadmap</div>
+      <h2>Built for production. <em>Evolving in public.</em></h2>
+      <p><strong>Our interactive T-shirt beta is live right now.</strong></p>
+      <p>Pants, hoodies, expanded tech pack PDF generation, and modular garment components are rolling out progressively throughout the SS27 season.</p>
+      <div class="status-prompt">
+        <p>If you've ever rebuilt the same flat twice, this will probably feel familiar. Tell us if it does.</p>
+      </div>
+    </div>
+
+    <div class="status-visual fade">
+      <div class="status-pocket-wrap">
         <svg viewBox="0 0 320 380" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="60" x2="320" y2="60" stroke="#e8e0d0" stroke-width="1" stroke-dasharray="6 4"/>
-          <line x1="0" y1="64" x2="320" y2="64" stroke="#e8e0d0" stroke-width=".7" stroke-dasharray="6 4"/>
-          <line x1="0" y1="300" x2="320" y2="300" stroke="#e8e0d0" stroke-width="1" stroke-dasharray="6 4"/>
-          <line x1="0" y1="304" x2="320" y2="304" stroke="#e8e0d0" stroke-width=".7" stroke-dasharray="6 4"/>
-          <rect x="60" y="90" width="200" height="170" rx="3" stroke="#212B31" stroke-width="2.5" fill="white"/>
-          <line x1="63" y1="104" x2="257" y2="104" stroke="#212B31" stroke-width="1.2" stroke-dasharray="5 3.5"/>
-          <line x1="63" y1="110" x2="257" y2="110" stroke="#212B31" stroke-width=".8" stroke-dasharray="5 3.5" opacity=".6"/>
-          <line x1="71" y1="104" x2="71" y2="255" stroke="#212B31" stroke-width=".8" stroke-dasharray="4 3" opacity=".5"/>
-          <line x1="249" y1="104" x2="249" y2="255" stroke="#212B31" stroke-width=".8" stroke-dasharray="4 3" opacity=".5"/>
-          <line x1="63" y1="249" x2="257" y2="249" stroke="#212B31" stroke-width=".8" stroke-dasharray="4 3" opacity=".5"/>
-          <line x1="60" y1="78" x2="260" y2="78" stroke="#ff9a6e" stroke-width="1" opacity=".6"/>
-          <line x1="60" y1="74" x2="60" y2="82" stroke="#ff9a6e" stroke-width="1" opacity=".6"/>
-          <line x1="260" y1="74" x2="260" y2="82" stroke="#ff9a6e" stroke-width="1" opacity=".6"/>
-          <text x="160" y="73" font-family="'DM Sans', sans-serif" font-size="10" fill="#ff9a6e" text-anchor="middle" opacity=".8">12 cm</text>
-          <text x="160" y="188" font-family="'DM Sans', sans-serif" font-size="11" fill="#5F7385" text-anchor="middle" opacity=".6" font-weight="600" letter-spacing="1">CHEST POCKET</text>
-          <text x="160" y="202" font-family="'DM Sans', sans-serif" font-size="9" fill="#5F7385" text-anchor="middle" opacity=".5">patch · double topstitch</text>
+          <line x1="0" y1="60" x2="320" y2="60" stroke="#E8E8E3" stroke-width="1" stroke-dasharray="6 4"/>
+          <line x1="0" y1="64" x2="320" y2="64" stroke="#E8E8E3" stroke-width=".7" stroke-dasharray="6 4"/>
+          <line x1="0" y1="300" x2="320" y2="300" stroke="#E8E8E3" stroke-width="1" stroke-dasharray="6 4"/>
+          <line x1="0" y1="304" x2="320" y2="304" stroke="#E8E8E3" stroke-width=".7" stroke-dasharray="6 4"/>
+          <rect x="60" y="90" width="200" height="170" rx="3" stroke="#111111" stroke-width="2.5" fill="#FFFFFF"/>
+          <line x1="63" y1="104" x2="257" y2="104" stroke="#111111" stroke-width="1.2" stroke-dasharray="5 3.5"/>
+          <line x1="63" y1="110" x2="257" y2="110" stroke="#111111" stroke-width=".8" stroke-dasharray="5 3.5" opacity=".55"/>
+          <line x1="71" y1="104" x2="71" y2="255" stroke="#111111" stroke-width=".8" stroke-dasharray="4 3" opacity=".45"/>
+          <line x1="249" y1="104" x2="249" y2="255" stroke="#111111" stroke-width=".8" stroke-dasharray="4 3" opacity=".45"/>
+          <line x1="63" y1="249" x2="257" y2="249" stroke="#111111" stroke-width=".8" stroke-dasharray="4 3" opacity=".45"/>
+          <line x1="60" y1="78" x2="260" y2="78" stroke="#FF6B57" stroke-width="1" opacity=".7"/>
+          <line x1="60" y1="74" x2="60" y2="82" stroke="#FF6B57" stroke-width="1" opacity=".7"/>
+          <line x1="260" y1="74" x2="260" y2="82" stroke="#FF6B57" stroke-width="1" opacity=".7"/>
+          <text x="160" y="73" font-family="'JetBrains Mono', monospace" font-size="10" fill="#FF6B57" text-anchor="middle">12 cm</text>
+          <text x="160" y="186" font-family="'JetBrains Mono', monospace" font-size="11" fill="#6B7280" text-anchor="middle" font-weight="500" letter-spacing="1.5">CHEST POCKET</text>
+          <text x="160" y="202" font-family="'JetBrains Mono', monospace" font-size="9" fill="#9CA3AF" text-anchor="middle">patch · double topstitch</text>
         </svg>
       </div>
     </div>
   </div>
 </section>
 
-<section class="validation" id="validate">
-  <div class="validation-inner">
-    <div class="section-label reveal" style="justify-content:center">Get on the list</div>
-    <h2 class="reveal reveal-delay-1">If this <em>resonates</em>,<br>let me know.</h2>
-    <p class="validation-sub reveal reveal-delay-2">If you've ever needed a professional flat and refused to spend €3k on software to get it, tap the button.</p>
-
-    <div class="validation-buttons reveal reveal-delay-2">
-      <button class="btn-validate btn-yes" id="btnYes" type="button" onclick="handleYes()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-        This makes sense
-      </button>
-      <button class="btn-validate btn-email" id="btnEmail" type="button" onclick="showEmail()">
-        Keep me posted
+<!-- ───── FINAL CTA (05) ───── -->
+<section class="final-cta" id="start" data-screen-label="07 Final CTA">
+  <div class="final-cta-bg-num">05</div>
+  <div class="final-cta-inner">
+    <div class="section-label"><span class="num">05</span> Instant CAD exports</div>
+    <h2>Production-ready fashion flats, without <em>the Illustrator overhead.</em></h2>
+    <p>Start completely free, pay only per export, or unlock your entire collection development workflow with <strong>FlatLabs Pro.</strong> Built for designers who want to spend time designing, not fixing anchor points.</p>
+    <div class="final-cta-buttons">
+      <a href="app.html" class="btn-primary-light">
+        Create Your First Flat Now
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
+      </a>
+      <a href="#pricing" class="btn-ghost-dark">Compare Pricing Plans</a>
     </div>
-
-    <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="email-form" id="emailForm">
-      <input type="hidden" name="form-name" value="waitlist">
-      <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
-      <div class="email-row">
-        <input type="email" name="email" class="email-input" id="emailInput" placeholder="your@email.com" required>
-        <button type="submit" class="email-submit">Send</button>
-      </div>
-      <div class="email-note">No spam. Updates only when something real ships.</div>
-    </form>
-
-    <div class="email-success" id="emailSuccess">Got it — you'll be the first to know when the launch version drops.</div>
-    <div class="validation-count" id="validationCount"></div>
   </div>
 </section>
 
-<section class="final-cta">
-  <div class="final-cta-inner reveal">
-    <h2>Stop wasting time on flats.</h2>
-    <p>Enter the Studio. First export is free.</p>
-    <a href="app.html" class="btn-primary" onclick="track('landing_cta_clicked', { location: 'final_cta' })">
-      Enter the Studio
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-</section>
-
+<!-- ───── FOOTER ───── -->
 <footer>
-  <span>&copy; 2026 FlatLabs</span>
-  <div class="footer-links">
-    <a href="#problem">Why</a>
-    <a href="#how">How it works</a>
-    <a href="learn/">Glossary</a>
-    <a href="legal/contact.html">Contact</a>
-  </div>
-  <div class="footer-legal">
-    <a href="legal/privacy.html">Privacy</a>
-    <a href="legal/terms.html">Terms</a>
-    <a href="legal/legal.html">Legal Notice</a>
+  <div class="footer-inner">
+    <span class="footer-copy">© FlatLabs 2026</span>
+    <div class="footer-links">
+      <a href="#problem">Why FlatLabs</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#glossary">Open Glossary</a>
+      <a href="#status">Product Status</a>
+      <a href="app.html">App Beta</a>
+    </div>
+    <div class="footer-legal">
+      <a href="legal/privacy.html">Privacy Policy</a>
+      <a href="legal/terms.html">Terms of Service</a>
+      <a href="legal/legal.html">Legal Notice</a>
+      <a href="legal/contact.html">Contact</a>
+    </div>
   </div>
 </footer>
 
-<script type="module">
-import { track } from './tracker.js';
-
-// Expose track() so inline onclick="track(...)" handlers can call it
-window.track = track;
-
-// Fire one test event on page load
-track('app_loaded', { page: 'landing' });
-
-const reveals = document.querySelectorAll('.reveal');
+<script>
+const fades = document.querySelectorAll('.fade');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-reveals.forEach(el => observer.observe(el));
-
-let votes = JSON.parse(localStorage.getItem('fl_votes') || '{"yes":0,"emails":[]}');
-
-function updateCount() {
-  const total = votes.yes + votes.emails.length;
-  const el = document.getElementById('validationCount');
-  if (total > 0) {
-    el.textContent = `${total} ${total === 1 ? 'person has' : 'people have'} said this makes sense`;
-  }
-}
-
-async function handleYes() {
-  const btn = document.getElementById('btnYes');
-  if (btn.classList.contains('clicked')) return;
-  btn.classList.add('clicked');
-  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Noted — thank you';
-  votes.yes++;
-  localStorage.setItem('fl_votes', JSON.stringify(votes));
-  updateCount();
-  try {
-    await fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ 'form-name': 'validation', 'action': 'this-makes-sense' }).toString()
-    });
-  } catch(e) {}
-}
-
-function showEmail() {
-  document.getElementById('emailForm').classList.add('show');
-  document.getElementById('emailInput').focus();
-}
-
-async function submitEmail(event) {
-  event.preventDefault();
-  const form = document.getElementById('emailForm');
-  const input = document.getElementById('emailInput');
-  const email = input.value.trim();
-  if (!email || !email.includes('@')) {
-    input.style.borderColor = '#ef4444';
-    setTimeout(() => { input.style.borderColor = ''; }, 1500);
-    return;
-  }
-  const formData = new FormData(form);
-  try {
-    const response = await fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData).toString()
-    });
-    if (!response.ok) throw new Error('failed');
-    votes.emails.push(email);
-    localStorage.setItem('fl_votes', JSON.stringify(votes));
-    form.classList.remove('show');
-    document.getElementById('emailSuccess').classList.add('show');
-    document.getElementById('btnEmail').style.display = 'none';
-    updateCount();
-    form.reset();
-  } catch(e) {
-    input.style.borderColor = '#ef4444';
-    setTimeout(() => { input.style.borderColor = ''; }, 1500);
-  }
-}
-
-document.getElementById('emailForm').addEventListener('submit', submitEmail);
-updateCount();
+fades.forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
