@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='DM Sans, -apple-system, sans-serif' font-weight='700' fill='%23FF6B57'%3EF%3C/text%3E%3C/svg%3E">
+<title>Your account · FlatLabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #FCFCFA;
+    --surface:     #FFFFFF;
+    --border:      #E8E8E3;
+    --ink:         #111111;
+    --soft:        #6B6B66;
+    --dim:         #9C9C95;
+    --accent:      #FF6B57;
+    --accent-hover:#E85946;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans:  'DM Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Courier, monospace;
+    --ease:  cubic-bezier(.4, 0, .2, 1);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 40px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: var(--sans); font-size: 17px; font-weight: 700; letter-spacing: -.4px; color: var(--ink); text-decoration: none; }
+  .logo em { font-style: normal; color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .header-email { font-size: 13px; color: var(--soft); }
+  .btn-signout {
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    color: var(--soft); background: none; border: none; cursor: pointer; padding: 0;
+    transition: color .2s;
+  }
+  .btn-signout:hover { color: var(--ink); }
+
+  /* ── Main ── */
+  main { max-width: 880px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  /* ── Hero ── */
+  .eyebrow {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 2px; color: var(--accent); text-transform: uppercase; margin-bottom: 14px;
+  }
+  h1 { font-family: var(--serif); font-size: 36px; font-weight: 700; letter-spacing: -.8px; line-height: 1.1; margin-bottom: 10px; }
+  .subtitle { font-size: 15px; color: var(--soft); line-height: 1.6; margin-bottom: 48px; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 56px 40px; text-align: center;
+  }
+  .empty-state .eyebrow { margin-bottom: 10px; }
+  .empty-state p { font-size: 15px; color: var(--soft); margin-bottom: 28px; }
+  .btn-primary {
+    display: inline-block; font-family: var(--sans); font-size: 15px; font-weight: 600;
+    color: #fff; background: var(--ink); border-radius: 6px; padding: 14px 28px;
+    text-decoration: none; transition: background .2s var(--ease); letter-spacing: -.1px;
+  }
+  .btn-primary:hover { background: #2A2A2A; }
+
+  /* ── Downloads table ── */
+  .downloads-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .dl-table { width: 100%; border-collapse: collapse; }
+  .dl-table thead tr { border-bottom: 1px solid var(--border); }
+  .dl-table th {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--soft);
+    padding: 14px 20px; text-align: left;
+  }
+  .dl-table td { padding: 18px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .dl-table tbody tr:last-child td { border-bottom: none; }
+  .dl-table tbody tr:hover { background: var(--bg); }
+
+  .order-num  { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+  .garment-name { font-size: 14px; font-weight: 500; }
+  .date-cell  { font-size: 13px; color: var(--soft); white-space: nowrap; }
+
+  .badge {
+    display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase; padding: 4px 9px; border-radius: 100px;
+  }
+  .badge-active  { background: #EEFAF3; color: #1A7A45; }
+  .badge-expired { background: #F2F2EF; color: var(--soft); }
+
+  .btn-dl {
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    border: none; border-radius: 6px; padding: 9px 16px; cursor: pointer;
+    transition: background .2s; white-space: nowrap;
+  }
+  .btn-dl-dark  { color: #fff; background: var(--ink); }
+  .btn-dl-dark:hover  { background: #2A2A2A; }
+  .btn-dl-coral { color: #fff; background: var(--accent); }
+  .btn-dl-coral:hover { background: var(--accent-hover); }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 28px 24px; border-top: 1px solid var(--border);
+    font-family: var(--mono); font-size: 10px; font-weight: 500;
+    letter-spacing: 1.8px; color: var(--dim); text-transform: uppercase;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .site-header { padding: 0 20px; }
+    .header-email { display: none; }
+    main { padding: 40px 16px 64px; }
+    h1 { font-size: 28px; }
+    .empty-state { padding: 40px 20px; }
+    .dl-table th, .dl-table td { padding: 14px 12px; }
+    /* Hide Date column on narrow screens */
+    .dl-table th:nth-child(3), .dl-table td:nth-child(3) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo">Flat<em>Labs</em></a>
+  <div class="header-right">
+    <span class="header-email" id="headerEmail"></span>
+    <button class="btn-signout" id="btnSignout">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <div class="eyebrow">— Your Account</div>
+  <h1>Your downloads.</h1>
+  <p class="subtitle">Re-download your purchased tech packs anytime within 15 days of purchase.</p>
+  <div id="content"></div>
+</main>
+
+<footer>FlatLabs · flatsgenerator.com</footer>
+
+<script>
+(function () {
+  function escHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function cap(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function garmentLabel(config) {
+    if (!config) return 'Tech Pack';
+    try {
+      var c = typeof config === 'string' ? JSON.parse(config) : config;
+      var parts = [cap(c.garment), c.gender].filter(Boolean);
+      return parts.join(' · ') || 'Tech Pack';
+    } catch (_) { return 'Tech Pack'; }
+  }
+
+  function formatDate(iso) {
+    return new Date(iso).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
+    });
+  }
+
+  function renderEmpty() {
+    return '<div class="empty-state">'
+      + '<div class="eyebrow">— Empty</div>'
+      + "<p>You haven’t purchased any tech packs yet.</p>"
+      + '<a href="/app.html" class="btn-primary">Start designing →</a>'
+      + '</div>';
+  }
+
+  function renderTable(downloads) {
+    var rows = downloads.map(function (d) {
+      var badge = d.is_active
+        ? '<span class="badge badge-active">Active</span>'
+        : '<span class="badge badge-expired">Expired</span>';
+      var action = d.is_active
+        ? '<button class="btn-dl btn-dl-dark" data-action="download" data-session="' + escHtml(d.stripe_session_id) + '">Download</button>'
+        : '<button class="btn-dl btn-dl-coral" data-action="buyagain">Buy again</button>';
+      return '<tr>'
+        + '<td><span class="order-num">' + escHtml(d.order_number || '—') + '</span></td>'
+        + '<td><span class="garment-name">' + escHtml(garmentLabel(d.garment_config)) + '</span></td>'
+        + '<td class="date-cell">' + escHtml(formatDate(d.created_at)) + '</td>'
+        + '<td>' + badge + '</td>'
+        + '<td>' + action + '</td>'
+        + '</tr>';
+    }).join('');
+
+    return '<div class="downloads-wrap">'
+      + '<table class="dl-table" id="dlTable">'
+      + '<thead><tr>'
+      + '<th>Order #</th><th>Garment</th><th>Date</th><th>Status</th><th>Action</th>'
+      + '</tr></thead>'
+      + '<tbody>' + rows + '</tbody>'
+      + '</table></div>';
+  }
+
+  async function init() {
+    try {
+      var res = await fetch('/api/get-account');
+      var data = await res.json();
+      if (!res.ok || !data.ok) { window.location.href = '/login.html'; return; }
+
+      document.getElementById('headerEmail').textContent = data.email;
+      var content = document.getElementById('content');
+      content.innerHTML = data.downloads.length === 0 ? renderEmpty() : renderTable(data.downloads);
+
+      // Event delegation for table action buttons
+      var table = document.getElementById('dlTable');
+      if (table) {
+        table.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          if (btn.dataset.action === 'download') {
+            window.location.href = '/app.html?payment=success&session_id=' + encodeURIComponent(btn.dataset.session);
+          } else if (btn.dataset.action === 'buyagain') {
+            window.location.href = '/app.html';
+          }
+        });
+      }
+    } catch (_) {
+      window.location.href = '/login.html';
+    }
+  }
+
+  document.getElementById('btnSignout').addEventListener('click', async function () {
+    try { await fetch('/api/logout', { method: 'POST' }); } catch (_) {}
+    window.location.href = '/';
+  });
+
+  init();
+}());
+</script>
+</body>
+</html>
