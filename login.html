@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='DM Sans, -apple-system, sans-serif' font-weight='700' fill='%23FF6B57'%3EF%3C/text%3E%3C/svg%3E">
+<title>Sign in · FlatLabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #FCFCFA;
+    --surface:     #FFFFFF;
+    --border:      #E8E8E3;
+    --ink:         #111111;
+    --soft:        #6B6B66;
+    --dim:         #9C9C95;
+    --accent:      #FF6B57;
+    --accent-hover:#E85946;
+    --accent-soft: rgba(255,107,87,.12);
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans:  'DM Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Courier, monospace;
+    --ease:  cubic-bezier(.4, 0, .2, 1);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; height: 100%; }
+  body {
+    font-family: var(--sans); background: var(--bg); color: var(--ink);
+    font-size: 15px; line-height: 1.6;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 40px; height: 60px; display: flex; align-items: center; flex-shrink: 0;
+  }
+  .logo { font-family: var(--sans); font-size: 17px; font-weight: 700; letter-spacing: -.4px; color: var(--ink); text-decoration: none; }
+  .logo em { font-style: normal; color: var(--accent); }
+
+  /* ── Main — centered vertically ── */
+  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+  .login-box { width: 100%; max-width: 480px; }
+
+  /* ── Copy ── */
+  .eyebrow {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 2px; color: var(--accent); text-transform: uppercase; margin-bottom: 14px;
+  }
+  h1 { font-family: var(--serif); font-size: 34px; font-weight: 700; letter-spacing: -.8px; line-height: 1.1; margin-bottom: 10px; }
+  .subtitle { font-size: 15px; color: var(--soft); line-height: 1.6; margin-bottom: 32px; }
+
+  /* ── Notice boxes ── */
+  .notice { padding: 16px 18px; border-radius: 6px; font-size: 14px; line-height: 1.55; margin-bottom: 20px; }
+  .notice[hidden] { display: none; }
+  .notice-label {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 1.8px; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .notice-error { background: #FFF5F3; border: 1px solid rgba(192,57,43,.2); color: #B3361F; }
+  .notice-error .notice-label { color: #B3361F; }
+  .notice-success { background: var(--bg); border: 1px solid var(--border); color: var(--ink); }
+  .notice-success .notice-label { color: var(--accent); }
+
+  /* ── Form ── */
+  #loginForm .form-group { margin-bottom: 10px; }
+  #emailInput {
+    width: 100%; font-family: var(--sans); font-size: 16px; color: var(--ink);
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: 6px;
+    padding: 14px 16px; transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+    -webkit-appearance: none; appearance: none;
+  }
+  #emailInput::placeholder { color: var(--dim); }
+  #emailInput:hover { border-color: #C8C8C2; }
+  #emailInput:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  #btnSubmit {
+    width: 100%; font-family: var(--sans); font-size: 15px; font-weight: 600;
+    color: #fff; background: var(--ink); border: none; border-radius: 6px;
+    padding: 16px 24px; margin-top: 4px; cursor: pointer;
+    transition: background .2s var(--ease); letter-spacing: -.1px;
+  }
+  #btnSubmit:hover:not(:disabled) { background: #2A2A2A; }
+  #btnSubmit:disabled { background: rgba(17,17,17,.28); cursor: not-allowed; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 24px; border-top: 1px solid var(--border); flex-shrink: 0;
+    font-family: var(--mono); font-size: 10px; font-weight: 500;
+    letter-spacing: 1.8px; color: var(--dim); text-transform: uppercase;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .site-header { padding: 0 20px; }
+    main { align-items: flex-start; padding-top: 48px; }
+    h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="logo">Flat<em>Labs</em></a>
+</header>
+
+<main>
+  <div class="login-box">
+    <div class="eyebrow">— Sign In</div>
+    <h1>Sign in to FlatLabs.</h1>
+    <p class="subtitle">We'll send a magic link to your email. No password needed.</p>
+
+    <!-- Error notice: shown for ?error= param or fetch failure -->
+    <div class="notice notice-error" id="errorNotice" hidden>
+      <div class="notice-label">Error</div>
+      <div id="errorText"></div>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <input
+          type="email" id="emailInput"
+          placeholder="you@studio.com"
+          autocomplete="email" inputmode="email"
+          autocapitalize="off" spellcheck="false"
+          required>
+      </div>
+      <button type="submit" id="btnSubmit">Send magic link</button>
+    </form>
+
+    <!-- Success notice: shown after successful submit -->
+    <div class="notice notice-success" id="successNotice" hidden>
+      <div class="notice-label">Check your email</div>
+      <div>If an account exists with that email, you'll receive a link shortly. The link expires in 15 minutes.</div>
+    </div>
+  </div>
+</main>
+
+<footer>FlatLabs · flatsgenerator.com</footer>
+
+<script>
+(function () {
+  var ERROR_MESSAGES = {
+    used:    'This sign-in link has already been used. Please request a new one below.',
+    expired: 'This sign-in link has expired. Please request a new one below.',
+    invalid: 'This sign-in link is invalid. Please request a new one below.',
+    server:  'Something went wrong. Please try again.',
+  };
+
+  // Show error notice if ?error= param is present on page load
+  var errorCode = new URLSearchParams(window.location.search).get('error');
+  if (errorCode) {
+    document.getElementById('errorText').textContent = ERROR_MESSAGES[errorCode] || ERROR_MESSAGES.server;
+    document.getElementById('errorNotice').removeAttribute('hidden');
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    var email = document.getElementById('emailInput').value.trim();
+    if (!email) return;
+
+    var btn = document.getElementById('btnSubmit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    document.getElementById('errorNotice').setAttribute('hidden', '');
+
+    try {
+      var res = await fetch('/api/request-magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email }),
+      });
+      if (!res.ok) throw new Error('Request failed');
+      document.getElementById('loginForm').setAttribute('hidden', '');
+      document.getElementById('successNotice').removeAttribute('hidden');
+    } catch (_) {
+      document.getElementById('errorText').textContent = ERROR_MESSAGES.server;
+      document.getElementById('errorNotice').removeAttribute('hidden');
+      btn.textContent = 'Send magic link';
+      btn.disabled = false;
+    }
+  });
+}());
+</script>
+</body>
+</html>
