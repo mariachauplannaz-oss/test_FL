@@ -38,9 +38,13 @@ export default async function handler(req) {
 
   const { email } = body;
 
-  if (!email || typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return new Response(JSON.stringify({ error: "Invalid email" }), {
-      status: 400,
+  const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+
+  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    // Anti-enumeration: return same response for invalid format as for non-existent email.
+    // Frontend should validate email format before submission for UX.
+    return new Response(JSON.stringify(PUBLIC_RESPONSE), {
+      status: 200,
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -52,7 +56,7 @@ export default async function handler(req) {
     const recent = await sql`
       SELECT COUNT(*) AS cnt
       FROM magic_links
-      WHERE user_email = ${email}
+      WHERE user_email = ${normalizedEmail}
         AND created_at > NOW() - INTERVAL '1 hour'
     `;
     if (Number(recent[0].cnt) >= 5) {
@@ -64,7 +68,7 @@ export default async function handler(req) {
 
     // Anti-enumeration: check user existence silently
     const users = await sql`
-      SELECT email FROM users WHERE email = ${email} LIMIT 1
+      SELECT email FROM users WHERE email = ${normalizedEmail} LIMIT 1
     `;
     if (users.length === 0) {
       return new Response(JSON.stringify(PUBLIC_RESPONSE), {
@@ -80,7 +84,7 @@ export default async function handler(req) {
       INSERT INTO magic_links (token, user_email, expires_at, ip_hash)
       VALUES (
         ${token},
-        ${email},
+        ${normalizedEmail},
         NOW() + INTERVAL '15 minutes',
         ${ipHash}
       )
@@ -93,7 +97,7 @@ export default async function handler(req) {
       await fetch(`${baseUrl}/api/send-magic-link-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token }),
+        body: JSON.stringify({ email: normalizedEmail, token }),
         signal: controller.signal,
       });
     } catch (err) {
