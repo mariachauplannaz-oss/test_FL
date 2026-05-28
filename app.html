@@ -150,6 +150,8 @@
         <div class="topbar">
             <a href="index.html" class="topbar-home" aria-label="Back to homepage">Home</a>
             <a href="/learn/" class="topbar-home" aria-label="Glossary">Glossary</a>
+            <a href="/account.html" class="topbar-home" id="topbarAccount" style="display:none">My account</a>
+            <a href="/login.html" class="topbar-home" id="topbarLogin">Sign in</a>
             <div class="topbar-title" id="topbarTitle">Canvas</div>
             <div class="topbar-actions">
                 <button class="topbar-download" id="btnDownload" style="display:none" aria-label="Download SVG file">⬇ Download SVG</button>
@@ -258,6 +260,23 @@
 </div>
   
 <script type="module" src="app.js"></script>
-  
+<script>
+// Toggle topbar auth links based on session state
+(async function checkAuthTopbar() {
+  try {
+    const res = await fetch('/api/get-account', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      const acct = document.getElementById('topbarAccount');
+      const login = document.getElementById('topbarLogin');
+      if (acct) acct.style.display = '';
+      if (login) login.style.display = 'none';
+    }
+  } catch (e) {
+    // Not logged in — leave default
+  }
+})();
+</script>
+
 </body>
 </html>
