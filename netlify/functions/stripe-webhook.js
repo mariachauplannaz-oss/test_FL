@@ -43,16 +43,80 @@ export default async function handler(req, context) {
     });
   }
 
-  if (event.type !== "checkout.session.completed") {
+  switch (event.type) {
+    case "checkout.session.completed":
+      return handleCheckoutCompleted(event.data.object, sql);
+    case "invoice.paid":
+      return handleInvoicePaid(event.data.object, sql);
+    case "customer.subscription.updated":
+      return handleSubscriptionUpdated(event.data.object, sql);
+    case "customer.subscription.deleted":
+      return handleSubscriptionDeleted(event.data.object, sql);
+    default:
+      return new Response(JSON.stringify({
+        received: true,
+        ignored: event.type
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+  }
+}
+
+// ── checkout.session.completed ─────────────────────────────────────────────
+
+async function handleCheckoutCompleted(session, sql) {
+  if (session.mode === "subscription") {
+    return handleSubscriptionCheckout(session, sql);
+  }
+  // mode === "payment" — existing one-time download flow (unchanged)
+  return handlePaymentCheckout(session, sql);
+}
+
+async function handleSubscriptionCheckout(session, sql) {
+  const email = session.customer_email;
+  const stripeCustomerId = session.customer;
+  const stripeSubscriptionId = session.subscription;
+
+  try {
+    await sql`
+      INSERT INTO users (email)
+      VALUES (${email})
+      ON CONFLICT (email) DO NOTHING
+    `;
+
+    await sql`
+      INSERT INTO subscriptions (
+        user_email, stripe_customer_id, stripe_subscription_id, status, updated_at
+      ) VALUES (
+        ${email}, ${stripeCustomerId}, ${stripeSubscriptionId}, 'active', NOW()
+      )
+      ON CONFLICT (user_email) DO UPDATE SET
+        stripe_customer_id     = EXCLUDED.stripe_customer_id,
+        stripe_subscription_id = EXCLUDED.stripe_subscription_id,
+        status                 = 'active',
+        updated_at             = NOW()
+    `;
+
     return new Response(JSON.stringify({
       received: true,
-      ignored: event.type
+      processed: true,
+      mode: "subscription"
     }), {
       headers: { "Content-Type": "application/json" }
     });
+  } catch (error) {
+    console.error("Webhook processing error (subscription checkout):", error);
+    return new Response(JSON.stringify({
+      ok: false,
+      error: error.message
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
+}
 
-  const session = event.data.object;
+async function handlePaymentCheckout(session, sql) {
   const email = session.customer_email;
   const stripeSessionId = session.id;
   const garmentConfig = session.metadata?.garment_config
@@ -63,7 +127,7 @@ export default async function handler(req, context) {
 
   try {
     const existing = await sql`
-      SELECT id, download_token FROM downloads 
+      SELECT id, download_token FROM downloads
       WHERE stripe_session_id = ${stripeSessionId}
     `;
 
@@ -78,7 +142,7 @@ export default async function handler(req, context) {
     }
 
     await sql`
-      INSERT INTO users (email) 
+      INSERT INTO users (email)
       VALUES (${email})
       ON CONFLICT (email) DO NOTHING
     `;
@@ -165,6 +229,158 @@ export default async function handler(req, context) {
 
   } catch (error) {
     console.error("Webhook processing error:", error);
+    return new Response(JSON.stringify({
+      ok: false,
+      error: error.message
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+
+// ── invoice.paid ───────────────────────────────────────────────────────────
+
+async function handleInvoicePaid(invoice, sql) {
+  // Resolve user email: prefer invoice.customer_email, fall back to subscriptions lookup
+  let email = invoice.customer_email ?? null;
+  if (!email && invoice.customer) {
+    const rows = await sql`
+      SELECT user_email FROM subscriptions
+      WHERE stripe_customer_id = ${invoice.customer}
+      LIMIT 1
+    `;
+    email = rows[0]?.user_email ?? null;
+  }
+  if (!email) {
+    console.error("invoice.paid: could not resolve user email for customer", invoice.customer);
+    return new Response(JSON.stringify({ received: true, skipped: "no_email" }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  // Period end from the subscription line item (Unix seconds → ISO string)
+  const periodEndTs = invoice.lines?.data?.[0]?.period?.end ?? invoice.period_end ?? null;
+  const periodEnd = periodEndTs ? new Date(periodEndTs * 1000).toISOString() : null;
+
+  try {
+    await sql`
+      UPDATE subscriptions
+      SET status = 'active', current_period_end = ${periodEnd}, updated_at = NOW()
+      WHERE user_email = ${email}
+    `;
+
+    // Grant credits with rollover capped at 15, idempotent via credits_reset_at guard:
+    // if credits_reset_at already equals periodEnd this invoice was already processed,
+    // so IS DISTINCT FROM returns false and the WHERE clause matches no rows.
+    await sql`
+      UPDATE users
+      SET
+        is_pro            = true,
+        credits_remaining = LEAST(credits_remaining + 10, 15),
+        credits_reset_at  = ${periodEnd}
+      WHERE email = ${email}
+        AND (credits_reset_at IS DISTINCT FROM ${periodEnd})
+    `;
+
+    return new Response(JSON.stringify({
+      received: true,
+      processed: true,
+      event: "invoice.paid",
+      email
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (error) {
+    console.error("Webhook processing error (invoice.paid):", error);
+    return new Response(JSON.stringify({
+      ok: false,
+      error: error.message
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+
+// ── customer.subscription.updated ─────────────────────────────────────────
+
+async function handleSubscriptionUpdated(subscription, sql) {
+  const stripeSubscriptionId = subscription.id;
+  const status = subscription.status;
+  const periodEndTs = subscription.current_period_end ?? null;
+  const periodEnd = periodEndTs ? new Date(periodEndTs * 1000).toISOString() : null;
+  const isPro = status === "active";
+
+  try {
+    await sql`
+      UPDATE subscriptions
+      SET status = ${status}, current_period_end = ${periodEnd}, updated_at = NOW()
+      WHERE stripe_subscription_id = ${stripeSubscriptionId}
+    `;
+
+    await sql`
+      UPDATE users
+      SET is_pro = ${isPro}
+      WHERE email = (
+        SELECT user_email FROM subscriptions
+        WHERE stripe_subscription_id = ${stripeSubscriptionId}
+        LIMIT 1
+      )
+    `;
+
+    return new Response(JSON.stringify({
+      received: true,
+      processed: true,
+      event: "customer.subscription.updated",
+      status
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (error) {
+    console.error("Webhook processing error (subscription.updated):", error);
+    return new Response(JSON.stringify({
+      ok: false,
+      error: error.message
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+
+// ── customer.subscription.deleted ─────────────────────────────────────────
+
+async function handleSubscriptionDeleted(subscription, sql) {
+  const stripeSubscriptionId = subscription.id;
+
+  try {
+    await sql`
+      UPDATE subscriptions
+      SET status = 'canceled', updated_at = NOW()
+      WHERE stripe_subscription_id = ${stripeSubscriptionId}
+    `;
+
+    // Revoke Pro access; credits are kept — user paid for the current period
+    await sql`
+      UPDATE users
+      SET is_pro = false
+      WHERE email = (
+        SELECT user_email FROM subscriptions
+        WHERE stripe_subscription_id = ${stripeSubscriptionId}
+        LIMIT 1
+      )
+    `;
+
+    return new Response(JSON.stringify({
+      received: true,
+      processed: true,
+      event: "customer.subscription.deleted"
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (error) {
+    console.error("Webhook processing error (subscription.deleted):", error);
     return new Response(JSON.stringify({
       ok: false,
       error: error.message
