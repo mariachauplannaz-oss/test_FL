@@ -97,6 +97,24 @@ async function handleSubscriptionCheckout(session, sql) {
         updated_at             = NOW()
     `;
 
+    // Non-blocking welcome email — reuses send-purchase-email with type flag so
+    // the email function can branch on it later without changing this handler.
+    const baseUrl = process.env.APP_BASE_URL || "https://flatsgenerator.com";
+    const controller = new AbortController();
+    const emailTimeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      await fetch(`${baseUrl}/api/send-purchase-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, type: "subscription_welcome" }),
+        signal: controller.signal,
+      });
+    } catch (err) {
+      console.error("send-purchase-email (subscription_welcome) call failed (non-blocking):", err.message);
+    } finally {
+      clearTimeout(emailTimeout);
+    }
+
     return new Response(JSON.stringify({
       received: true,
       processed: true,
@@ -259,20 +277,39 @@ async function handleInvoicePaid(invoice, sql) {
     });
   }
 
-  // Period end from the subscription line item (Unix seconds → ISO string)
+  const invoiceId = invoice.id;
+
+  // Period end: try subscription line item first (Stripe 17.x), fall back to root field
   const periodEndTs = invoice.lines?.data?.[0]?.period?.end ?? invoice.period_end ?? null;
   const periodEnd = periodEndTs ? new Date(periodEndTs * 1000).toISOString() : null;
 
   try {
+    // Idempotency guard: if last_invoice_id already equals this invoice, skip credit grant.
+    // Requires last_invoice_id TEXT column on subscriptions (add to migration).
+    const existing = await sql`
+      SELECT last_invoice_id FROM subscriptions
+      WHERE user_email = ${email}
+      LIMIT 1
+    `;
+    if (existing[0]?.last_invoice_id === invoiceId) {
+      return new Response(JSON.stringify({
+        received: true,
+        already_processed: true
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     await sql`
       UPDATE subscriptions
-      SET status = 'active', current_period_end = ${periodEnd}, updated_at = NOW()
+      SET
+        status             = 'active',
+        current_period_end = ${periodEnd},
+        last_invoice_id    = ${invoiceId},
+        updated_at         = NOW()
       WHERE user_email = ${email}
     `;
 
-    // Grant credits with rollover capped at 15, idempotent via credits_reset_at guard:
-    // if credits_reset_at already equals periodEnd this invoice was already processed,
-    // so IS DISTINCT FROM returns false and the WHERE clause matches no rows.
     await sql`
       UPDATE users
       SET
@@ -280,7 +317,6 @@ async function handleInvoicePaid(invoice, sql) {
         credits_remaining = LEAST(credits_remaining + 10, 15),
         credits_reset_at  = ${periodEnd}
       WHERE email = ${email}
-        AND (credits_reset_at IS DISTINCT FROM ${periodEnd})
     `;
 
     return new Response(JSON.stringify({
@@ -308,7 +344,10 @@ async function handleInvoicePaid(invoice, sql) {
 async function handleSubscriptionUpdated(subscription, sql) {
   const stripeSubscriptionId = subscription.id;
   const status = subscription.status;
-  const periodEndTs = subscription.current_period_end ?? null;
+  // Stripe 17.x may serve current_period_end on the items array rather than the root
+  const periodEndTs = subscription.current_period_end
+    ?? subscription.items?.data?.[0]?.current_period_end
+    ?? null;
   const periodEnd = periodEndTs ? new Date(periodEndTs * 1000).toISOString() : null;
   const isPro = status === "active";
 
