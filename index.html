@@ -1196,6 +1196,8 @@ footer {
     <a href="#pricing">Pricing</a>
     <a href="#glossary">Open Glossary</a>
     <a href="#status">Product Status</a>
+    <a href="/account.html" class="nav-account" id="navAccount" style="display:none">My account</a>
+    <a href="/login.html" class="nav-login" id="navLogin">Sign in</a>
     <a href="app.html" class="nav-cta">Launch App (Free)</a>
   </div>
 </nav>
@@ -1579,6 +1581,23 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
 fades.forEach(el => observer.observe(el));
+</script>
+<script>
+// Toggle nav auth links based on session state
+(async function checkAuthNav() {
+  try {
+    const res = await fetch('/api/get-account', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      const acct = document.getElementById('navAccount');
+      const login = document.getElementById('navLogin');
+      if (acct) acct.style.display = '';
+      if (login) login.style.display = 'none';
+    }
+  } catch (e) {
+    // Not logged in or error — leave default (Sign in visible)
+  }
+})();
 </script>
 </body>
 </html>

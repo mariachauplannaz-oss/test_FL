@@ -205,6 +205,22 @@ function customerEmailHtml({ recoveryUrl, garmentSummary, orderNumber, expiresAt
             </td>
           </tr>
 
+          <!-- SECONDARY CTA: View account -->
+          <tr>
+            <td style="padding:12px 36px 0;">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td align="center" style="border:1.5px solid #111111;border-radius:6px;">
+                    <a href="${BASE_URL}/login.html"
+                       style="display:block;padding:14px 32px;font-family:'DM Sans',Arial,sans-serif;font-size:14px;font-weight:600;color:#111111;text-decoration:none;letter-spacing:-0.1px;">
+                      View my account →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
           <!-- EXPIRATION NOTICE -->
           <tr>
             <td style="padding:20px 36px 0;">
@@ -282,6 +298,9 @@ Total: 10,00 € (incl. VAT)
 
 Download your spec sheet:
 ${recoveryUrl}
+
+View all your downloads and manage your account:
+${BASE_URL}/login.html
 
 DOWNLOAD WINDOW
 This link is valid until ${expiresAt}. After this date the link expires permanently and the order cannot be re-issued automatically.
