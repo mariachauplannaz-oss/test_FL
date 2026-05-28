@@ -556,7 +556,14 @@ input[type="color"] {
     padding: 16px 30px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+    position: relative;
+    gap: 18px;
+}
+.topbar-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .topbar-title {
     font-family: var(--mono);
