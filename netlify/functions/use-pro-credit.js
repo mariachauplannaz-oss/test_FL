@@ -79,6 +79,52 @@ export default async function handler(req) {
     }
     const userEmail = sessions[0].user_email;
 
+    // ── Lazy monthly reset (safety net for missed/delayed webhooks) ───────
+    // The stripe-webhook invoice.paid handler is the primary reset path.
+    // This runs as a defensive fallback in case that webhook was lost.
+    // Idempotency is guaranteed by the WHERE condition mirroring the JS check:
+    // if the webhook already ran (credits_reset_at is current), the UPDATE
+    // matches no rows and is a no-op. LEAST(..., 15) caps any double-grant.
+    const resetCheckRows = await sql`
+      SELECT u.credits_remaining, u.credits_reset_at,
+             s.current_period_end, s.status
+      FROM users u
+      LEFT JOIN subscriptions s ON s.user_email = u.email
+      WHERE u.email = ${userEmail}
+    `;
+    const rc = resetCheckRows[0];
+    if (rc) {
+      const creditsResetAt   = rc.credits_reset_at   ? new Date(rc.credits_reset_at)   : null;
+      const currentPeriodEnd = rc.current_period_end ? new Date(rc.current_period_end) : null;
+      const needsReset = (
+        ["active", "past_due"].includes(rc.status) &&
+        currentPeriodEnd !== null &&
+        creditsResetAt   !== null &&
+        creditsResetAt < new Date(currentPeriodEnd.getTime() - 31 * 24 * 60 * 60 * 1000)
+      );
+      if (needsReset) {
+        const resetRows = await sql`
+          UPDATE users
+          SET credits_remaining  = LEAST(credits_remaining + 10, 15),
+              credits_rolled_over = credits_remaining,
+              credits_reset_at    = NOW()
+          WHERE email = ${userEmail}
+            AND credits_reset_at < (
+              SELECT current_period_end - INTERVAL '30 days' - INTERVAL '1 day'
+              FROM subscriptions
+              WHERE user_email = ${userEmail}
+            )
+          RETURNING credits_remaining, credits_rolled_over
+        `;
+        if (resetRows.length > 0) {
+          console.log(
+            `use-pro-credit: lazy reset applied for ${userEmail} — ` +
+            `prev=${resetRows[0].credits_rolled_over} new=${resetRows[0].credits_remaining}`
+          );
+        }
+      }
+    }
+
     // ── Pre-flight eligibility check (for clear error messages) ──────────
     // Runs before the atomic write so the client gets a meaningful error
     // without hitting the CTE's silent no-op path.
