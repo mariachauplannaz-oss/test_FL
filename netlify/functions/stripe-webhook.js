@@ -76,6 +76,10 @@ async function handleSubscriptionCheckout(session, sql) {
   const email = session.customer_email;
   const stripeCustomerId = session.customer;
   const stripeSubscriptionId = session.subscription;
+  const tcVersion = session.metadata?.tc_version || "1.0";
+  if (!session.metadata?.tc_version) {
+    console.warn("handleSubscriptionCheckout: tc_version missing from session.metadata, falling back to '1.0'");
+  }
 
   try {
     await sql`
@@ -86,14 +90,17 @@ async function handleSubscriptionCheckout(session, sql) {
 
     await sql`
       INSERT INTO subscriptions (
-        user_email, stripe_customer_id, stripe_subscription_id, status, updated_at
+        user_email, stripe_customer_id, stripe_subscription_id,
+        status, tc_version_accepted, updated_at
       ) VALUES (
-        ${email}, ${stripeCustomerId}, ${stripeSubscriptionId}, 'active', NOW()
+        ${email}, ${stripeCustomerId}, ${stripeSubscriptionId},
+        'active', ${tcVersion}, NOW()
       )
       ON CONFLICT (user_email) DO UPDATE SET
         stripe_customer_id     = EXCLUDED.stripe_customer_id,
         stripe_subscription_id = EXCLUDED.stripe_subscription_id,
         status                 = 'active',
+        tc_version_accepted    = EXCLUDED.tc_version_accepted,
         updated_at             = NOW()
     `;
 
