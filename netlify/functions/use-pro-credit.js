@@ -192,7 +192,7 @@ export default async function handler(req) {
       )
       SELECT
         ${userEmail},
-        'pro',
+        'PRO',
         ${garmentConfigVal},
         ${downloadToken},
         ${orderNumber},
