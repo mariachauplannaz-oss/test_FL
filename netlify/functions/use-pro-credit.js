@@ -136,7 +136,7 @@ export default async function handler(req) {
         LIMIT 1
       `,
       sql`
-        SELECT status
+        SELECT status, tc_version_accepted
         FROM subscriptions
         WHERE user_email = ${userEmail}
         LIMIT 1
@@ -186,6 +186,7 @@ export default async function handler(req) {
         garment_config,
         download_token,
         order_number,
+        tc_version_accepted,
         created_at,
         last_accessed_at
       )
@@ -195,6 +196,7 @@ export default async function handler(req) {
         ${garmentConfigVal},
         ${downloadToken},
         ${orderNumber},
+        ${sub.tc_version_accepted},
         NOW(),
         NOW()
       WHERE EXISTS (SELECT 1 FROM deduct)
