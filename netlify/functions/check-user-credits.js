@@ -69,7 +69,8 @@ export default async function handler(req) {
     const creditsRemaining = user.credits_remaining ?? 0;
     const isPro = user.is_pro ?? false;
 
-    const canUseCredit =
+  const canUseCredit =
+      isPro &&
       (subscriptionStatus === "active" || subscriptionStatus === "past_due") &&
       creditsRemaining > 0;
 
