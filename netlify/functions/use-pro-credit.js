@@ -96,24 +96,24 @@ export default async function handler(req) {
     if (rc) {
       const creditsResetAt   = rc.credits_reset_at   ? new Date(rc.credits_reset_at)   : null;
       const currentPeriodEnd = rc.current_period_end ? new Date(rc.current_period_end) : null;
+      // Grant once per billing period. A period is "already granted" when
+      // credits_reset_at is aligned to (>=) current_period_end. This is the SAME
+      // signal stripe-webhook.js invoice.paid now uses, so whichever path runs
+      // first wins and the other no-ops. NULL credits_reset_at = never granted yet.
       const needsReset = (
         ["active", "past_due"].includes(rc.status) &&
         currentPeriodEnd !== null &&
-        creditsResetAt   !== null &&
-        creditsResetAt < new Date(currentPeriodEnd.getTime() - 31 * 24 * 60 * 60 * 1000)
+        (creditsResetAt === null || creditsResetAt < currentPeriodEnd)
       );
       if (needsReset) {
+        const periodEndIso = currentPeriodEnd.toISOString();
         const resetRows = await sql`
           UPDATE users
-          SET credits_remaining  = LEAST(credits_remaining + 10, 15),
+          SET credits_remaining   = LEAST(credits_remaining + 10, 15),
               credits_rolled_over = credits_remaining,
-              credits_reset_at    = NOW()
+              credits_reset_at    = ${periodEndIso}
           WHERE email = ${userEmail}
-            AND credits_reset_at < (
-              SELECT current_period_end - INTERVAL '30 days' - INTERVAL '1 day'
-              FROM subscriptions
-              WHERE user_email = ${userEmail}
-            )
+            AND (credits_reset_at IS NULL OR credits_reset_at < ${periodEndIso})
           RETURNING credits_remaining, credits_rolled_over
         `;
         if (resetRows.length > 0) {

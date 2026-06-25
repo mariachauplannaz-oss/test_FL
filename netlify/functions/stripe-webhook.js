@@ -317,13 +317,24 @@ async function handleInvoicePaid(invoice, sql) {
       WHERE user_email = ${email}
     `;
 
+    // is_pro is always safe to set on a paid invoice (idempotent).
+    await sql`
+      UPDATE users
+      SET is_pro = true
+      WHERE email = ${email}
+    `;
+
+    // Grant credits only if this billing period hasn't been granted yet.
+    // Shared idempotency signal with use-pro-credit.js lazy reset:
+    // credits_reset_at aligned to current_period_end means "already granted".
+    // NULL-safe for the first invoice of a new subscription.
     await sql`
       UPDATE users
       SET
-        is_pro            = true,
         credits_remaining = LEAST(credits_remaining + 10, 15),
         credits_reset_at  = ${periodEnd}
       WHERE email = ${email}
+        AND (credits_reset_at IS NULL OR credits_reset_at < ${periodEnd})
     `;
 
     return new Response(JSON.stringify({
