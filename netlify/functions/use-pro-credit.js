@@ -2,8 +2,8 @@ import { neon } from "@netlify/neon";
 import crypto from "node:crypto";
 
 const VALID_PRODUCT_KEYS = new Set([
-  "tshirt_techpack", "pants_techpack", "hoodie_techpack",
-  "tshirt_svg",      "pants_svg",      "hoodie_svg",
+  "techpack_tshirt", "techpack_pants", "techpack_hoodie",
+  "svg_tshirt",      "svg_pants",      "svg_hoodie",
 ]);
 
 // Copied verbatim from stripe-webhook.js — rejection sampling to avoid modulo bias.
