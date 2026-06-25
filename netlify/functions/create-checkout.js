@@ -13,7 +13,8 @@ export default async function handler(req, context) {
   }
   try {
     const body = await req.json();
-    const { email, garment_config, product_key } = body;
+    const { email: rawEmail, garment_config, product_key } = body;
+    const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
     if (!email) {
       return new Response(JSON.stringify({ error: "Email is required" }), {
         status: 400,
