@@ -192,23 +192,56 @@ async function handlePaymentReturn() {
         return; // No payment to handle — normal app load
     }
 
-    log('Payment success, verifying token...', 'info');
+ log('Payment success, verifying token...', 'info');
+
+    // Retry with backoff: Stripe can redirect to success_url BEFORE its webhook
+    // has written the download_token row to the DB. A single fetch would fail and
+    // wrongly show "contact support" to a customer who just paid. We retry a few
+    // times to let the webhook land before surfacing any error. We only retry on
+    // failure (never after ok:true), so a single-use token is never double-consumed.
+    const VERIFY_MAX_ATTEMPTS   = 3;
+    const VERIFY_RETRY_DELAY_MS = 2000;
+
+    let data      = null;
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= VERIFY_MAX_ATTEMPTS; attempt++) {
+        try {
+            const response = await fetch('/api/verify-token', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ session_id: sessionId })
+            });
+            const json = await response.json();
+            if (json.ok) {
+                data = json;
+                break; // verified — exit retry loop
+            }
+            lastError = new Error(json.error || 'Token verification failed');
+        } catch (err) {
+            lastError = err; // network/parse error — also retryable (webhook may still land)
+        }
+
+        // Not verified yet. If attempts remain, wait then retry (overlay stays up).
+        if (attempt < VERIFY_MAX_ATTEMPTS) {
+            log(`verify-token attempt ${attempt}/${VERIFY_MAX_ATTEMPTS} not ready, retrying in ${VERIFY_RETRY_DELAY_MS}ms...`, 'warn');
+            await new Promise(resolve => setTimeout(resolve, VERIFY_RETRY_DELAY_MS));
+        }
+    }
+
+    // All attempts exhausted without a verified token → genuine failure
+    if (!data) {
+        log(`Payment verification failed after ${VERIFY_MAX_ATTEMPTS} attempts: ${lastError?.message}`, 'err');
+        alert(`Payment verification error: ${lastError?.message || 'Unknown error'}\n\nIf you were charged, please contact support.`);
+        const ol = document.getElementById('paymentOverlay');
+        if (ol) ol.style.display = 'none';
+        return;
+    }
 
     try {
-        // 1. Verify session with backend — this is the gate before any PDF generation
-        const response = await fetch('/api/verify-token', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ session_id: sessionId })
-        });
-
-        const data = await response.json();
-
-        if (!data.ok) throw new Error(data.error || 'Token verification failed');
-
         log('Token verified, payment confirmed', 'ok');
 
-        // 2. Restore state from server-validated garment_config
+        // Restore state from server-validated garment_config
         const cfg = data.garment_config;
         if (cfg && cfg.selections) {
             state.selections = cfg.selections;
@@ -222,17 +255,17 @@ async function handlePaymentReturn() {
             if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
         }
 
-        // 3. Show modal to collect Brand / Project / SKU / Season
+        // Show modal to collect Brand / Project / SKU / Season
         showPostPaymentModal(cfg);
 
-        // 4. Clean URL — remove payment params
+        // Clean URL — remove payment params
         window.history.replaceState({}, '', '/app.html');
         const ol = document.getElementById('paymentOverlay');
         if (ol) ol.style.display = 'none';
 
     } catch (err) {
-        log(`Payment verification error: ${err.message}`, 'err');
-        alert(`Payment verification error: ${err.message}\n\nIf you were charged, please contact support.`);
+        log(`Post-verification error: ${err.message}`, 'err');
+        alert(`Something went wrong after payment: ${err.message}\n\nIf you were charged, please contact support.`);
         const ol = document.getElementById('paymentOverlay');
         if (ol) ol.style.display = 'none';
     }
