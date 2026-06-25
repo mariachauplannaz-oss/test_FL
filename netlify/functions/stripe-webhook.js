@@ -110,10 +110,10 @@ async function handleSubscriptionCheckout(session, sql) {
     const controller = new AbortController();
     const emailTimeout = setTimeout(() => controller.abort(), 3000);
     try {
-      await fetch(`${baseUrl}/api/send-purchase-email`, {
+      await fetch(`${baseUrl}/api/send-subscription-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, type: "subscription_welcome" }),
+        body: JSON.stringify({ email }),
         signal: controller.signal,
       });
     } catch (err) {
