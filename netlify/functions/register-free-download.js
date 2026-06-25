@@ -34,8 +34,8 @@ export default async function handler(req, context) {
 
   try {
     const body = await req.json();
-    const { email, garment_config, accepted_tc } = body;
-
+    const { email: rawEmail, garment_config, accepted_tc } = body;
+    const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
     // 1. Validate inputs
     if (!isValidEmail(email)) {
       return new Response(JSON.stringify({ ok: false, error: "Invalid email address" }), {

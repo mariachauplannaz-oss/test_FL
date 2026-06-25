@@ -73,7 +73,7 @@ async function handleCheckoutCompleted(session, sql) {
 }
 
 async function handleSubscriptionCheckout(session, sql) {
-  const email = session.customer_email;
+  const email = typeof session.customer_email === "string" ? session.customer_email.trim().toLowerCase() : session.customer_email;
   const stripeCustomerId = session.customer;
   const stripeSubscriptionId = session.subscription;
   const tcVersion = session.metadata?.tc_version || "1.0";
@@ -142,7 +142,7 @@ async function handleSubscriptionCheckout(session, sql) {
 }
 
 async function handlePaymentCheckout(session, sql) {
-  const email = session.customer_email;
+  const email = typeof session.customer_email === "string" ? session.customer_email.trim().toLowerCase() : session.customer_email;
   const stripeSessionId = session.id;
   const garmentConfig = session.metadata?.garment_config
     ? JSON.parse(session.metadata.garment_config)
@@ -268,7 +268,7 @@ async function handlePaymentCheckout(session, sql) {
 
 async function handleInvoicePaid(invoice, sql) {
   // Resolve user email: prefer invoice.customer_email, fall back to subscriptions lookup
-  let email = invoice.customer_email ?? null;
+  let email = typeof invoice.customer_email === "string" ? invoice.customer_email.trim().toLowerCase() : null;
   if (!email && invoice.customer) {
     const rows = await sql`
       SELECT user_email FROM subscriptions
