@@ -57,6 +57,28 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
+  
+<style>
+/* Pro credits badge in topbar */
+.topbar-credits {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #111111;
+    color: #FFFFFF;
+    white-space: nowrap;
+}
+/* Warning state: 0 credits left this period */
+.topbar-credits.is-depleted {
+    background: #FF6B57;
+    color: #FFFFFF;
+}
+</style>
+  
 </head>
 <body>
 
@@ -152,6 +174,7 @@
             <a href="index.html" class="topbar-home" aria-label="Back to homepage">Home</a>
             <a href="/learn/" class="topbar-home" aria-label="Glossary">Glossary</a>
             <a href="/account.html" class="topbar-home" id="topbarAccount" style="display:none">My account</a>
+            <span class="topbar-credits" id="topbarCredits" style="display:none" aria-label="Pro credits remaining"></span>
             <a href="/login.html" class="topbar-home" id="topbarLogin">Sign in</a>
             <div class="topbar-actions">
                 <button class="topbar-download" id="btnDownload" style="display:none" aria-label="Download SVG file">⬇ Download SVG</button>
@@ -261,7 +284,7 @@
   
 <script type="module" src="app.js"></script>
 <script>
-// Toggle topbar auth links based on session state
+// Toggle topbar auth links based on session state, then show Pro credits if applicable
 (async function checkAuthTopbar() {
   try {
     const res = await fetch('/api/get-account', { credentials: 'same-origin' });
@@ -271,6 +294,24 @@
       const login = document.getElementById('topbarLogin');
       if (acct) acct.style.display = '';
       if (login) login.style.display = 'none';
+
+      // Logged in → check Pro credits. Badge only shows for active Pro users.
+      try {
+        const cRes = await fetch('/api/check-user-credits', { credentials: 'same-origin' });
+        const cData = await cRes.json();
+        if (cRes.ok && cData.is_pro) {
+          const badge = document.getElementById('topbarCredits');
+          if (badge) {
+            const n = cData.credits_remaining ?? 0;
+            badge.textContent = `Pro · ${n} ${n === 1 ? 'credit' : 'credits'}`;
+            // Depleted state: no usable credits left this period
+            badge.classList.toggle('is-depleted', !cData.can_use_credit);
+            badge.style.display = '';
+          }
+        }
+      } catch (e) {
+        // Credits check failed — leave badge hidden, non-critical
+      }
     }
   } catch (e) {
     // Not logged in — leave default
