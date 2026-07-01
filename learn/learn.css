@@ -292,6 +292,17 @@ nav.site-nav {
 }
 .gl-card:hover::after { border-color: var(--group); }
 .gl-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.gl-card-cat {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--group);
+  background: var(--group-soft);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
 .gl-card-id {
   font-size: 10px;
   font-weight: 700;
@@ -312,7 +323,7 @@ nav.site-nav {
 }
 .gl-card-tooltip { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; flex: 1; }
 .gl-card-footer {
-  display: flex; align-items: center; justify-content: flex-end;
+  display: flex; align-items: center; justify-content: space-between;
   margin-top: 4px; padding-top: 12px;
   border-top: 1px solid var(--rule-soft);
 }
