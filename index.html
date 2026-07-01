@@ -12,6 +12,50 @@
 <meta property="og:url" content="https://flatsgenerator.com/">
 <meta property="og:site_name" content="FlatLabs">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FlatLabs | Instant Technical Fashion Flats">
+<meta name="twitter:description" content="Generate editable SVG flats, ISO measurements, and factory-ready tech pack templates in minutes. The smart Illustrator alternative.">
+<meta name="twitter:image" content="https://flatsgenerator.com/og-image.png">
+<meta property="og:image" content="https://flatsgenerator.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FlatLabs — editable technical fashion flats and tech pack templates">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#FF6B57">
+<meta name="author" content="FlatLabs">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='DM Sans, -apple-system, sans-serif' font-weight='700' fill='%23FF6B57'%3EF%3C/text%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://flatsgenerator.com/#org",
+      "name": "FlatLabs",
+      "url": "https://flatsgenerator.com/",
+      "description": "Editable technical fashion flats and factory-ready tech pack templates for apparel designers."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://flatsgenerator.com/#website",
+      "url": "https://flatsgenerator.com/",
+      "name": "FlatLabs",
+      "publisher": { "@id": "https://flatsgenerator.com/#org" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "FlatLabs",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "url": "https://flatsgenerator.com/",
+      "description": "Generate editable technical fashion flats, ISO measurements, and factory-ready clothing templates in minutes.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@id": "https://flatsgenerator.com/#org" }
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -445,6 +489,10 @@ nav {
   background: var(--lime);
   box-shadow: 0 0 0 3px var(--lime-soft);
 }
+.trinity-item.soon svg path { fill: #C5CAD0; }
+.trinity-item.soon .trinity-name { color: var(--ink-dim); }
+.trinity-status.soon { color: var(--ink-dim); }
+.trinity-status.soon::before { background: var(--ink-dim); box-shadow: 0 0 0 3px var(--surface-2); }
 
 /* ── PROBLEM ── */
 .problem {
@@ -499,9 +547,9 @@ nav {
 .problem-block:last-child { margin-bottom: 0; }
 .problem-block-label {
   font-family: var(--mono);
-  font-size: 10px; font-weight: 500;
-  letter-spacing: 1.2px; text-transform: uppercase;
-  color: var(--accent);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: #FFB0A0;
   margin-bottom: 14px;
   display: block;
 }
@@ -745,6 +793,22 @@ nav {
 .price-card.outlined .price-cta:hover {
   background: var(--ink); color: #fff; border-color: var(--ink);
 }
+.price-card.soon { background: var(--surface); border-color: var(--border); }
+.price-card.soon:hover { transform: none; box-shadow: none; }
+.price-card.soon .price-name { color: var(--ink-soft); }
+.price-card.soon .price-amount { color: var(--ink-soft); }
+.price-card.soon .price-amount .price-period { color: var(--ink-dim); }
+.price-card.soon .price-desc { color: var(--ink-dim); }
+.price-card.soon .price-included { color: var(--ink-dim); }
+.price-card.soon .price-features li { color: var(--ink-dim); }
+.price-card.soon .price-tag { background: var(--ink-dim); color: #fff; }
+.price-card.soon .price-cta {
+  background: var(--surface-2);
+  color: var(--ink-dim);
+  border: 1px solid var(--border);
+  cursor: default;
+  pointer-events: none;
+}
 
 .pricing-footer {
   border-top: 1px solid var(--border);
@@ -769,11 +833,11 @@ nav {
 }
 .glossary-bg-num {
   position: absolute;
-  top: -40px; left: -10px;
+  top: -30px; right: 20px; left: auto;
   font-family: var(--serif);
   font-size: clamp(180px, 26vw, 380px);
   font-weight: 900;
-  color: rgba(17,17,17,.04);
+  color: rgba(17,17,17,.06);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -968,19 +1032,117 @@ nav {
   max-width: 560px;
 }
 .status-prompt p {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--ink);
   margin-bottom: 0;
-  line-height: 1.6;
-  font-style: italic;
-  font-family: var(--serif);
-  font-size: 18px;
+  line-height: 1.65;
 }
+.status-prompt-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 18px;
+  background: var(--ink); color: #fff;
+  padding: 11px 20px; border-radius: 100px;
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 600;
+  text-decoration: none;
+  transition: all .25s var(--ease);
+}
+.status-prompt-cta:hover { background: var(--accent); transform: translateY(-1px); }
 .status-visual {
   display: flex; align-items: center; justify-content: center;
   position: relative;
 }
 .status-pocket-wrap svg { width: 360px; max-width: 100%; }
+
+/* ── ROADMAP / COMING-SOON ROW ── */
+.roadmap {
+  max-width: 1180px;
+  margin: 80px auto 0;
+  padding: 0 60px;
+  position: relative;
+  z-index: 1;
+}
+.roadmap-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.roadmap-label .roadmap-hint { color: var(--ink-soft); text-transform: none; letter-spacing: 0; }
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.roadmap-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+}
+.roadmap-card:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(17,17,17,.06); }
+.roadmap-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+}
+.roadmap-icon svg { width: 24px; height: 24px; }
+.roadmap-name {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.3px;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.roadmap-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+.roadmap-status::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink-dim);
+}
+.roadmap-card.is-live {
+  border-color: var(--cyan);
+  background: var(--cyan-bg);
+}
+.roadmap-card.is-live .roadmap-icon { background: #fff; color: var(--cyan-deep); }
+.roadmap-card.is-live .roadmap-status { color: var(--cyan-deep); }
+.roadmap-card.is-live .roadmap-status::before {
+  background: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(43,168,214,.2);
+  animation: roadmapPulse 2s var(--ease) infinite;
+}
+@keyframes roadmapPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(43,168,214,.2); }
+  50% { box-shadow: 0 0 0 5px rgba(43,168,214,.05); }
+}
 
 /* ── FINAL CTA ── */
 .final-cta {
@@ -1160,6 +1322,10 @@ footer {
   .status-bg-num { font-size: clamp(120px, 32vw, 200px); }
   .status-visual { display: none; }
 
+  .roadmap { padding: 0 20px; margin-top: 56px; }
+  .roadmap-grid { grid-template-columns: 1fr 1fr; }
+  .roadmap-label { flex-direction: column; align-items: flex-start; gap: 6px; }
+
   .final-cta { padding: 100px 0 80px; }
   .final-cta-inner { padding: 0 20px; }
 
@@ -1214,7 +1380,7 @@ footer {
       <span class="line-2">are not supposed to take half your day.</span>
     </h1>
     <p class="hero-body">
-      FlatLabs generates <strong>editable technical flats</strong>, ISO measurements, and factory-ready exports in minutes — without rebuilding the same damn garment foundations from scratch every single season.
+      FlatLabs generates <strong>editable technical flats</strong>, ISO measurements, and factory-ready exports in minutes — without rebuilding the same garment foundations from scratch every single season.
     </p>
     <p class="hero-body">
       Built for fashion designers, independent apparel brands, and clothing production teams working on real timelines.
@@ -1303,7 +1469,7 @@ footer {
 
     <div class="trinity">
       <div class="trinity-header">
-        <span class="trinity-label">Available now · The Holy Trinity</span>
+        <span class="trinity-label">The Holy Trinity · Foundation garments</span>
         <p class="trinity-tagline">The foundation of every collection. Built properly.</p>
       </div>
       <div class="trinity-grid">
@@ -1314,19 +1480,19 @@ footer {
           <span class="trinity-name">T-Shirt</span>
           <span class="trinity-status">Live</span>
         </div>
-        <div class="trinity-item" data-garment="pants">
+        <div class="trinity-item soon" data-garment="pants">
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
             <path d="M25.8 30.5809L24.0272 22.0138C23.8861 22.3255 23.8519 22.6787 23.778 23.0111L22.2237 30.4218L21.466 34.5598L20.4073 41.302C20.2097 42.4318 19.0706 42.3686 18.2404 42.3691L12.4416 42.3701C12.2562 42.37 12.0524 42.381 11.8708 42.3402L11.8361 42.3319C10.6125 42.0537 10.6719 41.1105 10.6725 40.1356L10.6831 31.5095L10.7899 27.5976C10.7997 27.231 10.8622 26.8642 10.8792 26.4966L10.8914 24.6537C10.9009 24.2719 10.9698 23.8956 10.982 23.5162L11.0015 21.5742C11.01 21.3021 11.0602 21.0346 11.0704 20.7622L11.1881 17.6689L11.3765 14.8799C11.4661 13.8102 11.6452 12.7353 11.8594 11.684L12.2532 9.71786C12.3126 9.42405 12.2936 9.10338 12.2935 8.80403L12.2924 7.47705C12.2923 7.18844 12.2506 6.79896 12.3836 6.53678C12.7005 5.91185 13.1171 5.63331 13.8406 5.58799L33.5629 5.58203C35.1583 5.58105 35.7035 5.91011 35.7073 7.50372L35.7098 8.68028C35.7111 9.07417 35.7576 9.45592 35.8191 9.8455L35.995 10.8356C36.0053 10.8972 36.0326 10.9547 36.0463 11.0156L36.2448 11.948C36.3884 12.6854 36.4822 13.434 36.5453 14.1828L36.6881 16.2233C36.7042 16.4748 36.6846 16.7786 36.7402 17.0215L36.7701 17.1562C36.8792 17.6553 36.8283 18.2263 36.8519 18.7383C36.8611 18.9374 36.9061 19.1353 36.9126 19.3323L36.9328 20.8307C36.9448 21.0554 36.9905 21.2787 36.9978 21.504L37.0144 23.0844C37.0256 23.3708 37.0909 23.6529 37.1037 23.9414L37.1323 25.8809C37.1383 26.0432 37.171 26.2033 37.1758 26.3654L37.2283 28.654C37.2349 28.8338 37.2792 29.0088 37.2842 29.1888L37.2908 30.7932C37.2966 30.9853 37.3404 31.1733 37.3453 31.3645L37.3522 39.6626C37.3526 40.7783 37.6006 41.9018 36.2228 42.3199L36.155 42.3401C36.0127 42.3733 35.8587 42.3656 35.7136 42.3667L30.2397 42.3695C28.2167 42.3686 27.7933 42.5797 27.4682 40.2539L25.8 30.5809Z" fill="#212B31"/>
           </svg>
           <span class="trinity-name">Pants</span>
-          <span class="trinity-status">Live</span>
+          <span class="trinity-status soon">Coming soon</span>
         </div>
-        <div class="trinity-item" data-garment="hoodie">
+        <div class="trinity-item soon" data-garment="hoodie">
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
             <path d="M24.4577 42.0266L24.0868 41.6265C22.6719 43.081 21.8215 43.1016 19.8489 43.1026L16.2541 43.1028C14.125 43.1014 12.1325 41.96 11.5668 39.8001C11.4874 39.4969 11.4669 39.186 11.4 38.881L10.9561 39.111C9.15933 39.9526 6.85589 39.3165 6.04059 37.433C5.86031 37.0165 5.4562 35.4373 5.45428 35.0085L5.34961 33.3292L5.35027 28.4307C5.35866 28.2157 5.40905 28.0065 5.42259 27.7912C5.64741 24.2085 6.25945 20.4827 7.58128 17.1279C8.81217 14.0038 10.549 11.7122 13.8047 10.444L15.6684 9.80206C16.084 9.67953 16.5033 9.58222 16.9022 9.40855L16.8542 9.19428C16.3033 7.48447 18.0863 5.51005 19.7463 5.17503C20.1068 5.10228 20.4659 5.08287 20.8291 5.03633L21.7501 4.95083C21.9107 4.9363 22.0686 4.90236 22.2301 4.89495L23.2507 4.88867L26.3159 4.96395C28.1066 5.08452 30.4005 5.555 31.046 7.5222L31.1252 7.76975C31.2723 8.24206 31.2434 8.9668 31.0569 9.43756L33.4228 10.191C35.8927 10.9957 38.1141 12.6057 39.3746 14.9065L40.605 17.6701C40.8233 18.1244 40.9078 18.6473 41.0777 19.1182L42.0097 23.15C42.0558 23.3015 42.0648 23.4519 42.0894 23.6073L42.5068 26.7353L42.5745 27.869C42.6537 28.6648 42.6578 29.2462 42.6584 30.0476L42.6331 33.5665C42.6236 33.7575 42.573 33.941 42.5621 34.132C42.5408 34.5048 42.5765 34.9085 42.5183 35.275C42.4475 35.7209 42.1541 36.9104 42.0046 37.3093C41.5813 38.4384 40.5204 39.2975 39.3213 39.4515C38.4672 39.5612 37.3152 39.399 36.624 38.8611L36.6015 38.8432C36.5689 39.0441 36.5549 39.251 36.5103 39.4494C36.0231 41.617 34.2799 43.0109 32.0513 43.0975L27.7875 43.1027C26.5206 43.1018 25.576 43.0715 24.5611 42.1253L24.4577 42.0266Z" fill="#212B31"/>
           </svg>
           <span class="trinity-name">Hoodie</span>
-          <span class="trinity-status">Live</span>
+          <span class="trinity-status soon">Coming soon</span>
         </div>
       </div>
     </div>
@@ -1335,7 +1501,6 @@ footer {
 
 <!-- ───── PROBLEM (01) ───── -->
 <section class="problem" id="problem" data-screen-label="03 Problem">
-  <div class="problem-bg-num">01</div>
   <div class="problem-inner">
     <div class="problem-left">
       <div class="section-label"><span class="num">01</span> The workflow problem</div>
@@ -1383,7 +1548,7 @@ footer {
     <div class="pricing-header">
       <div class="section-label"><span class="num">02</span> Transparent pricing</div>
       <h2>Flexible pricing for <em>growing fashion brands.</em></h2>
-      <p class="pricing-intro"><strong>Design for free. Download only when you need production-ready vectors.</strong> No enterprise contracts. No bloated CAD suites. Just technically correct fashion flats, ready when you need them.</p>
+      <p class="pricing-intro"><strong>Design for free. Download only when you need production-ready vectors.</strong></p>
     </div>
 
     <div class="pricing-grid">
@@ -1416,19 +1581,19 @@ footer {
       </div>
 
       <!-- PRO -->
-      <div class="price-card featured">
-        <span class="price-tag">Most popular</span>
+      <div class="price-card soon">
+        <span class="price-tag">Coming soon</span>
         <div class="price-name">Pro Subscription</div>
         <div class="price-amount">€25<span class="price-period">/ month</span></div>
         <p class="price-desc">Built for fashion designers and apparel brands scaling recurring collections.</p>
-        <div class="price-included">Included</div>
+        <div class="price-included">Planned</div>
         <ul class="price-features">
           <li>15 downloads per month</li>
           <li>Unlimited garment combinations</li>
           <li>Full SVG + Tech Pack PDF exports</li>
           <li>Faster multi-style workflows across recurring styles</li>
         </ul>
-        <a href="app.html" class="price-cta">Upgrade to Pro</a>
+        <span class="price-cta">Coming soon</span>
       </div>
     </div>
 
@@ -1510,6 +1675,10 @@ footer {
       <p>Pants, hoodies, expanded tech pack PDF generation, and modular garment components are rolling out progressively throughout the SS27 season.</p>
       <div class="status-prompt">
         <p>If you've ever rebuilt the same flat twice, this will probably feel familiar. Tell us if it does.</p>
+        <a href="legal/contact.html" class="status-prompt-cta">
+          Share your feedback
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
     </div>
 
@@ -1540,11 +1709,10 @@ footer {
 
 <!-- ───── FINAL CTA (05) ───── -->
 <section class="final-cta" id="start" data-screen-label="07 Final CTA">
-  <div class="final-cta-bg-num">05</div>
   <div class="final-cta-inner">
     <div class="section-label"><span class="num">05</span> Instant CAD exports</div>
     <h2>Production-ready fashion flats, without <em>the Illustrator overhead.</em></h2>
-    <p>Start completely free, pay only per export, or unlock your entire collection development workflow with <strong>FlatLabs Pro.</strong> Built for designers who want to spend time designing, not fixing anchor points.</p>
+    <p>Start completely free and <strong>pay only per export</strong> when you need production-ready vectors. Built for designers who want to spend time designing, not fixing anchor points.</p>
     <div class="final-cta-buttons">
       <a href="app.html" class="btn-primary-light">
         Create Your First Flat Now
