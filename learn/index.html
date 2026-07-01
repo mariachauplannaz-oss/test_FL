@@ -29,6 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../base.css">
 <link rel="stylesheet" href="learn.css">
 </head>
 <body>
@@ -59,8 +60,8 @@
           <span class="stat-label">Terms covered<br>and counting</span>
         </div>
         <div class="stat">
-          <span class="stat-num">12</span>
-          <span class="stat-label">Categories<br>by use</span>
+          <span class="stat-num">5</span>
+          <span class="stat-label">Groups<br>by discipline</span>
         </div>
         <div class="stat">
           <span class="stat-num">Free</span>
@@ -140,29 +141,32 @@ const GLOSSARY = [
   { id:'FT-FIN-003', category:'Finish',     name:'Sanforized',              tooltip:'Pre-shrinking process to ensure dimensional stability.',                   production:'Pre-shrunk',   url:'/learn/finishes/sanforized-standards.html' },
 ];
 
-const cats = {};
-GLOSSARY.forEach(t => { cats[t.category] = (cats[t.category] || 0) + 1; });
+/* ── 5-group taxonomy ── */
+const GROUPS = [
+  { key:'materials',     label:'Materials',    color:'#2BA8D6', colorSoft:'rgba(43,168,214,.12)',  cats:['Fabric','Finish'] },
+  { key:'construction',  label:'Construction', color:'#8B7BC4', colorSoft:'rgba(139,123,196,.12)', cats:['Seam','Stitch','Needle','Thread'] },
+  { key:'color-dye',     label:'Color & Dye',  color:'#2BBFA4', colorSoft:'rgba(43,191,164,.12)',  cats:['Color','Dyeing'] },
+  { key:'decoration',    label:'Decoration',   color:'#F0A040', colorSoft:'rgba(240,160,64,.12)',  cats:['Print','Embroidery'] },
+  { key:'trims-packing', label:'Trims',        color:'#4CB86A', colorSoft:'rgba(76,184,106,.12)',  cats:['Label','Packing'] },
+];
 
-/* Category → group mapping, mirrors the data-group values used on article pages */
-const catToGroup = {
-  Fabric: 'materials',     Finish: 'materials',
-  Seam: 'construction',    Stitch: 'construction', Needle: 'construction', Thread: 'construction',
-  Color: 'colordye',       Dyeing: 'colordye',
-  Print: 'decoration',     Embroidery: 'decoration',
-  Label: 'trims',          Packing: 'trims',
-};
+const catToGroup = {};
+GROUPS.forEach(g => g.cats.forEach(c => catToGroup[c] = g.key));
+GLOSSARY.forEach(t => t.group = catToGroup[t.category] || 'materials');
 
 const tabsEl = document.getElementById('glTabs');
-let activeCat = 'Fabric';
+let activeGroup = 'materials';
 
-Object.entries(cats).forEach(([cat, count]) => {
+GROUPS.forEach(g => {
+  const count = GLOSSARY.filter(t => t.group === g.key).length;
   const btn = document.createElement('button');
-  btn.className = 'gl-tab' + (cat === activeCat ? ' active' : '');
-  btn.dataset.cat = cat;
-  btn.dataset.group = catToGroup[cat];
+  btn.className = 'gl-tab' + (g.key === activeGroup ? ' active' : '');
+  btn.dataset.group = g.key;
   btn.setAttribute('role', 'tab');
-  btn.setAttribute('aria-selected', cat === activeCat ? 'true' : 'false');
-  btn.innerHTML = `${cat}<span class="gl-tab-count">${String(count).padStart(2, '0')}</span>`;
+  btn.setAttribute('aria-selected', g.key === activeGroup ? 'true' : 'false');
+  btn.style.setProperty('--group', g.color);
+  btn.style.setProperty('--group-soft', g.colorSoft);
+  btn.innerHTML = `${g.label}<span class="gl-tab-count">${String(count).padStart(2,'0')}</span>`;
   btn.addEventListener('click', () => {
     document.querySelectorAll('.gl-tab').forEach(t => {
       t.classList.remove('active');
@@ -170,39 +174,38 @@ Object.entries(cats).forEach(([cat, count]) => {
     });
     btn.classList.add('active');
     btn.setAttribute('aria-selected', 'true');
-    activeCat = cat;
-    renderGrid(cat);
+    activeGroup = g.key;
+    renderGrid(g.key);
   });
   tabsEl.appendChild(btn);
 });
 
-function renderGrid(cat) {
+function renderGrid(groupKey) {
   const grid = document.getElementById('glGrid');
   const heading = document.getElementById('sectionHeading');
   const countEl = document.getElementById('sectionCount');
-  const terms = GLOSSARY.filter(t => t.category === cat);
+  const group = GROUPS.find(g => g.key === groupKey);
+  const terms = GLOSSARY.filter(t => t.group === groupKey);
 
-  grid.dataset.group = catToGroup[cat];
-  heading.innerHTML = `${cat} <em>terms</em>`;
-  countEl.textContent = `${String(terms.length).padStart(2, '0')} ${terms.length === 1 ? 'term' : 'terms'}`;
+  heading.innerHTML = `${group.label} <em>terms</em>`;
+  countEl.textContent = `${String(terms.length).padStart(2,'0')} ${terms.length === 1 ? 'term' : 'terms'}`;
 
   grid.innerHTML = terms.map(t => `
-    <a class="gl-card" href="${t.url}">
-      <div class="gl-card-top">
-        <span class="gl-card-id">${t.id}</span>
-        <span class="gl-card-production">${t.production}</span>
-      </div>
+    <a class="gl-card" href="${t.url}" data-group="${t.group}">
+      <span class="gl-card-cat">${t.category}</span>
       <span class="gl-card-name">${t.name}</span>
       <span class="gl-card-tooltip">${t.tooltip}</span>
       <div class="gl-card-footer">
+        <span class="gl-card-id">${t.id}</span>
         <span class="gl-card-link">Read more →</span>
       </div>
     </a>
   `).join('');
 }
 
-renderGrid(activeCat);
+renderGrid(activeGroup);
 </script>
 
 </body>
 </html>
+
