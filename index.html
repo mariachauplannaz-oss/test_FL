@@ -810,6 +810,13 @@ nav {
   pointer-events: none;
 }
 
+.pro-teaser-blur {
+  filter: blur(5px);
+  opacity: .8;
+  user-select: none;
+  pointer-events: none;
+}
+
 .pricing-footer {
   border-top: 1px solid var(--border);
   padding-top: 28px;
@@ -1568,15 +1575,16 @@ footer {
 
       <!-- PAY PER DOWNLOAD -->
       <div class="price-card outlined" data-tier="ppd">
-        <div class="price-name">Pay per export</div>
-        <div class="price-tier-range">From €6 <span class="price-period">/ download</span></div>
-        <p class="price-desc">Need a single flat for a quick tech pack? Export it and move on.</p>
+        <div class="price-name">Tech Pack</div>
+        <div class="price-tier-range">€10 <span class="price-period">/ download</span></div>
+        <p class="price-desc">Turn your flat into a factory-ready spec sheet.</p>
         <div class="price-included">What you get</div>
         <ul class="price-features">
-          <li>Editable SVG export (€6–10)</li>
-          <li>SVG + Tech Pack PDF bundle (€12–18)</li>
+          <li>ISO 8559-1 compliant Tech Pack PDF</li>
+          <li>Measurements, POMs, BOM &amp; construction specs</li>
+          <li>Editable SVG flat included</li>
         </ul>
-        <p class="price-note">// Pricing varies depending on garment complexity.</p>
+        <p class="price-note">// T-shirt available now. Pants &amp; hoodie coming soon.</p>
         <a href="app.html" class="price-cta">Start a Project</a>
       </div>
 
@@ -1585,14 +1593,16 @@ footer {
         <span class="price-tag">Coming soon</span>
         <div class="price-name">Pro Subscription</div>
         <div class="price-amount">€25<span class="price-period">/ month</span></div>
-        <p class="price-desc">Built for fashion designers and apparel brands scaling recurring collections.</p>
-        <div class="price-included">Planned</div>
-        <ul class="price-features">
-          <li>15 downloads per month</li>
-          <li>Unlimited garment combinations</li>
-          <li>Full SVG + Tech Pack PDF exports</li>
-          <li>Faster multi-style workflows across recurring styles</li>
-        </ul>
+        <div class="pro-teaser-blur" aria-hidden="true">
+          <p class="price-desc">Built for fashion designers and apparel brands scaling recurring collections.</p>
+          <div class="price-included">Planned</div>
+          <ul class="price-features">
+            <li>15 downloads per month</li>
+            <li>Unlimited garment combinations</li>
+            <li>Full SVG + Tech Pack PDF exports</li>
+            <li>Faster multi-style workflows across recurring styles</li>
+          </ul>
+        </div>
         <span class="price-cta">Coming soon</span>
       </div>
     </div>
