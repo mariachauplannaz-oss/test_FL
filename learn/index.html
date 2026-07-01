@@ -143,6 +143,15 @@ const GLOSSARY = [
 const cats = {};
 GLOSSARY.forEach(t => { cats[t.category] = (cats[t.category] || 0) + 1; });
 
+/* Category → group mapping, mirrors the data-group values used on article pages */
+const catToGroup = {
+  Fabric: 'materials',     Finish: 'materials',
+  Seam: 'construction',    Stitch: 'construction', Needle: 'construction', Thread: 'construction',
+  Color: 'colordye',       Dyeing: 'colordye',
+  Print: 'decoration',     Embroidery: 'decoration',
+  Label: 'trims',          Packing: 'trims',
+};
+
 const tabsEl = document.getElementById('glTabs');
 let activeCat = 'Fabric';
 
@@ -150,6 +159,7 @@ Object.entries(cats).forEach(([cat, count]) => {
   const btn = document.createElement('button');
   btn.className = 'gl-tab' + (cat === activeCat ? ' active' : '');
   btn.dataset.cat = cat;
+  btn.dataset.group = catToGroup[cat];
   btn.setAttribute('role', 'tab');
   btn.setAttribute('aria-selected', cat === activeCat ? 'true' : 'false');
   btn.innerHTML = `${cat}<span class="gl-tab-count">${String(count).padStart(2, '0')}</span>`;
@@ -172,6 +182,7 @@ function renderGrid(cat) {
   const countEl = document.getElementById('sectionCount');
   const terms = GLOSSARY.filter(t => t.category === cat);
 
+  grid.dataset.group = catToGroup[cat];
   heading.innerHTML = `${cat} <em>terms</em>`;
   countEl.textContent = `${String(terms.length).padStart(2, '0')} ${terms.length === 1 ? 'term' : 'terms'}`;
 
