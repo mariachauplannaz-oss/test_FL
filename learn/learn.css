@@ -4,33 +4,21 @@
    Coral accent (#FF6B57) + 5-group color system — Playfair Display + DM Sans.
    ────────────────────────────────────────────────────────── */
 
+/* ── Learn overrides (base.css provides shared tokens) ── */
 :root {
-  --ink: #212B31;
-  --ink-soft: #5F7385;
+  /* Learn-specific neutrals */
   --ink-faint: rgba(33,43,49,.55);
-  --rule: rgba(33,43,49,.1);
-  --rule-soft: rgba(33,43,49,.06);
-  --surface: #FFFFFF;
-  --surface-paper: #f5f8fc;
+  --surface: #FFFFFF;           /* override: learn pages use white bg, not base warm gray */
   --surface-card: #fafbfd;
-  --surface-dark: #212B31;
 
-  /* Coral accent system */
-  --accent: #FF6B57;          /* primary */
-  --accent-hover: #E85946;
+  /* Learn-specific accent extensions */
   --accent-deep: #C2402D;
-  --accent-text: #FFFFFF;
-  --accent-soft: rgba(255,107,87,.12);
   --accent-soft-2: rgba(255,107,87,.18);
 
   /* 5-group color system — driven by [data-group] on <main> (articles) and
      the hub's tabs/#glGrid. Falls back to brand coral when no group is set. */
   --group: var(--accent);
   --group-soft: var(--accent-soft);
-
-  --serif: 'Playfair Display', Georgia, serif;
-  --sans: 'DM Sans', -apple-system, sans-serif;
-  --ease: cubic-bezier(.4,0,.2,1);
 }
 
 [data-group="materials"]    { --group: #1366E0; --group-soft: rgba(19,102,224,.12); }
