@@ -104,7 +104,7 @@ async function handleSubscriptionCheckout(session, sql) {
         updated_at             = NOW()
     `;
 
-    // Non-blocking welcome email — reuses send-purchase-email with type flag so
+    // Non-blocking welcome email — calls dedicated send-subscription-email endpoint
     // the email function can branch on it later without changing this handler.
     const baseUrl = process.env.APP_BASE_URL || "https://flatsgenerator.com";
     const controller = new AbortController();
@@ -117,7 +117,7 @@ async function handleSubscriptionCheckout(session, sql) {
         signal: controller.signal,
       });
     } catch (err) {
-      console.error("send-purchase-email (subscription_welcome) call failed (non-blocking):", err.message);
+      console.error("send-subscription-email call failed (non-blocking):", err.message);
     } finally {
       clearTimeout(emailTimeout);
     }
