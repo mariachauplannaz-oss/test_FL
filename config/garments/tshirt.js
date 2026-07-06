@@ -96,8 +96,8 @@ export const COMPONENT_META = {
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 2.5,  unit: 'cm', pom: 'From HPS to lowest point of back neckline, straight' },
                 binding_width:  { letter: 'TS-J', label: 'Rib Binding Width',   value: 1.5,  unit: 'cm', pom: 'Finished width of neck binding' }
             },
-            construction: 'Rib binding 2×1 (cotton/elastane). Attached with ISO 301 flatlock stitch 0.1 cm from edge. Binding stretched 90% of neckline length.',
-            iso_norm: 'ISO 301'
+            construction: 'Rib binding 2×1 (cotton/elastane). Attached with ISO 607 flatlock stitch 0.1 cm from edge. Binding stretched 90% of neckline length.',
+            iso_norm: 'ISO 607'
         },
         v: {
             label: 'V-Neck',
@@ -107,8 +107,8 @@ export const COMPONENT_META = {
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 2.5,  unit: 'cm', pom: 'From HPS to lowest point of back neckline, straight' },
                 binding_width:  { letter: 'TS-J', label: 'Rib Binding Width',   value: 1.5,  unit: 'cm', pom: 'Finished width of neck binding' }
             },
-            construction: 'Rib binding 2×1. ISO 301 flatlock stitch. V-point: mitered finish with tape reinforcement.',
-            iso_norm: 'ISO 301'
+            construction: 'Rib binding 2×1. ISO 607 flatlock stitch. V-point: mitered finish with tape reinforcement.',
+            iso_norm: 'ISO 607'
         },
         mok: {
             label: 'Mock Neck',
@@ -118,8 +118,8 @@ export const COMPONENT_META = {
                 front_drop:     { letter: 'TS-H', label: 'Front Neck Drop',     value: 1.5,  unit: 'cm', pom: 'From HPS to neckline seam at CF' },
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 1.5,  unit: 'cm', pom: 'From HPS to neckline seam at CB' }
             },
-            construction: 'Self-fabric mock collar. ISO 301 flatlock stitch on collar seam. Fold at 4.5 cm.',
-            iso_norm: 'ISO 301'
+            construction: 'Self-fabric mock collar. ISO 607 flatlock stitch on collar seam. Fold at 4.5 cm.',
+            iso_norm: 'ISO 607'
         },
         scp: {
             label: 'Scoop Neck',
@@ -129,8 +129,8 @@ export const COMPONENT_META = {
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 2.5,  unit: 'cm', pom: 'From HPS to lowest point of back neckline, straight' },
                 binding_width:  { letter: 'TS-J', label: 'Rib Binding Width',   value: 1.2,  unit: 'cm', pom: 'Finished width of neck binding' }
             },
-            construction: 'Rib binding 2×1 (cotton/elastane). ISO 301 flatlock stitch 0.1 cm from edge.',
-            iso_norm: 'ISO 301'
+            construction: 'Rib binding 2×1 (cotton/elastane). ISO 607 flatlock stitch 0.1 cm from edge.',
+            iso_norm: 'ISO 607'
         },
         bot: {
             label: 'Boat Neck',
@@ -294,9 +294,9 @@ export function collectConstruction(selections) {
 
 export const TSHIRT_CONFIG = {
 
-    allowedFabrics:     ['jersey_150', 'jersey_180', 'jersey_200', 'rib_1x1'],
+    allowedFabrics:     ['jersey_150', 'jersey_180', 'jersey_200'],
     allowedNeedles:     ['ballpoint_70_10', 'ballpoint_80_12', 'ballpoint_90_14'],
-    allowedThreads:     ['poly_tex_27', 'poly_tex_18', 'poly_tex_40', 'cotton_tex_30'],
+    allowedThreads:     ['poly_tex_27', 'poly_tex_18', 'poly_tex_40'],
     allowedStitches:    ['overlock_4t', 'coverseam_3n', 'flatlock'],
     allowedCareLabels:  ['woven', 'printed', 'heat_transfer', 'satin'],
     allowedBrandLabels: ['woven', 'heat_transfer', 'embroidered', 'printed'],

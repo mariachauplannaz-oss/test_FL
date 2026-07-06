@@ -51,12 +51,12 @@ export function buildPOM(selections) {
 
 // ─── 3. BUILD CONSTRUCTION NOTES ─────────────────────────────────────────────
 // Returns an array of { component, norm, note } objects
-export function buildConstructionNotes(selections, garmentType = 'tshirt') {
+export function buildConstructionNotes(selections, garmentType = 'tshirt', careLabelKey = 'woven') {
     const notes = [];
 
     // Garment-level norm — jersey = ISO 514 by default
     const garmentNorm = garmentType === 'tshirt'
-        ? { component: 'General Assembly', norm: 'ISO 514', note: 'All structural seams executed with jersey stitch (ISO 514). Seam allowance: 1 cm throughout.' }
+        ? { component: 'General Assembly', norm: 'ISO 514', note: 'All structural seams executed with 4-thread overlock (ISO 514). Seam allowance: 1 cm throughout.' }
         : { component: 'General Assembly', norm: 'ISO 301', note: 'All structural seams executed with lockstitch (ISO 301). Seam allowance: 1 cm throughout.' };
 
     notes.push(garmentNorm);
@@ -85,15 +85,21 @@ export function buildConstructionNotes(selections, garmentType = 'tshirt') {
             norm: 'ISO 406',
             note: 'Bottom hem finished with 3-needle coverseam stitch (ISO 406). Fold: 2 cm double-needle. Thread: Tex 18 coverseam thread. No raw edges permitted on finished garment.'
         });
+        const careLabel = CARE_LABELS[careLabelKey] || CARE_LABELS.woven;
         notes.push({
-            component: 'Care Label — Center Back Neck',
+            component: `Care Label — ${careLabel.label}`,
             norm: 'EN ISO 3758',
-            note: 'Woven care label required per EN ISO 3758. Placement: center back neck, 1 cm below neckline seam. Brand label sewn immediately above care label. Size label: separate woven label, same placement stack.'
+            note: `${careLabel.label} required. ${careLabel.construction}.`
         });
         notes.push({
             component: 'Seam Allowance — All Seams',
             norm: 'ISO 4916',
             note: 'Standard seam allowance: 1.0 cm throughout. Shoulder seams: 1.0 cm, pressed toward back. Side seams: 1.0 cm, pressed open. Armhole seams: 1.0 cm, serged together and pressed toward sleeve.'
+        });
+        notes.push({
+            component: 'Shrinkage Compensation',
+            norm: '—',
+            note: 'All measurements are finished (post-wash) specifications. Pattern must include shrinkage compensation per the fabric shrinkage values above.'
         });
 
     return notes;
@@ -135,7 +141,7 @@ export function buildTechPackState(state, projectMeta = {}) {
         // POM table rows
         pom: buildPOM(selections),
         // Construction notes
-        constructionNotes: buildConstructionNotes(selections, garmentType),
+        constructionNotes: buildConstructionNotes(selections, garmentType, state.careLabel),
         // Bill of Materials — built dynamically from state selections
         bom: buildBOM(state)
     };

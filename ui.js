@@ -294,30 +294,14 @@ export function buildStep2(state) {
             (key, item) => key.slice(0,3).toUpperCase()
         ));
 
-        // Brand Label + quantity
+        // Brand Label
         const brandSec = buildSelector(
             'Brand Label',
             allowed(BRAND_LABELS, TSHIRT_CONFIG.allowedBrandLabels),
             state.brandLabel, 'brandLabel',
             (key, item) => key.slice(0,3).toUpperCase()
         );
-
-        const qtyRow = document.createElement('div');
-        qtyRow.className = 'qty-input-row';
-        qtyRow.innerHTML = `
-            <label>Quantity per garment</label>
-            <input type="number" min="1" max="10" value="${state.brandLabelQty}" id="brandLabelQty">
-        `;
-        brandSec.appendChild(qtyRow);
         content.appendChild(brandSec);
-
-        // Wire qty input (after appending so the element exists)
-        setTimeout(() => {
-            const qtyInput = document.getElementById('brandLabelQty');
-            if (qtyInput) qtyInput.onchange = (e) => {
-                state.brandLabelQty = parseInt(e.target.value) || 1;
-            };
-        }, 0);
     });
 
     // ══ ADVANCED SECTION ══
