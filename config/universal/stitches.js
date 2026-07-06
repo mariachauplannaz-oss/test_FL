@@ -19,7 +19,7 @@ export const STITCH_SPECS = {
     },
     flatlock: {
         label: 'Flatlock Stitch',
-        iso: 'ISO 301',
+        iso: 'ISO 607',
         spi: 14,
         needle: 'Ballpoint 70/10 (SUK)',
         tension: 'Light',
