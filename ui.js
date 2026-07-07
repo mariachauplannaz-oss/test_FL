@@ -4,6 +4,7 @@ import { DICT, GARMENT_ICONS, CATEGORIES, FABRIC_SPECS, STITCH_SPECS } from './c
 import { NEEDLES, THREADS, CARE_LABELS, BRAND_LABELS, checkCompatibility, isOptionCompatible, TSHIRT_CONFIG } from './config/index.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { track } from './tracker.js';
+import { PRINT_ZONES } from './config/print-zones.js';
 
 export function initCategories(state, updateButton) {
     const grid = document.getElementById('catGrid');
@@ -265,6 +266,80 @@ export function buildStep2(state) {
         return Object.entries(dict).filter(([k]) => allowedKeys.includes(k));
     }
 
+    // ── Helper: build a multi-select zone row (Artwork/Print — unlike buildSelector,
+    // multiple zones can be active at once, so this toggles entries in
+    // state.print.placements rather than setting a single exclusive state field) ──
+    function describeZone(zone) {
+        const posDesc = zone.x_cm === 0
+            ? 'centered'
+            : `${Math.abs(zone.x_cm)} cm ${zone.x_cm < 0 ? 'left' : 'right'} of CF`;
+        return `${zone.width_cm} × ${zone.height_cm} cm · ${zone.y_cm} cm below HPS · ${posDesc}`;
+    }
+
+    function buildZoneRow(label, sideKey, zoneEntries) {
+        const sec = document.createElement('div');
+        sec.innerHTML = '<div class="sec-label">' + label + '</div>';
+        const scroll = document.createElement('div');
+        scroll.className = 'opt-scroll';
+        scroll.setAttribute('role', 'group');
+        scroll.setAttribute('aria-label', label);
+
+        zoneEntries.forEach(([zoneKey, zone]) => {
+            const isSelected = state.print.placements.some(p => p.side === sideKey && p.zone === zoneKey);
+            const opt = document.createElement('div');
+            opt.className = 'opt-card' + (isSelected ? ' selected' : '');
+            opt.setAttribute('role', 'checkbox');
+            opt.setAttribute('aria-checked', String(isSelected));
+            opt.setAttribute('aria-label', zone.label);
+
+            opt.innerHTML = `
+                <div class="opt-preview" style="font-size:10px;font-weight:700;line-height:1.2">${zone.width_cm}×${zone.height_cm}</div>
+                <div class="opt-name">${zone.label}${isSelected ? `<br><span style="font-size:9px;font-weight:400">${describeZone(zone)}</span>` : ''}</div>
+            `;
+
+            opt.onclick = () => {
+                const idx = state.print.placements.findIndex(p => p.side === sideKey && p.zone === zoneKey);
+                if (idx >= 0) {
+                    state.print.placements.splice(idx, 1);
+                } else {
+                    state.print.placements.push({
+                        side: sideKey, mode: 'zone', zone: zoneKey,
+                        x_cm: zone.x_cm, y_cm: zone.y_cm,
+                        width_cm: zone.width_cm, height_cm: zone.height_cm,
+                        image: null, method: null, colors: []
+                    });
+                }
+                buildStep2(state);
+            };
+            scroll.appendChild(opt);
+        });
+
+        sec.appendChild(scroll);
+        return sec;
+    }
+
+    // ══ ARTWORK / PRINT SECTION ══
+    const artworkSection = buildSection('Artwork / Print', 'step3ArtworkCollapsed', (content) => {
+        const toggleRow = document.createElement('label');
+        toggleRow.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:12px;';
+        toggleRow.innerHTML = `
+            <input type="checkbox" id="printEnabledToggle" ${state.print.enabled ? 'checked' : ''}>
+            <span class="sec-label" style="margin:0">Add Print / Artwork</span>
+        `;
+        toggleRow.querySelector('input').onchange = (e) => {
+            state.print.enabled = e.target.checked;
+            buildStep2(state);
+        };
+        content.appendChild(toggleRow);
+
+        if (state.print.enabled) {
+            const frontZones = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === 'front');
+            const backZones  = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === 'back');
+            content.appendChild(buildZoneRow('Front', 'front', frontZones));
+            content.appendChild(buildZoneRow('Back', 'back', backZones));
+        }
+    });
+
     // ══ BASIC SECTION ══
     const basicSection = buildSection('Basic', 'step3BasicCollapsed', (content) => {
 
@@ -324,6 +399,7 @@ export function buildStep2(state) {
         ));
     });
 
+    container.appendChild(artworkSection);
     container.appendChild(basicSection);
     container.appendChild(advancedSection);
 

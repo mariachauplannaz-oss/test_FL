@@ -24,7 +24,8 @@ const state = {
     emailCaptured: false,
     ui: {
         step3BasicCollapsed:    false,
-        step3AdvancedCollapsed: true
+        step3AdvancedCollapsed: true,
+        step3ArtworkCollapsed:  false
     },
     fabric:        'jersey_180',
     stitchType:    'overlock_4t',
@@ -33,7 +34,17 @@ const state = {
     careLabel:     'woven',
     brandLabel:    'woven',
     brandLabelQty: 1,
-    gender: 'female'
+    gender: 'female',
+    print: {
+        enabled: false,
+        placements: []
+        // Each placement: { side, mode:'zone', zone (key from PRINT_ZONES),
+        //   x_cm, y_cm, width_cm, height_cm,
+        //   image: null,   // Level 2
+        //   method: null,  // Level 3
+        //   colors: []     // Level 3
+        // }
+    }
 };
 const svgCache = {};
 
@@ -167,7 +178,8 @@ async function doExportTechPack() {
         thread:       state.thread,
         careLabel:    state.careLabel,
         brandLabel:   state.brandLabel,
-        brandLabelQty: state.brandLabelQty
+        brandLabelQty: state.brandLabelQty,
+        print:        state.print
     }));
 
     // Redirect to checkout page
@@ -253,6 +265,7 @@ async function handlePaymentReturn() {
             if (cfg.careLabel)    state.careLabel    = cfg.careLabel;
             if (cfg.brandLabel)   state.brandLabel   = cfg.brandLabel;
             if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
+            if (cfg.print)         state.print         = cfg.print;
         }
 
         // Show modal to collect Brand / Project / SKU / Season
