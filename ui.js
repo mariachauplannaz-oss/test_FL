@@ -5,6 +5,7 @@ import { NEEDLES, THREADS, CARE_LABELS, BRAND_LABELS, checkCompatibility, isOpti
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { track } from './tracker.js';
 import { PRINT_ZONES } from './config/print-zones.js';
+import { updatePrintZones } from './print-renderer.js';
 
 export function initCategories(state, updateButton) {
     const grid = document.getElementById('catGrid');
@@ -402,6 +403,8 @@ export function buildStep2(state) {
     container.appendChild(artworkSection);
     container.appendChild(basicSection);
     container.appendChild(advancedSection);
+
+    updatePrintZones(state);
 
     // Auto-fix: after a state change, check if other selections became incompatible.
     // If so, switch them to the first compatible option from their allowed list.
