@@ -98,24 +98,34 @@ btnPay.addEventListener('click', async () => {
   track('checkout_started', { product_key: productKey, garment, type });
   
   try {
+    const garmentConfig = {
+      garment:    checkoutState.garment,
+      selections: checkoutState.selections,
+      gender:     checkoutState.gender,
+      fabric:     checkoutState.fabric,
+      stitchType: checkoutState.stitchType,
+      needle:     checkoutState.needle,
+      thread:     checkoutState.thread,
+      careLabel:  checkoutState.careLabel,
+      brandLabel: checkoutState.brandLabel,
+      brandLabelQty: checkoutState.brandLabelQty,
+      // Stripe metadata values are capped at 500 chars — full print.placements
+      // objects blow past that with several zones selected, so only zone keys
+      // are sent here; app.js expands them back to full placements on restore.
+      print: checkoutState.print && checkoutState.print.enabled
+        ? { enabled: true, zones: checkoutState.print.placements.map(p => p.zone) }
+        : { enabled: false }
+    };
+
+    // TEMP DEBUG — remove after confirming garment_config stays under 500 chars
+    console.log('[DEBUG] garment_config length:', JSON.stringify(garmentConfig).length);
+
     const response = await fetch('/api/create-checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: checkoutEmail.value.trim(),
-        garment_config: {
-          garment:    checkoutState.garment,
-          selections: checkoutState.selections,
-          gender:     checkoutState.gender,
-          fabric:     checkoutState.fabric,
-          stitchType: checkoutState.stitchType,
-          needle:     checkoutState.needle,
-          thread:     checkoutState.thread,
-          careLabel:  checkoutState.careLabel,
-          brandLabel: checkoutState.brandLabel,
-          brandLabelQty: checkoutState.brandLabelQty,
-          print: checkoutState.print
-        },
+        garment_config: garmentConfig,
         product_key: productKey
       })
     });

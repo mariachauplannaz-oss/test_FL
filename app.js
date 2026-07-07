@@ -9,6 +9,7 @@ import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { updatePrintZones } from './print-renderer.js';
+import { PRINT_ZONES } from './config/print-zones.js';
 
 window.showTooltip    = showTooltip;
 window.hideTooltip    = hideTooltip;
@@ -268,6 +269,22 @@ async function handlePaymentReturn() {
             if (cfg.brandLabel)   state.brandLabel   = cfg.brandLabel;
             if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
             if (cfg.print)         state.print         = cfg.print;
+
+            // Expand compressed print format (Stripe metadata stores zone keys only)
+            if (state.print && state.print.enabled && state.print.zones && !state.print.placements) {
+                state.print.placements = state.print.zones
+                    .filter(zoneKey => PRINT_ZONES[zoneKey])
+                    .map(zoneKey => {
+                        const z = PRINT_ZONES[zoneKey];
+                        return {
+                            side: z.side, mode: 'zone', zone: zoneKey,
+                            x_cm: z.x_cm, y_cm: z.y_cm,
+                            width_cm: z.width_cm, height_cm: z.height_cm,
+                            image: null, method: null, colors: []
+                        };
+                    });
+                delete state.print.zones; // clean up compressed format
+            }
 
             if (!state.print || !state.print.enabled) {
                 try {
