@@ -268,6 +268,18 @@ async function handlePaymentReturn() {
             if (cfg.brandLabel)   state.brandLabel   = cfg.brandLabel;
             if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
             if (cfg.print)         state.print         = cfg.print;
+
+            if (!state.print || !state.print.enabled) {
+                try {
+                    const ss = sessionStorage.getItem('flatlabs_checkout_state');
+                    if (ss) {
+                        const saved = JSON.parse(ss);
+                        if (saved.print && saved.print.enabled) {
+                            state.print = saved.print;
+                        }
+                    }
+                } catch (e) { /* ignore parse errors */ }
+            }
         }
 
         // Show modal to collect Brand / Project / SKU / Season
