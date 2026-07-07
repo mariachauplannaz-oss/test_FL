@@ -45,6 +45,15 @@ function renderZones(svgEl, side, placements) {
     if (sidePlacements.length === 0) return;
 
     const anchor = ANCHORS[side];
+
+    // Use the torso shape's actual bounding-box center for horizontal placement —
+    // f_cf_neck/b_cf_neck are body/mannequin landmarks, not the garment's own
+    // geometric center, and the two don't quite line up (~0.7cm gap, visible on
+    // small zones). Vertical anchoring (hps_y) is unaffected and stays as-is.
+    const torsoShape = svgEl.querySelector('[id$="_shape"]');
+    const bbox = torsoShape ? torsoShape.getBBox() : null;
+    const centerX = bbox ? bbox.x + bbox.width / 2 : anchor.cf_x; // fallback
+
     const layer = document.createElementNS(NS, 'g');
     layer.setAttribute('id', LAYER_ID);
 
@@ -54,7 +63,7 @@ function renderZones(svgEl, side, placements) {
 
         const rect = document.createElementNS(NS, 'rect');
         rect.setAttribute('id', rectId);
-        rect.setAttribute('x', anchor.cf_x + (p.x_cm * SCALE) - (p.width_cm * SCALE / 2));
+        rect.setAttribute('x', centerX + (p.x_cm * SCALE) - (p.width_cm * SCALE / 2));
         rect.setAttribute('y', anchor.hps_y + (p.y_cm * SCALE));
         rect.setAttribute('width',  p.width_cm  * SCALE);
         rect.setAttribute('height', p.height_cm * SCALE);

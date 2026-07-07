@@ -113,7 +113,8 @@ btnPay.addEventListener('click', async () => {
           thread:     checkoutState.thread,
           careLabel:  checkoutState.careLabel,
           brandLabel: checkoutState.brandLabel,
-          brandLabelQty: checkoutState.brandLabelQty
+          brandLabelQty: checkoutState.brandLabelQty,
+          print: checkoutState.print
         },
         product_key: productKey
       })
