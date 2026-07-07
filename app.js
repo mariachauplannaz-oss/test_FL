@@ -8,6 +8,7 @@ import { initCategories, goStep, updateButton, buildStep1, buildStep2, initToggl
 import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
+import { updatePrintZones } from './print-renderer.js';
 
 window.showTooltip    = showTooltip;
 window.hideTooltip    = hideTooltip;
@@ -96,6 +97,7 @@ function nextAction() {
             return;
         }
         generate(state, log);
+        updatePrintZones(state);
         if (window.innerWidth <= 800) closeSidebar();
     }
 }
@@ -312,6 +314,7 @@ function showPostPaymentModal(garmentConfig) {
 
         // Regenerate flat from restored state before exporting
         generate(state, log);
+        updatePrintZones(state);
 
         // Download the SVG flat (PRO includes SVG + PDF — model defined post-launch)
         triggerDownload(state, log);

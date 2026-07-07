@@ -5,6 +5,7 @@
 
 import { buildTechPackState } from './techpack.js';
 import { findClosestPantone, collectMeasurements, STITCH_SPECS, FABRIC_SPECS, PACKING_SPECS, SIZE_EQUIV } from './config.js';
+import { PRINT_ZONES } from './config/print-zones.js';
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 const COLORS = {
@@ -621,6 +622,61 @@ function drawBOMTable(doc, bomRows, y) {
     return doc.lastAutoTable.finalY + 8;
 }
 
+// ─── ARTWORK / PRINT SECTION ─────────────────────────────────────────────────
+function drawArtworkSection(doc, printState, y) {
+    const placements = (printState && printState.enabled) ? printState.placements : [];
+
+    if (placements.length === 0) {
+        setFont(doc, 'normal', FONT.body);
+        setColor(doc, COLORS.gray3);
+        doc.text('N/A — No artwork specified.', MARGIN.left, y + 4);
+        return y + 10;
+    }
+
+    const head = [['Side', 'Zone', 'Position', 'Size']];
+    const body = placements.map(p => {
+        const zoneLabel = PRINT_ZONES[p.zone]?.label || p.zone;
+        const side = p.side.charAt(0).toUpperCase() + p.side.slice(1);
+        const posDesc = p.x_cm === 0
+            ? 'Centered'
+            : `${Math.abs(p.x_cm)} cm ${p.x_cm < 0 ? 'left' : 'right'} of CF`;
+        const position = `${posDesc}, ${p.y_cm} cm below HPS`;
+        const size = `${p.width_cm} × ${p.height_cm} cm`;
+        return [side, zoneLabel, position, size];
+    });
+
+    doc.autoTable({
+        startY: y,
+        head,
+        body,
+        margin: { left: MARGIN.left, right: MARGIN.right },
+        styles: {
+            font: 'helvetica',
+            fontSize: FONT.body,
+            cellPadding: 3,
+            textColor: COLORS.gray4,
+            lineColor: COLORS.gray2,
+            lineWidth: 0.2,
+        },
+        headStyles: {
+            fillColor: COLORS.black,
+            textColor: COLORS.white,
+            fontStyle: 'bold',
+            fontSize: FONT.label,
+            lineColor: COLORS.black,
+        },
+        columnStyles: {
+            0: { cellWidth: 20, fontStyle: 'bold', textColor: COLORS.accent },
+            1: { cellWidth: 35 },
+            2: { cellWidth: 'auto' },
+            3: { cellWidth: 28, halign: 'center' },
+        },
+        alternateRowStyles: { fillColor: COLORS.gray1 },
+    });
+
+    return doc.lastAutoTable.finalY + 8;
+}
+
 // ─── CONSTRUCTION NOTES ──────────────────────────────────────────────────────
 function drawConstructionNotes(doc, notes, y) {
     const pw = pageWidth(doc);
@@ -844,6 +900,11 @@ export async function exportSpecSheet(state, projectMeta = {}) {
     y = drawSectionLabel(doc, '06 — Construction Notes & ISO Standards', y);
     y += 4;
     y = drawConstructionNotes(doc, techPack.constructionNotes, y);
+
+    // ── 07 — Artwork / Print ────────────────────────────────────────────────
+    if (y > pageHeight(doc) - 60) { doc.addPage(); y = MARGIN.top + 10; }
+    y = drawSectionLabel(doc, '07 — Artwork / Print', y);
+    y = drawArtworkSection(doc, state.print, y);
 
     // Footers on all pages
     const totalPages = doc.internal.getNumberOfPages();
