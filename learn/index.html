@@ -193,7 +193,7 @@ function renderGrid(groupKey) {
   countEl.textContent = `${String(terms.length).padStart(2,'0')} ${terms.length === 1 ? 'term' : 'terms'}`;
 
   grid.innerHTML = terms.map(t => `
-    <a class="gl-card" href="${t.url}" data-group="${t.group}">
+    <a class="gl-card" href="${t.url}" data-group="${t.group}" style="--group:${group.color};--group-soft:${group.colorSoft}">
       <span class="gl-card-cat">${t.category}</span>
       <span class="gl-card-name">${t.name}</span>
       <span class="gl-card-tooltip">${t.tooltip}</span>
