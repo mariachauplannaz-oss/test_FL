@@ -4,12 +4,12 @@ import { MANNEQUIN_CFG } from './config.js';
 import { parseSVG } from './parser.js';
 import { generate } from './generator.js';
 import { track } from './tracker.js';
-import { initCategories, goStep, updateButton, buildStep1, buildStep2, initToggles, toggleSidebar, closeSidebar, setIsoMode } from './ui.js';
+import { initCategories, goStep, updateButton, buildStep1, buildStep2, initToggles, toggleSidebar, closeSidebar, setIsoMode, awaitPendingUploads } from './ui.js';
 import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { updatePrintZones } from './print-renderer.js';
-import { PRINT_ZONES } from './config/print-zones.js';
+import { PRINT_ZONES, PRINT_METHODS } from './config/print-zones.js';
 
 window.showTooltip    = showTooltip;
 window.hideTooltip    = hideTooltip;
@@ -170,6 +170,12 @@ async function doExportTechPack() {
         sessionStorage.removeItem('flatlabs_preview_png');
     }
 
+    // Safety net: uploads fire-and-forget the moment an image is picked (see
+    // ui.js), so this is usually already resolved — but a slow upload could
+    // still be in flight right when the user clicks through to checkout, and
+    // js/checkout.js needs placement.image.blob_key to be populated.
+    await awaitPendingUploads();
+
     // Save full state to sessionStorage so /checkout.html can read it
     sessionStorage.setItem('flatlabs_checkout_state', JSON.stringify({
         garment:      state.selectedCategory || 'tshirt',
@@ -270,19 +276,55 @@ async function handlePaymentReturn() {
             if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
             if (cfg.print)         state.print         = cfg.print;
 
-            // Expand compressed print format (Stripe metadata stores zone keys only)
+            // Expand compressed print format. Stripe metadata packs each zone
+            // as a positional [zone, methodCode, image_key] tuple (no key
+            // names, 2-letter method code) to stay under the 500-char limit
+            // — see js/checkout.js. Position/scale do NOT survive this
+            // round-trip (no budget left for them), so restored images
+            // always come back centered at scale 1.0.
             if (state.print && state.print.enabled && state.print.zones && !state.print.placements) {
-                state.print.placements = state.print.zones
-                    .filter(zoneKey => PRINT_ZONES[zoneKey])
-                    .map(zoneKey => {
-                        const z = PRINT_ZONES[zoneKey];
-                        return {
-                            side: z.side, mode: 'zone', zone: zoneKey,
-                            x_cm: z.x_cm, y_cm: z.y_cm,
-                            width_cm: z.width_cm, height_cm: z.height_cm,
-                            image: null, method: null, colors: []
-                        };
-                    });
+                state.print.placements = await Promise.all(
+                    state.print.zones
+                        .filter(([zoneKey]) => PRINT_ZONES[zoneKey])
+                        .map(async ([zoneKey, methodCode, imageKey]) => {
+                            const z = PRINT_ZONES[zoneKey];
+                            const method = Object.keys(PRINT_METHODS)
+                                .find(k => PRINT_METHODS[k].code === methodCode) || null;
+
+                            const placement = {
+                                side: z.side, mode: 'zone', zone: zoneKey,
+                                x_cm: z.x_cm, y_cm: z.y_cm,
+                                width_cm: z.width_cm, height_cm: z.height_cm,
+                                image: null, method, colors: []
+                            };
+
+                            if (imageKey) {
+                                try {
+                                    const res  = await fetch(`/api/get-print-image?key=${encodeURIComponent(imageKey)}`);
+                                    const json = await res.json();
+                                    if (json.ok) {
+                                        const ratio = await new Promise(resolve => {
+                                            const img = new Image();
+                                            img.onload  = () => resolve(img.naturalWidth / img.naturalHeight);
+                                            img.onerror = () => resolve(1);
+                                            img.src = json.dataURI;
+                                        });
+                                        placement.image = {
+                                            dataURI: json.dataURI, filename: '', ratio,
+                                            offsetX_pct: 0, offsetY_pct: 0, scale: 1.0,
+                                            blob_key: imageKey
+                                        };
+                                    } else {
+                                        console.warn('[FlatLabs] Print image restore failed:', json.error);
+                                    }
+                                } catch (e) {
+                                    console.warn('[FlatLabs] Print image fetch failed:', e);
+                                }
+                            }
+
+                            return placement;
+                        })
+                );
                 delete state.print.zones; // clean up compressed format
             }
 
