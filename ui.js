@@ -426,7 +426,7 @@ export function buildStep2(state) {
             scaleRow.style.cssText = 'margin-top:10px;';
             scaleRow.innerHTML = `
                 <div class="sec-label" style="margin:0 0 6px">Scale</div>
-                <input type="range" min="1" max="3" step="0.1" value="${placement.image.scale}" style="width:100%">
+                <input type="range" min="0.3" max="3" step="0.1" value="${placement.image.scale}" style="width:100%">
             `;
             const scaleInput = scaleRow.querySelector('input');
             scaleInput.oninput = () => {
