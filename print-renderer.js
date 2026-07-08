@@ -140,8 +140,8 @@ function updateDrag(clientX, clientY) {
     const slackX = baseW * scale - rectW;
     const slackY = baseH * scale - rectH;
 
-    const candX = slackX > 0 ? startOffX + (dx / (slackX / 2)) * 50 : 0;
-    const candY = slackY > 0 ? startOffY + (dy / (slackY / 2)) * 50 : 0;
+    const candX = slackX !== 0 ? startOffX + (dx / (slackX / 2)) * 50 : 0;
+    const candY = slackY !== 0 ? startOffY + (dy / (slackY / 2)) * 50 : 0;
     placement.image.offsetX_pct = Math.max(-50, Math.min(50, candX));
     placement.image.offsetY_pct = Math.max(-50, Math.min(50, candY));
 

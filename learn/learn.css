@@ -23,9 +23,9 @@
 
 [data-group="materials"]    { --group: #1366E0; --group-soft: rgba(19,102,224,.12); }
 [data-group="construction"] { --group: #7C3AED; --group-soft: rgba(124,58,237,.12); }
-[data-group="colordye"]     { --group: #DB2777; --group-soft: rgba(219,39,119,.12); }
+[data-group="color-dye"]     { --group: #DB2777; --group-soft: rgba(219,39,119,.12); }
 [data-group="decoration"]   { --group: #B8790A; --group-soft: rgba(184,121,10,.12); }
-[data-group="trims"]        { --group: #15803D; --group-soft: rgba(21,128,61,.12); }
+[data-group="trims-packing"] { --group: #15803D; --group-soft: rgba(21,128,61,.12); }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
