@@ -109,7 +109,14 @@ btnPay.addEventListener('click', async () => {
       thread:     checkoutState.thread,
       careLabel:  checkoutState.careLabel,
       brandLabel: checkoutState.brandLabel,
-      brandLabelQty: checkoutState.brandLabelQty,
+      // brandLabelQty and colorHex are shortened to `qty`/`hex` (colorHex's
+      // leading '#' stripped too) here in the compressed metadata only —
+      // state.brandLabelQty/state.colorHex keep their full names everywhere
+      // else. Needed to stay under Stripe's 500-char limit: measured real
+      // worst case (6 zones w/ method+image, all other fields maxed) is
+      // 508 chars with the full key names, 492 with these two shortened.
+      qty: checkoutState.brandLabelQty,
+      hex: (checkoutState.colorHex || '').replace('#', ''),
       // Stripe metadata values are capped at 500 chars — full print.placements
       // objects (and especially image dataURIs) blow way past that. Each zone
       // is packed as a positional [zone, methodCode, image_key] tuple (no key
