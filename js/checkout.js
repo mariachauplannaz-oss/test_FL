@@ -1,5 +1,6 @@
 import { track } from '../tracker.js';
 import { getProductConfig } from './config/pricing.js';
+import { PRINT_METHODS } from '../config/print-zones.js';
 
 // ─── Read context from URL + sessionStorage ───────────────────────────────────
 
@@ -110,15 +111,23 @@ btnPay.addEventListener('click', async () => {
       brandLabel: checkoutState.brandLabel,
       brandLabelQty: checkoutState.brandLabelQty,
       // Stripe metadata values are capped at 500 chars — full print.placements
-      // objects blow past that with several zones selected, so only zone keys
-      // are sent here; app.js expands them back to full placements on restore.
+      // objects (and especially image dataURIs) blow way past that. Each zone
+      // is packed as a positional [zone, methodCode, image_key] tuple (no key
+      // names, 2-letter method code) to stay under budget: worst case (6
+      // zones, all with method+image) measures ~489 chars. app.js decodes
+      // this back into full placements on restore, fetching each image from
+      // Netlify Blobs via image_key. NOTE: offsetX_pct/offsetY_pct/scale do
+      // NOT survive this round-trip — even this maximally compact encoding
+      // has no room left for position data — so restored images reset to
+      // centered/scale=1.0. See app.js.
       print: checkoutState.print && checkoutState.print.enabled
-        ? { enabled: true, zones: checkoutState.print.placements.map(p => p.zone) }
+        ? { enabled: true, zones: checkoutState.print.placements.map(p => ([
+              p.zone,
+              PRINT_METHODS[p.method]?.code || null,
+              p.image?.blob_key || null
+          ])) }
         : { enabled: false }
     };
-
-    // TEMP DEBUG — remove after confirming garment_config stays under 500 chars
-    console.log('[DEBUG] garment_config length:', JSON.stringify(garmentConfig).length);
 
     const response = await fetch('/api/create-checkout', {
       method:  'POST',

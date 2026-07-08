@@ -5,7 +5,7 @@
 
 import { buildTechPackState } from './techpack.js';
 import { findClosestPantone, collectMeasurements, STITCH_SPECS, FABRIC_SPECS, PACKING_SPECS, SIZE_EQUIV } from './config.js';
-import { PRINT_ZONES } from './config/print-zones.js';
+import { PRINT_ZONES, PRINT_METHODS } from './config/print-zones.js';
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 const COLORS = {
@@ -633,7 +633,7 @@ function drawArtworkSection(doc, printState, y) {
         return y + 10;
     }
 
-    const head = [['Side', 'Zone', 'Position', 'Size']];
+    const head = [['Side', 'Zone', 'Position', 'Size', 'Method']];
     const body = placements.map(p => {
         const zoneLabel = PRINT_ZONES[p.zone]?.label || p.zone;
         const side = p.side.charAt(0).toUpperCase() + p.side.slice(1);
@@ -642,7 +642,8 @@ function drawArtworkSection(doc, printState, y) {
             : `${Math.abs(p.x_cm)} cm ${p.x_cm < 0 ? 'left' : 'right'} of CF`;
         const position = `${posDesc}, ${p.y_cm} cm below HPS`;
         const size = `${p.width_cm} × ${p.height_cm} cm`;
-        return [side, zoneLabel, position, size];
+        const method = PRINT_METHODS[p.method]?.label || 'TBD';
+        return [side, zoneLabel, position, size, method];
     });
 
     doc.autoTable({
@@ -666,10 +667,11 @@ function drawArtworkSection(doc, printState, y) {
             lineColor: COLORS.black,
         },
         columnStyles: {
-            0: { cellWidth: 20, fontStyle: 'bold', textColor: COLORS.accent },
-            1: { cellWidth: 35 },
+            0: { cellWidth: 16, fontStyle: 'bold', textColor: COLORS.accent },
+            1: { cellWidth: 28 },
             2: { cellWidth: 'auto' },
-            3: { cellWidth: 28, halign: 'center' },
+            3: { cellWidth: 22, halign: 'center' },
+            4: { cellWidth: 26, halign: 'center' },
         },
         alternateRowStyles: { fillColor: COLORS.gray1 },
     });

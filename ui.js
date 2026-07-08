@@ -4,8 +4,35 @@ import { DICT, GARMENT_ICONS, CATEGORIES, FABRIC_SPECS, STITCH_SPECS } from './c
 import { NEEDLES, THREADS, CARE_LABELS, BRAND_LABELS, checkCompatibility, isOptionCompatible, TSHIRT_CONFIG } from './config/index.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { track } from './tracker.js';
-import { PRINT_ZONES } from './config/print-zones.js';
-import { updatePrintZones } from './print-renderer.js';
+import { PRINT_ZONES, PRINT_METHODS } from './config/print-zones.js';
+import { updatePrintZones, updateSingleImage } from './print-renderer.js';
+
+// ─── Print image upload (Level 2, part 2D) ───────────────────────────────────
+// Uploads happen fire-and-forget as soon as an image is picked, so blob_key is
+// usually already populated well before checkout. app.js's doExportTechPack
+// awaits awaitPendingUploads() as a safety net in case a slow upload is still
+// in flight right when the user clicks "Export Tech Pack".
+const pendingUploads = new Map(); // placement -> Promise
+
+function uploadPrintImage(placement) {
+    const uploadPromise = fetch('/api/upload-print-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: placement.image.dataURI, filename: placement.image.filename })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok && placement.image) placement.image.blob_key = data.blob_key;
+            else console.warn('[FlatLabs] Print image upload rejected:', data.error);
+        })
+        .catch(e => console.warn('[FlatLabs] Print image upload failed:', e))
+        .finally(() => pendingUploads.delete(placement));
+    pendingUploads.set(placement, uploadPromise);
+}
+
+export async function awaitPendingUploads() {
+    await Promise.all(Array.from(pendingUploads.values()));
+}
 
 export function initCategories(state, updateButton) {
     const grid = document.getElementById('catGrid');
@@ -319,6 +346,102 @@ export function buildStep2(state) {
         return sec;
     }
 
+    // ── Helper: per-selected-zone artwork panel — upload, method, scale.
+    // Rendered full-width BELOW the zone-picker row (not inside the 96px
+    // opt-card, which has no room for a file input + method selector +
+    // slider). Drag-to-reposition happens directly on the flat preview
+    // (wired in print-renderer.js), not in this panel. ──
+    function buildZoneDetailPanel(placement) {
+        const zoneDef = PRINT_ZONES[placement.zone];
+        const panel = document.createElement('div');
+        panel.style.cssText = 'padding:12px;margin:8px 0 4px;background:var(--surface);border-radius:8px;';
+
+        const header = document.createElement('div');
+        header.className = 'sec-label';
+        header.style.cssText = 'margin:0 0 8px';
+        header.textContent = `${zoneDef.label} artwork`;
+        panel.appendChild(header);
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/png,image/jpeg,image/svg+xml';
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    placement.image = {
+                        dataURI: reader.result,
+                        filename: file.name,
+                        ratio: img.naturalWidth / img.naturalHeight,
+                        blob_key: null,
+                        offsetX_pct: 0, offsetY_pct: 0, scale: 1.0
+                    };
+                    uploadPrintImage(placement); // fire-and-forget — see print-renderer/app.js wiring
+                    buildStep2(state);
+                    updatePrintZones(state);
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        };
+        panel.appendChild(fileInput);
+
+        if (placement.image) {
+            const filenameRow = document.createElement('div');
+            filenameRow.style.cssText = 'font-size:11px;color:var(--ink-soft);margin-top:6px;';
+            filenameRow.textContent = placement.image.filename || 'Image uploaded';
+            panel.appendChild(filenameRow);
+        }
+
+        // Method selector — shown regardless of image upload state, since a
+        // print method can be chosen independently of having artwork yet.
+        const methodSec = document.createElement('div');
+        methodSec.style.cssText = 'margin-top:10px;';
+        methodSec.innerHTML = '<div class="sec-label" style="margin:0 0 6px">Print Method</div>';
+        const methodScroll = document.createElement('div');
+        methodScroll.className = 'opt-scroll';
+        methodScroll.setAttribute('role', 'radiogroup');
+        methodScroll.setAttribute('aria-label', 'Print Method');
+        Object.entries(PRINT_METHODS).forEach(([key, m]) => {
+            const opt = document.createElement('div');
+            opt.className = 'opt-card' + (placement.method === key ? ' selected' : '');
+            opt.setAttribute('role', 'radio');
+            opt.setAttribute('aria-label', m.label);
+            opt.innerHTML = `<div class="opt-preview" style="font-size:10px;font-weight:700">${key.slice(0,3).toUpperCase()}</div><div class="opt-name">${m.label}</div>`;
+            opt.onclick = () => {
+                placement.method = key;
+                buildStep2(state);
+            };
+            methodScroll.appendChild(opt);
+        });
+        methodSec.appendChild(methodScroll);
+        panel.appendChild(methodSec);
+
+        // Scale slider — only meaningful once there's an image to scale.
+        if (placement.image) {
+            const scaleRow = document.createElement('div');
+            scaleRow.style.cssText = 'margin-top:10px;';
+            scaleRow.innerHTML = `
+                <div class="sec-label" style="margin:0 0 6px">Scale</div>
+                <input type="range" min="1" max="3" step="0.1" value="${placement.image.scale}" style="width:100%">
+            `;
+            const scaleInput = scaleRow.querySelector('input');
+            scaleInput.oninput = () => {
+                placement.image.scale = parseFloat(scaleInput.value);
+                updateSingleImage(state, placement); // narrow update — repositions just this image
+            };
+            scaleInput.onchange = () => {
+                buildStep2(state); // final sidebar sync, matches Level-1 opt-card pattern
+            };
+            panel.appendChild(scaleRow);
+        }
+
+        return panel;
+    }
+
     // ══ ARTWORK / PRINT SECTION ══
     const artworkSection = buildSection('Artwork / Print', 'step3ArtworkCollapsed', (content) => {
         const toggleRow = document.createElement('label');
@@ -336,8 +459,16 @@ export function buildStep2(state) {
         if (state.print.enabled) {
             const frontZones = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === 'front');
             const backZones  = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === 'back');
+
             content.appendChild(buildZoneRow('Front', 'front', frontZones));
+            state.print.placements.filter(p => p.side === 'front').forEach(p => {
+                content.appendChild(buildZoneDetailPanel(p));
+            });
+
             content.appendChild(buildZoneRow('Back', 'back', backZones));
+            state.print.placements.filter(p => p.side === 'back').forEach(p => {
+                content.appendChild(buildZoneDetailPanel(p));
+            });
         }
     });
 
