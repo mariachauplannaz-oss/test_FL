@@ -15,17 +15,22 @@
   --accent-deep: #C2402D;
   --accent-soft-2: rgba(255,107,87,.18);
 
-  /* 5-group color system — driven by [data-group] on <main> (articles) and
-     the hub's tabs/#glGrid. Falls back to brand coral when no group is set. */
+  /* 5-group color system — driven by [data-group] on <main> (articles).
+     Falls back to brand coral when no group is set. index.html's GROUPS
+     array is the source of truth for these 5 colors (cards/tabs get them
+     via inline style, set directly from GROUPS); this block is a synced
+     mirror for static article pages, which have no JS to set an inline
+     override — keep these values identical to GROUPS or colors will
+     drift apart again between articles and the glossary hub. */
   --group: var(--accent);
   --group-soft: var(--accent-soft);
 }
 
-[data-group="materials"]    { --group: #1366E0; --group-soft: rgba(19,102,224,.12); }
-[data-group="construction"] { --group: #7C3AED; --group-soft: rgba(124,58,237,.12); }
-[data-group="color-dye"]     { --group: #DB2777; --group-soft: rgba(219,39,119,.12); }
-[data-group="decoration"]   { --group: #B8790A; --group-soft: rgba(184,121,10,.12); }
-[data-group="trims-packing"] { --group: #15803D; --group-soft: rgba(21,128,61,.12); }
+[data-group="materials"]     { --group: #2BA8D6; --group-soft: rgba(43,168,214,.12); }
+[data-group="construction"]  { --group: #8B7BC4; --group-soft: rgba(139,123,196,.12); }
+[data-group="color-dye"]     { --group: #2BBFA4; --group-soft: rgba(43,191,164,.12); }
+[data-group="decoration"]    { --group: #F0A040; --group-soft: rgba(240,160,64,.12); }
+[data-group="trims-packing"] { --group: #4CB86A; --group-soft: rgba(76,184,106,.12); }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }

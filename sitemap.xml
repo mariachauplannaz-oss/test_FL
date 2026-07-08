@@ -13,171 +13,190 @@
     <priority>0.9</priority>
   </url>
 
+  <url>
+    <loc>https://flatsgenerator.com/learn/</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Learn: Fabrics -->
   <url>
-    <loc>https://flatsgenerator.com/learn/fabrics/lightweight-jersey</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/fabrics/lightweight-jersey.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/fabrics/midweight-jersey</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/fabrics/midweight-jersey.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/fabrics/heavyweight-jersey</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/fabrics/heavyweight-jersey.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/fabrics/rib-knit-basics</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/fabrics/rib-knit-basics.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Learn: Seams -->
   <url>
-    <loc>https://flatsgenerator.com/learn/seams/iso-514-overlock</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/seams/iso-514-overlock.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/seams/iso-406-coverseam</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/seams/iso-406-coverseam.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Learn: Needles -->
   <url>
-    <loc>https://flatsgenerator.com/learn/needles/ball-point-ses</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/needles/ball-point-ses.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Trims -->
   <url>
-    <loc>https://flatsgenerator.com/learn/trims/woven-labels</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/trims/woven-labels.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/trims/care-labels-standards</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/trims/care-labels-standards.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/trims/size-labeling</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/trims/size-labeling.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Threads -->
   <url>
-    <loc>https://flatsgenerator.com/learn/threads/polyester-tex-27</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/threads/polyester-tex-27.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/threads/low-profile-seams</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/threads/low-profile-seams.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Construction -->
   <url>
-    <loc>https://flatsgenerator.com/learn/construction/stitches-per-inch</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/construction/stitches-per-inch.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Packing -->
   <url>
-    <loc>https://flatsgenerator.com/learn/packing/recycled-polybags</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/packing/recycled-polybags.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/packing/folding-guides</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/packing/folding-guides.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Color -->
   <url>
-    <loc>https://flatsgenerator.com/learn/color/pantone-tcx-system</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/color/pantone-tcx-system.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Dyeing -->
   <url>
-    <loc>https://flatsgenerator.com/learn/dyeing/piece-dyed-process</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/dyeing/piece-dyed-process.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/dyeing/garment-dye-guide</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/dyeing/garment-dye-guide.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Printing -->
   <url>
-    <loc>https://flatsgenerator.com/learn/printing/water-based-screen</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/printing/water-based-screen.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/printing/plastisol-guide</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/printing/plastisol-guide.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://flatsgenerator.com/learn/printing/dtg-direct-to-garment.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://flatsgenerator.com/learn/printing/sublimation-printing.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Embellishments -->
   <url>
-    <loc>https://flatsgenerator.com/learn/embellishments/embroidery-basics</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/embellishments/embroidery-basics.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Learn: Finishes -->
   <url>
-    <loc>https://flatsgenerator.com/learn/finishes/silicon-wash</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/finishes/silicon-wash.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/finishes/enzyme-wash</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/finishes/enzyme-wash.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://flatsgenerator.com/learn/finishes/sanforized-standards</loc>
-    <lastmod>2026-04-16</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://flatsgenerator.com/learn/finishes/sanforized-standards.html</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 </urlset>
