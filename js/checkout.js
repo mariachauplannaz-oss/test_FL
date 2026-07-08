@@ -117,9 +117,6 @@ btnPay.addEventListener('click', async () => {
         : { enabled: false }
     };
 
-    // TEMP DEBUG — remove after confirming garment_config stays under 500 chars
-    console.log('[DEBUG] garment_config length:', JSON.stringify(garmentConfig).length);
-
     const response = await fetch('/api/create-checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
