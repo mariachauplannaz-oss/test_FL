@@ -192,6 +192,24 @@ export const GLOSSARY = {
         production: `Rayon/Poly Thread`,
         url: `learn/embellishments/embroidery-basics`
     },
+    'ft_prt_003': {
+        id: `FT-PRT-003`,
+        category: `Print`,
+        name: `DTG (Direct to Garment)`,
+        tooltip: `Digital inkjet ink for unlimited colors and photo-real detail.`,
+        detail: `Water-based CMYK ink printed directly onto cotton. No setup fees, ideal for full-color art.`,
+        production: `Water-based CMYK Ink`,
+        url: `learn/printing/dtg-direct-to-garment`
+    },
+    'ft_prt_004': {
+        id: `FT-PRT-004`,
+        category: `Print`,
+        name: `Sublimation`,
+        tooltip: `Dye fuses into polyester for zero-texture, all-over graphics.`,
+        detail: `Ink turns to gas and bonds with polyester fibers. Zero hand feel, fully permanent color.`,
+        production: `Dye-Sublimation Ink`,
+        url: `learn/printing/sublimation-printing`
+    },
     'ft_fin_001': {
         id: `FT-FIN-001`,
         category: `Finish`,

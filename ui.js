@@ -188,6 +188,17 @@ const STITCH_TERM_MAP = {
     flatlock:     null,
 };
 
+// screen -> ft_prt_002 (Plastisol), not ft_prt_001 (Water-based): Plastisol's
+// own tooltip calls itself "Standard durable ink" — the conventional default
+// screen-print process — which is the closer match for the wizard's plain,
+// unqualified "Screen Print" option than the water-based eco-variant.
+const PRINT_METHOD_TERM_MAP = {
+    screen:      'ft_prt_002',
+    dtg:         'ft_prt_003',
+    embroidery:  'ft_emb_001',
+    sublimation: 'ft_prt_004'
+};
+
 // ── Shared: build a collapsible section (used by buildStep2's Basic/Advanced
 // and buildStep4's Artwork/Print) ──
 function buildSection(state, title, stateKey, buildFn) {
@@ -543,6 +554,22 @@ export function buildStep4(state) {
             opt.setAttribute('role', 'radio');
             opt.setAttribute('aria-label', m.label);
             opt.innerHTML = `<div class="opt-preview" style="font-size:10px;font-weight:700">${key.slice(0,3).toUpperCase()}</div><div class="opt-name">${m.label}</div>`;
+
+            // Add "?" info icon if this method has a term map entry
+            if (PRINT_METHOD_TERM_MAP[key]) {
+                const icon = document.createElement('span');
+                icon.className = 'info-icon';
+                icon.dataset.term = PRINT_METHOD_TERM_MAP[key];
+                icon.textContent = '?';
+                icon.addEventListener('mouseenter', () => showTooltip(PRINT_METHOD_TERM_MAP[key], icon));
+                icon.addEventListener('mouseleave', hideTooltip);
+                icon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openInfoPanel(PRINT_METHOD_TERM_MAP[key]);
+                });
+                opt.querySelector('.opt-name').appendChild(icon);
+            }
+
             opt.onclick = () => {
                 if (!placement) return; // guard: panel should be inert while disabled
                 placement.method = key;
