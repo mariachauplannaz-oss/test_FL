@@ -34,6 +34,15 @@ export async function awaitPendingUploads() {
     await Promise.all(Array.from(pendingUploads.values()));
 }
 
+// Placements that have artwork uploaded but no print method chosen yet —
+// used both to gate the Print step's Generate button and to render the
+// warning/highlight in buildStep4. Naturally empty if print is disabled or
+// no placement has an image, so callers don't need to check those first.
+export function getMissingMethodZones(state) {
+    if (!state.print || !state.print.enabled) return [];
+    return state.print.placements.filter(p => p.image && !p.method);
+}
+
 export function initCategories(state, updateButton) {
     const grid = document.getElementById('catGrid');
     CATEGORIES.forEach(cat => {
@@ -469,9 +478,12 @@ export function buildStep4(state) {
     function buildZoneDetailPanel(zoneKey, zone, sideKey) {
         const placement = state.print.placements.find(p => p.side === sideKey && p.zone === zoneKey);
         const isActive = !!placement;
+        const missingMethod = state.ui.printShowValidation && isActive && placement.image && !placement.method;
 
         const panel = document.createElement('div');
-        panel.className = 'zone-panel' + (isActive ? '' : ' zone-panel--disabled');
+        panel.className = 'zone-panel'
+            + (isActive ? '' : ' zone-panel--disabled')
+            + (missingMethod ? ' zone-panel--missing-method' : '');
         panel.style.cssText = 'padding:12px;margin:8px 0 4px;background:var(--surface);border-radius:8px;';
 
         const header = document.createElement('div');
@@ -576,6 +588,23 @@ export function buildStep4(state) {
             buildStep4(state);
         };
         content.appendChild(toggleRow);
+
+        // Generate-blocking validation warning — set by nextAction() in app.js
+        // when the user tries to Generate with artwork uploaded but no method
+        // chosen. Recomputed live on every render (not a frozen snapshot), so
+        // picking a method for a flagged zone clears its warning/highlight on
+        // the very next re-render — which already happens on every zone-row,
+        // method, or toggle click — no separate tracking needed.
+        if (state.ui.printShowValidation) {
+            const missing = getMissingMethodZones(state);
+            if (missing.length > 0) {
+                const warnBanner = document.createElement('div');
+                warnBanner.className = 'print-validation-warning';
+                const names = missing.map(p => PRINT_ZONES[p.zone]?.label || p.zone).join(', ');
+                warnBanner.textContent = `Please select a print method for: ${names}`;
+                content.appendChild(warnBanner);
+            }
+        }
 
         if (state.print.enabled) {
             // Front/Back toggle — same visual pattern as the Female/Male

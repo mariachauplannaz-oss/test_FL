@@ -4,7 +4,7 @@ import { MANNEQUIN_CFG } from './config.js';
 import { parseSVG } from './parser.js';
 import { generate } from './generator.js';
 import { track } from './tracker.js';
-import { initCategories, goStep, updateButton, buildStep1, buildStep2, buildStep4, initToggles, toggleSidebar, closeSidebar, setIsoMode, awaitPendingUploads } from './ui.js';
+import { initCategories, goStep, updateButton, buildStep1, buildStep2, buildStep4, initToggles, toggleSidebar, closeSidebar, setIsoMode, awaitPendingUploads, getMissingMethodZones } from './ui.js';
 import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
@@ -28,7 +28,8 @@ const state = {
         step3BasicCollapsed:    false,
         step3AdvancedCollapsed: true,
         step4ArtworkCollapsed:  false,
-        printActiveSide:        'front'
+        printActiveSide:        'front',
+        printShowValidation:    false
     },
     fabric:        'jersey_180',
     stitchType:    'overlock_4t',
@@ -101,6 +102,17 @@ function nextAction() {
             alert(`⚠ Please select: ${missing.join(' and ')}`);
             return;
         }
+
+        // Zones with uploaded artwork but no print method chosen would
+        // otherwise reach the PDF silently marked "TBD" — block Generate
+        // and point at exactly which zone(s) need a method.
+        if (getMissingMethodZones(state).length > 0) {
+            state.ui.printShowValidation = true;
+            buildStep4(state);
+            return;
+        }
+        state.ui.printShowValidation = false;
+
         generate(state, log);
         updatePrintZones(state);
         if (window.innerWidth <= 800) closeSidebar();
@@ -192,6 +204,7 @@ async function doExportTechPack() {
         careLabel:    state.careLabel,
         brandLabel:   state.brandLabel,
         brandLabelQty: state.brandLabelQty,
+        colorHex:     state.colorHex,
         print:        state.print
     }));
 
@@ -277,7 +290,8 @@ async function handlePaymentReturn() {
             if (cfg.thread)       state.thread       = cfg.thread;
             if (cfg.careLabel)    state.careLabel    = cfg.careLabel;
             if (cfg.brandLabel)   state.brandLabel   = cfg.brandLabel;
-            if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
+            if (cfg.qty)          state.brandLabelQty = cfg.qty;
+            if (cfg.hex)          state.colorHex     = '#' + cfg.hex;
             if (cfg.print)         state.print         = cfg.print;
 
             // Expand compressed print format. Stripe metadata packs each zone
@@ -386,6 +400,18 @@ function showPostPaymentModal(garmentConfig) {
         const season = document.getElementById('tpSeason').value.trim()  || 'SS26';
 
         document.getElementById('techPackModal').classList.remove('show');
+
+        // generate() reads the fill color directly from the #cFill DOM input
+        // (both to set state.colorHex and to color the SVG shapes themselves)
+        // rather than from state.colorHex — sync the input to the restored
+        // value first so generate() picks up the right color instead of
+        // stomping it back to the input's default. Dispatch 'input' so the
+        // sidebar's pantone chip (swatch + hex label) stays in sync too.
+        const cFillInput = document.getElementById('cFill');
+        if (cFillInput && state.colorHex) {
+            cFillInput.value = state.colorHex;
+            cFillInput.dispatchEvent(new Event('input'));
+        }
 
         // Regenerate flat from restored state before exporting
         generate(state, log);
