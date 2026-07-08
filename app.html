@@ -102,10 +102,11 @@
             <div class="app-sub">Technical Flat Creator for Fashion Design</div>
         </header>
 
-        <div class="steps-nav" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="2">
+        <div class="steps-nav" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
             <div class="step-dot active" data-step="0"></div>
             <div class="step-dot" data-step="1"></div>
             <div class="step-dot" data-step="2"></div>
+            <div class="step-dot" data-step="3"></div>
         </div>
 
         <div class="steps-scroll">
@@ -114,14 +115,14 @@
                     <div class="step-content">
                         <h2 class="step-title">Garment</h2>
                         <p class="step-desc">Choose a category to start designing</p>
-                        <div class="sec-label">Category</div>
-                        <div class="cat-grid" id="catGrid" role="radiogroup" aria-label="Garment categories"></div>
-
-                        <div class="sec-label" style="margin-top:24px">Sizing Standard</div>
+                        <div class="sec-label">Sizing Standard</div>
                         <div class="man-toggle" style="border:none;background:transparent;padding:0;gap:8px">
                             <button class="man-btn active" id="genderFemale" data-gender="female">Female · EU38</button>
                             <button class="man-btn"        id="genderMale"   data-gender="male">Male · EU50 (M)</button>
                         </div>
+
+                        <div class="sec-label" style="margin-top:24px">Category</div>
+                        <div class="cat-grid" id="catGrid" role="radiogroup" aria-label="Garment categories"></div>
                     </div>
                 </section>
 
@@ -158,6 +159,13 @@
                     <h2 class="step-title">Manufacturing</h2>
                     <p class="step-desc">Select fabric weight and seam type</p>
                     <div id="manufContainer"></div>
+                </div>
+                </section>
+                <section class="step-panel" aria-label="Step 4: Print and artwork">
+                <div class="step-content">
+                    <h2 class="step-title">Print</h2>
+                    <p class="step-desc">Add artwork to front or back print zones</p>
+                    <div id="printContainer"></div>
                 </div>
                 </section>
             </div>
