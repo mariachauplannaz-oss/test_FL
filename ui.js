@@ -188,6 +188,17 @@ const STITCH_TERM_MAP = {
     flatlock:     null,
 };
 
+// screen -> ft_prt_002 (Plastisol), not ft_prt_001 (Water-based): Plastisol's
+// own tooltip calls itself "Standard durable ink" — the conventional default
+// screen-print process — which is the closer match for the wizard's plain,
+// unqualified "Screen Print" option than the water-based eco-variant.
+const PRINT_METHOD_TERM_MAP = {
+    screen:      'ft_prt_002',
+    dtg:         'ft_prt_003',
+    embroidery:  'ft_emb_001',
+    sublimation: 'ft_prt_004'
+};
+
 // ── Shared: build a collapsible section (used by buildStep2's Basic/Advanced
 // and buildStep4's Artwork/Print) ──
 function buildSection(state, title, stateKey, buildFn) {
@@ -484,7 +495,8 @@ export function buildStep4(state) {
         panel.className = 'zone-panel'
             + (isActive ? '' : ' zone-panel--disabled')
             + (missingMethod ? ' zone-panel--missing-method' : '');
-        panel.style.cssText = 'padding:12px;margin:8px 0 4px;background:var(--surface);border-radius:8px;';
+        panel.dataset.zone = zoneKey;
+        panel.dataset.side = sideKey;
 
         const header = document.createElement('div');
         header.className = 'sec-label';
@@ -543,6 +555,22 @@ export function buildStep4(state) {
             opt.setAttribute('role', 'radio');
             opt.setAttribute('aria-label', m.label);
             opt.innerHTML = `<div class="opt-preview" style="font-size:10px;font-weight:700">${key.slice(0,3).toUpperCase()}</div><div class="opt-name">${m.label}</div>`;
+
+            // Add "?" info icon if this method has a term map entry
+            if (PRINT_METHOD_TERM_MAP[key]) {
+                const icon = document.createElement('span');
+                icon.className = 'info-icon';
+                icon.dataset.term = PRINT_METHOD_TERM_MAP[key];
+                icon.textContent = '?';
+                icon.addEventListener('mouseenter', () => showTooltip(PRINT_METHOD_TERM_MAP[key], icon));
+                icon.addEventListener('mouseleave', hideTooltip);
+                icon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openInfoPanel(PRINT_METHOD_TERM_MAP[key]);
+                });
+                opt.querySelector('.opt-name').appendChild(icon);
+            }
+
             opt.onclick = () => {
                 if (!placement) return; // guard: panel should be inert while disabled
                 placement.method = key;
@@ -589,32 +617,78 @@ export function buildStep4(state) {
         };
         content.appendChild(toggleRow);
 
+        // Switches to the zone's side (if not already active), rebuilds, then
+        // scrolls its panel into view — shared by the banner's zone links so
+        // a flagged zone on the inactive side is one click away, not just named.
+        function jumpToZone(side, zoneKey) {
+            state.ui.printActiveSide = side;
+            buildStep4(state); // rebuilds synchronously — DOM below is current
+            const panel = document.querySelector(`.zone-panel[data-zone="${zoneKey}"]`);
+            if (panel) {
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                panel.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+            }
+        }
+
         // Generate-blocking validation warning — set by nextAction() in app.js
         // when the user tries to Generate with artwork uploaded but no method
         // chosen. Recomputed live on every render (not a frozen snapshot), so
-        // picking a method for a flagged zone clears its warning/highlight on
-        // the very next re-render — which already happens on every zone-row,
-        // method, or toggle click — no separate tracking needed.
+        // picking a method for a flagged zone clears its warning/highlight and
+        // the toggle's alert coloring on the very next re-render — which
+        // already happens on every zone-row, method, or toggle click — no
+        // separate tracking needed. Computed once here and shared with the
+        // Front/Back toggle below, so a flagged side is visible at a glance
+        // even before reading the banner text.
+        const missingBySide = { front: [], back: [] };
         if (state.ui.printShowValidation) {
-            const missing = getMissingMethodZones(state);
-            if (missing.length > 0) {
-                const warnBanner = document.createElement('div');
-                warnBanner.className = 'print-validation-warning';
-                const names = missing.map(p => PRINT_ZONES[p.zone]?.label || p.zone).join(', ');
-                warnBanner.textContent = `Please select a print method for: ${names}`;
-                content.appendChild(warnBanner);
-            }
+            getMissingMethodZones(state).forEach(p => missingBySide[p.side]?.push(p));
+        }
+        const hasMissing = missingBySide.front.length > 0 || missingBySide.back.length > 0;
+
+        if (hasMissing) {
+            const warnBanner = document.createElement('div');
+            warnBanner.className = 'print-validation-warning';
+
+            const intro = document.createElement('div');
+            intro.textContent = 'Please select a print method for:';
+            warnBanner.appendChild(intro);
+
+            [['front', 'Front'], ['back', 'Back']].forEach(([side, label]) => {
+                const zones = missingBySide[side];
+                if (zones.length === 0) return;
+
+                const line = document.createElement('div');
+                line.style.cssText = 'margin-top:4px;';
+                line.appendChild(document.createTextNode(`${label}: `));
+
+                zones.forEach((p, i) => {
+                    const link = document.createElement('span');
+                    link.className = 'print-validation-warning__zone-link';
+                    link.textContent = PRINT_ZONES[p.zone]?.label || p.zone;
+                    link.onclick = () => jumpToZone(side, p.zone);
+                    line.appendChild(link);
+                    if (i < zones.length - 1) line.appendChild(document.createTextNode(', '));
+                });
+
+                warnBanner.appendChild(line);
+            });
+
+            content.appendChild(warnBanner);
         }
 
         if (state.print.enabled) {
             // Front/Back toggle — same visual pattern as the Female/Male
-            // sizing toggle in Step 0 (.man-toggle/.man-btn).
+            // sizing toggle in Step 0 (.man-toggle/.man-btn). A side with an
+            // unresolved missing-method zone gets .man-btn--alert, visible
+            // at a glance regardless of which side is currently active.
             const sideToggle = document.createElement('div');
             sideToggle.className = 'man-toggle';
             sideToggle.style.cssText = 'border:none;background:transparent;padding:0;gap:8px;margin-bottom:12px;';
             [['front', 'Front'], ['back', 'Back']].forEach(([side, label]) => {
                 const btn = document.createElement('button');
-                btn.className = 'man-btn' + (state.ui.printActiveSide === side ? ' active' : '');
+                btn.className = 'man-btn'
+                    + (state.ui.printActiveSide === side ? ' active' : '')
+                    + (missingBySide[side].length > 0 ? ' man-btn--alert' : '');
                 btn.textContent = label;
                 btn.onclick = () => {
                     state.ui.printActiveSide = side;
