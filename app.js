@@ -4,7 +4,7 @@ import { MANNEQUIN_CFG } from './config.js';
 import { parseSVG } from './parser.js';
 import { generate } from './generator.js';
 import { track } from './tracker.js';
-import { initCategories, goStep, updateButton, buildStep1, buildStep2, initToggles, toggleSidebar, closeSidebar, setIsoMode, awaitPendingUploads } from './ui.js';
+import { initCategories, goStep, updateButton, buildStep1, buildStep2, buildStep4, initToggles, toggleSidebar, closeSidebar, setIsoMode, awaitPendingUploads } from './ui.js';
 import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
@@ -27,7 +27,8 @@ const state = {
     ui: {
         step3BasicCollapsed:    false,
         step3AdvancedCollapsed: true,
-        step3ArtworkCollapsed:  false
+        step4ArtworkCollapsed:  false,
+        printActiveSide:        'front'
     },
     fabric:        'jersey_180',
     stitchType:    'overlock_4t',
@@ -89,6 +90,9 @@ function nextAction() {
     } else if (state.currentStep === 1 && state.currentMannequin === 'iso') {
         goStep(2, state, doUpdateButton);
         buildStep2(state);
+    } else if (state.currentStep === 2) {
+        goStep(3, state, doUpdateButton);
+        buildStep4(state);
     } else {
         const missing = [];
         if (!state.selections.torso) missing.push('Torso');

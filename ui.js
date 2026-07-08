@@ -68,7 +68,7 @@ export function goStep(n, state, updateButton) {
     track('step_viewed', { step: n, garment: state.selectedCategory || null });
 
     state.currentStep = n;
-    const pct = n * (100 / 3);
+    const pct = n * (100 / 4);
     document.getElementById('stepsTrack').style.transform = 'translateX(-' + pct + '%)';
     const dots = document.querySelectorAll('.step-dot');
     dots.forEach((d,i) => {
@@ -92,6 +92,9 @@ export function updateButton(state) {
         btn.textContent = 'Next';
         btn.disabled = !state.selectedCategory;
     } else if (state.currentStep === 1) {
+        btn.textContent = 'Next';
+        btn.disabled = false;
+    } else if (state.currentStep === 2) {
         btn.textContent = 'Next';
         btn.disabled = false;
     } else {
@@ -175,6 +178,32 @@ const STITCH_TERM_MAP = {
     coverseam_3n: 'iso_406',
     flatlock:     null,
 };
+
+// ── Shared: build a collapsible section (used by buildStep2's Basic/Advanced
+// and buildStep4's Artwork/Print) ──
+function buildSection(state, title, stateKey, buildFn) {
+    const collapsed = state.ui[stateKey];
+    const section = document.createElement('div');
+    section.className = 'step3-section' + (collapsed ? ' collapsed' : '');
+
+    const header = document.createElement('div');
+    header.className = 'step3-section-header';
+    header.innerHTML = `<span class="chevron">${collapsed ? '▸' : '▾'}</span> ${title}`;
+    header.onclick = () => {
+        state.ui[stateKey] = !state.ui[stateKey];
+        section.classList.toggle('collapsed');
+        header.querySelector('.chevron').textContent =
+            section.classList.contains('collapsed') ? '▸' : '▾';
+    };
+
+    const content = document.createElement('div');
+    content.className = 'step3-section-content';
+    buildFn(content);
+
+    section.appendChild(header);
+    section.appendChild(content);
+    return section;
+}
 
 export function buildStep2(state) {
     const container = document.getElementById('manufContainer');
@@ -264,216 +293,13 @@ export function buildStep2(state) {
         return sec;
     }
 
-    // ── Helper: build a collapsible section ──
-        function buildSection(title, stateKey, buildFn) {
-        const collapsed = state.ui[stateKey];
-        const section = document.createElement('div');
-        section.className = 'step3-section' + (collapsed ? ' collapsed' : '');
-
-        const header = document.createElement('div');
-        header.className = 'step3-section-header';
-        header.innerHTML = `<span class="chevron">${collapsed ? '▸' : '▾'}</span> ${title}`;
-        header.onclick = () => {
-            state.ui[stateKey] = !state.ui[stateKey];
-            section.classList.toggle('collapsed');
-            header.querySelector('.chevron').textContent =
-                section.classList.contains('collapsed') ? '▸' : '▾';
-        };
-
-        const content = document.createElement('div');
-        content.className = 'step3-section-content';
-        buildFn(content);
-
-        section.appendChild(header);
-        section.appendChild(content);
-        return section;
-    }
-
     // ── Filter entries by allowed list ──
     function allowed(dict, allowedKeys) {
         return Object.entries(dict).filter(([k]) => allowedKeys.includes(k));
     }
 
-    // ── Helper: build a multi-select zone row (Artwork/Print — unlike buildSelector,
-    // multiple zones can be active at once, so this toggles entries in
-    // state.print.placements rather than setting a single exclusive state field) ──
-    function describeZone(zone) {
-        const posDesc = zone.x_cm === 0
-            ? 'centered'
-            : `${Math.abs(zone.x_cm)} cm ${zone.x_cm < 0 ? 'left' : 'right'} of CF`;
-        return `${zone.width_cm} × ${zone.height_cm} cm · ${zone.y_cm} cm below HPS · ${posDesc}`;
-    }
-
-    function buildZoneRow(label, sideKey, zoneEntries) {
-        const sec = document.createElement('div');
-        sec.innerHTML = '<div class="sec-label">' + label + '</div>';
-        const scroll = document.createElement('div');
-        scroll.className = 'opt-scroll';
-        scroll.setAttribute('role', 'group');
-        scroll.setAttribute('aria-label', label);
-
-        zoneEntries.forEach(([zoneKey, zone]) => {
-            const isSelected = state.print.placements.some(p => p.side === sideKey && p.zone === zoneKey);
-            const opt = document.createElement('div');
-            opt.className = 'opt-card' + (isSelected ? ' selected' : '');
-            opt.setAttribute('role', 'checkbox');
-            opt.setAttribute('aria-checked', String(isSelected));
-            opt.setAttribute('aria-label', zone.label);
-
-            opt.innerHTML = `
-                <div class="opt-preview" style="font-size:10px;font-weight:700;line-height:1.2">${zone.width_cm}×${zone.height_cm}</div>
-                <div class="opt-name">${zone.label}${isSelected ? `<br><span style="font-size:9px;font-weight:400">${describeZone(zone)}</span>` : ''}</div>
-            `;
-
-            opt.onclick = () => {
-                const idx = state.print.placements.findIndex(p => p.side === sideKey && p.zone === zoneKey);
-                if (idx >= 0) {
-                    state.print.placements.splice(idx, 1);
-                } else {
-                    state.print.placements.push({
-                        side: sideKey, mode: 'zone', zone: zoneKey,
-                        x_cm: zone.x_cm, y_cm: zone.y_cm,
-                        width_cm: zone.width_cm, height_cm: zone.height_cm,
-                        image: null, method: null, colors: []
-                    });
-                }
-                buildStep2(state);
-            };
-            scroll.appendChild(opt);
-        });
-
-        sec.appendChild(scroll);
-        return sec;
-    }
-
-    // ── Helper: per-selected-zone artwork panel — upload, method, scale.
-    // Rendered full-width BELOW the zone-picker row (not inside the 96px
-    // opt-card, which has no room for a file input + method selector +
-    // slider). Drag-to-reposition happens directly on the flat preview
-    // (wired in print-renderer.js), not in this panel. ──
-    function buildZoneDetailPanel(placement) {
-        const zoneDef = PRINT_ZONES[placement.zone];
-        const panel = document.createElement('div');
-        panel.style.cssText = 'padding:12px;margin:8px 0 4px;background:var(--surface);border-radius:8px;';
-
-        const header = document.createElement('div');
-        header.className = 'sec-label';
-        header.style.cssText = 'margin:0 0 8px';
-        header.textContent = `${zoneDef.label} artwork`;
-        panel.appendChild(header);
-
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/png,image/jpeg,image/svg+xml';
-        fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-                const img = new Image();
-                img.onload = () => {
-                    placement.image = {
-                        dataURI: reader.result,
-                        filename: file.name,
-                        ratio: img.naturalWidth / img.naturalHeight,
-                        blob_key: null,
-                        offsetX_pct: 0, offsetY_pct: 0, scale: 1.0
-                    };
-                    uploadPrintImage(placement); // fire-and-forget — see print-renderer/app.js wiring
-                    buildStep2(state);
-                    updatePrintZones(state);
-                };
-                img.src = reader.result;
-            };
-            reader.readAsDataURL(file);
-        };
-        panel.appendChild(fileInput);
-
-        if (placement.image) {
-            const filenameRow = document.createElement('div');
-            filenameRow.style.cssText = 'font-size:11px;color:var(--ink-soft);margin-top:6px;';
-            filenameRow.textContent = placement.image.filename || 'Image uploaded';
-            panel.appendChild(filenameRow);
-        }
-
-        // Method selector — shown regardless of image upload state, since a
-        // print method can be chosen independently of having artwork yet.
-        const methodSec = document.createElement('div');
-        methodSec.style.cssText = 'margin-top:10px;';
-        methodSec.innerHTML = '<div class="sec-label" style="margin:0 0 6px">Print Method</div>';
-        const methodScroll = document.createElement('div');
-        methodScroll.className = 'opt-scroll';
-        methodScroll.setAttribute('role', 'radiogroup');
-        methodScroll.setAttribute('aria-label', 'Print Method');
-        Object.entries(PRINT_METHODS).forEach(([key, m]) => {
-            const opt = document.createElement('div');
-            opt.className = 'opt-card' + (placement.method === key ? ' selected' : '');
-            opt.setAttribute('role', 'radio');
-            opt.setAttribute('aria-label', m.label);
-            opt.innerHTML = `<div class="opt-preview" style="font-size:10px;font-weight:700">${key.slice(0,3).toUpperCase()}</div><div class="opt-name">${m.label}</div>`;
-            opt.onclick = () => {
-                placement.method = key;
-                buildStep2(state);
-            };
-            methodScroll.appendChild(opt);
-        });
-        methodSec.appendChild(methodScroll);
-        panel.appendChild(methodSec);
-
-        // Scale slider — only meaningful once there's an image to scale.
-        if (placement.image) {
-            const scaleRow = document.createElement('div');
-            scaleRow.style.cssText = 'margin-top:10px;';
-            scaleRow.innerHTML = `
-                <div class="sec-label" style="margin:0 0 6px">Scale</div>
-                <input type="range" min="0.3" max="3" step="0.1" value="${placement.image.scale}" style="width:100%">
-            `;
-            const scaleInput = scaleRow.querySelector('input');
-            scaleInput.oninput = () => {
-                placement.image.scale = parseFloat(scaleInput.value);
-                updateSingleImage(state, placement); // narrow update — repositions just this image
-            };
-            scaleInput.onchange = () => {
-                buildStep2(state); // final sidebar sync, matches Level-1 opt-card pattern
-            };
-            panel.appendChild(scaleRow);
-        }
-
-        return panel;
-    }
-
-    // ══ ARTWORK / PRINT SECTION ══
-    const artworkSection = buildSection('Artwork / Print', 'step3ArtworkCollapsed', (content) => {
-        const toggleRow = document.createElement('label');
-        toggleRow.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:12px;';
-        toggleRow.innerHTML = `
-            <input type="checkbox" id="printEnabledToggle" ${state.print.enabled ? 'checked' : ''}>
-            <span class="sec-label" style="margin:0">Add Print / Artwork</span>
-        `;
-        toggleRow.querySelector('input').onchange = (e) => {
-            state.print.enabled = e.target.checked;
-            buildStep2(state);
-        };
-        content.appendChild(toggleRow);
-
-        if (state.print.enabled) {
-            const frontZones = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === 'front');
-            const backZones  = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === 'back');
-
-            content.appendChild(buildZoneRow('Front', 'front', frontZones));
-            state.print.placements.filter(p => p.side === 'front').forEach(p => {
-                content.appendChild(buildZoneDetailPanel(p));
-            });
-
-            content.appendChild(buildZoneRow('Back', 'back', backZones));
-            state.print.placements.filter(p => p.side === 'back').forEach(p => {
-                content.appendChild(buildZoneDetailPanel(p));
-            });
-        }
-    });
-
     // ══ BASIC SECTION ══
-    const basicSection = buildSection('Basic', 'step3BasicCollapsed', (content) => {
+    const basicSection = buildSection(state, 'Basic', 'step3BasicCollapsed', (content) => {
 
         // Fabric
         content.appendChild(buildSelector(
@@ -512,7 +338,7 @@ export function buildStep2(state) {
     });
 
     // ══ ADVANCED SECTION ══
-    const advancedSection = buildSection('Advanced', 'step3AdvancedCollapsed', (content) => {
+    const advancedSection = buildSection(state, 'Advanced', 'step3AdvancedCollapsed', (content) => {
 
         // Needle
         content.appendChild(buildSelector(
@@ -531,11 +357,8 @@ export function buildStep2(state) {
         ));
     });
 
-    container.appendChild(artworkSection);
     container.appendChild(basicSection);
     container.appendChild(advancedSection);
-
-    updatePrintZones(state);
 
     // Auto-fix: after a state change, check if other selections became incompatible.
     // If so, switch them to the first compatible option from their allowed list.
@@ -575,6 +398,217 @@ export function buildStep2(state) {
             }
         }
     }
+}
+
+export function buildStep4(state) {
+    const container = document.getElementById('printContainer');
+    container.innerHTML = '';
+
+    // ── Helper: describe a zone's fixed geometry in plain terms ──
+    function describeZone(zone) {
+        const posDesc = zone.x_cm === 0
+            ? 'centered'
+            : `${Math.abs(zone.x_cm)} cm ${zone.x_cm < 0 ? 'left' : 'right'} of CF`;
+        return `${zone.width_cm} × ${zone.height_cm} cm · ${zone.y_cm} cm below HPS · ${posDesc}`;
+    }
+
+    // ── Helper: build a multi-select zone row — unlike buildSelector, multiple
+    // zones can be active at once, so this toggles entries in
+    // state.print.placements rather than setting a single exclusive state field ──
+    function buildZoneRow(label, sideKey, zoneEntries) {
+        const sec = document.createElement('div');
+        sec.innerHTML = '<div class="sec-label">' + label + '</div>';
+        const scroll = document.createElement('div');
+        scroll.className = 'opt-scroll';
+        scroll.setAttribute('role', 'group');
+        scroll.setAttribute('aria-label', label);
+
+        zoneEntries.forEach(([zoneKey, zone]) => {
+            const isSelected = state.print.placements.some(p => p.side === sideKey && p.zone === zoneKey);
+            const opt = document.createElement('div');
+            opt.className = 'opt-card' + (isSelected ? ' selected' : '');
+            opt.setAttribute('role', 'checkbox');
+            opt.setAttribute('aria-checked', String(isSelected));
+            opt.setAttribute('aria-label', zone.label);
+
+            opt.innerHTML = `
+                <div class="opt-preview" style="font-size:10px;font-weight:700;line-height:1.2">${zone.width_cm}×${zone.height_cm}</div>
+                <div class="opt-name">${zone.label}${isSelected ? `<br><span style="font-size:9px;font-weight:400">${describeZone(zone)}</span>` : ''}</div>
+            `;
+
+            opt.onclick = () => {
+                const idx = state.print.placements.findIndex(p => p.side === sideKey && p.zone === zoneKey);
+                if (idx >= 0) {
+                    state.print.placements.splice(idx, 1);
+                } else {
+                    state.print.placements.push({
+                        side: sideKey, mode: 'zone', zone: zoneKey,
+                        x_cm: zone.x_cm, y_cm: zone.y_cm,
+                        width_cm: zone.width_cm, height_cm: zone.height_cm,
+                        image: null, method: null, colors: []
+                    });
+                }
+                buildStep4(state);
+            };
+            scroll.appendChild(opt);
+        });
+
+        sec.appendChild(scroll);
+        return sec;
+    }
+
+    // ── Helper: per-zone artwork panel — upload, method, scale. Rendered for
+    // EVERY zone of the active side (not just selected ones): zones not yet
+    // added to state.print.placements render dimmed/inert via
+    // .zone-panel--disabled (opacity + pointer-events:none in styles.css),
+    // and switch to interactive the moment their zone card is clicked above.
+    // Rendered full-width BELOW the zone-picker row (not inside the 96px
+    // opt-card, which has no room for a file input + method selector +
+    // slider). Drag-to-reposition happens directly on the flat preview
+    // (wired in print-renderer.js), not in this panel. ──
+    function buildZoneDetailPanel(zoneKey, zone, sideKey) {
+        const placement = state.print.placements.find(p => p.side === sideKey && p.zone === zoneKey);
+        const isActive = !!placement;
+
+        const panel = document.createElement('div');
+        panel.className = 'zone-panel' + (isActive ? '' : ' zone-panel--disabled');
+        panel.style.cssText = 'padding:12px;margin:8px 0 4px;background:var(--surface);border-radius:8px;';
+
+        const header = document.createElement('div');
+        header.className = 'sec-label';
+        header.style.cssText = 'margin:0 0 8px';
+        header.textContent = `${zone.label} artwork`;
+        panel.appendChild(header);
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/png,image/jpeg,image/svg+xml';
+        fileInput.disabled = !isActive;
+        fileInput.onchange = (e) => {
+            if (!placement) return; // guard: panel should be inert while disabled
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    placement.image = {
+                        dataURI: reader.result,
+                        filename: file.name,
+                        ratio: img.naturalWidth / img.naturalHeight,
+                        blob_key: null,
+                        offsetX_pct: 0, offsetY_pct: 0, scale: 1.0
+                    };
+                    uploadPrintImage(placement); // fire-and-forget — see print-renderer/app.js wiring
+                    buildStep4(state);
+                    updatePrintZones(state);
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        };
+        panel.appendChild(fileInput);
+
+        if (placement && placement.image) {
+            const filenameRow = document.createElement('div');
+            filenameRow.style.cssText = 'font-size:11px;color:var(--ink-soft);margin-top:6px;';
+            filenameRow.textContent = placement.image.filename || 'Image uploaded';
+            panel.appendChild(filenameRow);
+        }
+
+        // Method selector — shown regardless of image upload state, since a
+        // print method can be chosen independently of having artwork yet.
+        const methodSec = document.createElement('div');
+        methodSec.style.cssText = 'margin-top:10px;';
+        methodSec.innerHTML = '<div class="sec-label" style="margin:0 0 6px">Print Method</div>';
+        const methodScroll = document.createElement('div');
+        methodScroll.className = 'opt-scroll';
+        methodScroll.setAttribute('role', 'radiogroup');
+        methodScroll.setAttribute('aria-label', 'Print Method');
+        Object.entries(PRINT_METHODS).forEach(([key, m]) => {
+            const opt = document.createElement('div');
+            opt.className = 'opt-card' + (placement && placement.method === key ? ' selected' : '');
+            opt.setAttribute('role', 'radio');
+            opt.setAttribute('aria-label', m.label);
+            opt.innerHTML = `<div class="opt-preview" style="font-size:10px;font-weight:700">${key.slice(0,3).toUpperCase()}</div><div class="opt-name">${m.label}</div>`;
+            opt.onclick = () => {
+                if (!placement) return; // guard: panel should be inert while disabled
+                placement.method = key;
+                buildStep4(state);
+            };
+            methodScroll.appendChild(opt);
+        });
+        methodSec.appendChild(methodScroll);
+        panel.appendChild(methodSec);
+
+        // Scale slider — only meaningful once there's an image to scale.
+        if (placement && placement.image) {
+            const scaleRow = document.createElement('div');
+            scaleRow.style.cssText = 'margin-top:10px;';
+            scaleRow.innerHTML = `
+                <div class="sec-label" style="margin:0 0 6px">Scale</div>
+                <input type="range" min="0.3" max="3" step="0.1" value="${placement.image.scale}" style="width:100%">
+            `;
+            const scaleInput = scaleRow.querySelector('input');
+            scaleInput.oninput = () => {
+                placement.image.scale = parseFloat(scaleInput.value);
+                updateSingleImage(state, placement); // narrow update — repositions just this image
+            };
+            scaleInput.onchange = () => {
+                buildStep4(state); // final sidebar sync, matches Level-1 opt-card pattern
+            };
+            panel.appendChild(scaleRow);
+        }
+
+        return panel;
+    }
+
+    // ══ ARTWORK / PRINT SECTION ══
+    const artworkSection = buildSection(state, 'Artwork / Print', 'step4ArtworkCollapsed', (content) => {
+        const toggleRow = document.createElement('label');
+        toggleRow.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:12px;';
+        toggleRow.innerHTML = `
+            <input type="checkbox" id="printEnabledToggle" ${state.print.enabled ? 'checked' : ''}>
+            <span class="sec-label" style="margin:0">Add Print / Artwork</span>
+        `;
+        toggleRow.querySelector('input').onchange = (e) => {
+            state.print.enabled = e.target.checked;
+            buildStep4(state);
+        };
+        content.appendChild(toggleRow);
+
+        if (state.print.enabled) {
+            // Front/Back toggle — same visual pattern as the Female/Male
+            // sizing toggle in Step 0 (.man-toggle/.man-btn).
+            const sideToggle = document.createElement('div');
+            sideToggle.className = 'man-toggle';
+            sideToggle.style.cssText = 'border:none;background:transparent;padding:0;gap:8px;margin-bottom:12px;';
+            [['front', 'Front'], ['back', 'Back']].forEach(([side, label]) => {
+                const btn = document.createElement('button');
+                btn.className = 'man-btn' + (state.ui.printActiveSide === side ? ' active' : '');
+                btn.textContent = label;
+                btn.onclick = () => {
+                    state.ui.printActiveSide = side;
+                    buildStep4(state);
+                };
+                sideToggle.appendChild(btn);
+            });
+            content.appendChild(sideToggle);
+
+            const activeSide = state.ui.printActiveSide;
+            const sideLabel  = activeSide === 'front' ? 'Front' : 'Back';
+            const zoneEntries = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === activeSide);
+
+            content.appendChild(buildZoneRow(sideLabel, activeSide, zoneEntries));
+            zoneEntries.forEach(([zoneKey, zone]) => {
+                content.appendChild(buildZoneDetailPanel(zoneKey, zone, activeSide));
+            });
+        }
+    });
+
+    container.appendChild(artworkSection);
+
+    updatePrintZones(state);
 }
 
 export function initToggles() {
