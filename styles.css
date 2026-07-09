@@ -624,17 +624,13 @@ input[type="color"] {
     gap: 18px;
 }
 .topbar-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-.topbar-title {
     font-family: var(--mono);
     font-size: 11px;
     font-weight: 500;
     color: var(--ink-soft);
     letter-spacing: 1px;
     text-transform: uppercase;
+    margin-right: auto;
 }
 .topbar-home {
     font-size: 13px;
@@ -899,7 +895,11 @@ input[type="color"] {
         height: 100dvh; width: 100%;
         z-index: 1;
     }
-    .topbar { display: none; }
+    @media (max-width: 1100px) {
+    .topbar { gap: 12px; padding: 12px 20px; }
+    .topbar-home { font-size: 12px; }
+    .topbar-download { padding: 9px 16px; font-size: 12px; }
+   }
     .canvas-area { padding: 16px; padding-top: 60px; }
     .canvas-card {
         min-width: auto; min-height: auto;
