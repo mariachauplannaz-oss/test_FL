@@ -1,6 +1,5 @@
 import { track } from '../tracker.js';
 import { getProductConfig } from './config/pricing.js';
-import { PRINT_METHODS } from '../config/print-zones.js';
 
 // ─── Read context from URL + sessionStorage ───────────────────────────────────
 
@@ -100,49 +99,56 @@ btnPay.addEventListener('click', async () => {
   
   try {
     const garmentConfig = {
-      garment:    checkoutState.garment,
-      selections: checkoutState.selections,
-      gender:     checkoutState.gender,
-      fabric:     checkoutState.fabric,
-      stitchType: checkoutState.stitchType,
-      needle:     checkoutState.needle,
-      thread:     checkoutState.thread,
-      careLabel:  checkoutState.careLabel,
-      brandLabel: checkoutState.brandLabel,
-      // brandLabelQty and colorHex are shortened to `qty`/`hex` (colorHex's
-      // leading '#' stripped too) here in the compressed metadata only —
-      // state.brandLabelQty/state.colorHex keep their full names everywhere
-      // else. Needed to stay under Stripe's 500-char limit: measured real
-      // worst case (6 zones w/ method+image, all other fields maxed) is
-      // 508 chars with the full key names, 492 with these two shortened.
-      qty: checkoutState.brandLabelQty,
-      hex: (checkoutState.colorHex || '').replace('#', ''),
-      // Stripe metadata values are capped at 500 chars — full print.placements
-      // objects (and especially image dataURIs) blow way past that. Each zone
-      // is packed as a positional [zone, methodCode, image_key] tuple (no key
-      // names, 2-letter method code) to stay under budget: worst case (6
-      // zones, all with method+image) measures ~489 chars. app.js decodes
-      // this back into full placements on restore, fetching each image from
-      // Netlify Blobs via image_key. NOTE: offsetX_pct/offsetY_pct/scale do
-      // NOT survive this round-trip — even this maximally compact encoding
-      // has no room left for position data — so restored images reset to
-      // centered/scale=1.0. See app.js.
+      garment:       checkoutState.garment,
+      selections:    checkoutState.selections,
+      gender:        checkoutState.gender,
+      fabric:        checkoutState.fabric,
+      stitchType:    checkoutState.stitchType,
+      needle:        checkoutState.needle,
+      thread:        checkoutState.thread,
+      careLabel:     checkoutState.careLabel,
+      brandLabel:    checkoutState.brandLabel,
+      brandLabelQty: checkoutState.brandLabelQty,
+      colorHex:      checkoutState.colorHex,
+      // Print placements keep their full shape — offset/scale included —
+      // since this is stored in a Netlify Blob, not Stripe metadata. Only
+      // the image dataURI is dropped (blob_key is enough to re-fetch it via
+      // /api/get-print-image post-payment — see app.js).
       print: checkoutState.print && checkoutState.print.enabled
-        ? { enabled: true, zones: checkoutState.print.placements.map(p => ([
-              p.zone,
-              PRINT_METHODS[p.method]?.code || null,
-              p.image?.blob_key || null
-          ])) }
+        ? { enabled: true, placements: checkoutState.print.placements.map(p => ({
+              side: p.side, mode: p.mode, zone: p.zone,
+              x_cm: p.x_cm, y_cm: p.y_cm, width_cm: p.width_cm, height_cm: p.height_cm,
+              method: p.method, colors: p.colors,
+              image: p.image ? {
+                filename:    p.image.filename,
+                ratio:       p.image.ratio,
+                blob_key:    p.image.blob_key || null,
+                offsetX_pct: p.image.offsetX_pct,
+                offsetY_pct: p.image.offsetY_pct,
+                scale:       p.image.scale
+              } : null
+          })) }
         : { enabled: false }
     };
+
+    // Save the full config to a blob and get back a short key — Stripe
+    // metadata is capped at 500 chars, so metadata only ever carries this
+    // key, never the config itself.
+    const saveResponse = await fetch('/api/save-checkout-config', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(garmentConfig)
+    });
+    const saveData = await saveResponse.json();
+    if (!saveData.ok) throw new Error(saveData.error || 'Failed to save checkout config');
 
     const response = await fetch('/api/create-checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: checkoutEmail.value.trim(),
-        garment_config: garmentConfig,
-        product_key: productKey
+        product_key: productKey,
+        config_key: saveData.config_key
       })
     });
 

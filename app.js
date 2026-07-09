@@ -9,7 +9,6 @@ import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { updatePrintZones } from './print-renderer.js';
-import { PRINT_ZONES, PRINT_METHODS } from './config/print-zones.js';
 
 window.showTooltip    = showTooltip;
 window.hideTooltip    = hideTooltip;
@@ -284,66 +283,38 @@ async function handlePaymentReturn() {
         if (cfg && cfg.selections) {
             state.selections = cfg.selections;
             state.gender     = cfg.gender     || state.gender;
-            if (cfg.fabric)       state.fabric       = cfg.fabric;
-            if (cfg.stitchType)   state.stitchType   = cfg.stitchType;
-            if (cfg.needle)       state.needle       = cfg.needle;
-            if (cfg.thread)       state.thread       = cfg.thread;
-            if (cfg.careLabel)    state.careLabel    = cfg.careLabel;
-            if (cfg.brandLabel)   state.brandLabel   = cfg.brandLabel;
-            if (cfg.qty)          state.brandLabelQty = cfg.qty;
-            if (cfg.hex)          state.colorHex     = '#' + cfg.hex;
+            if (cfg.fabric)        state.fabric        = cfg.fabric;
+            if (cfg.stitchType)    state.stitchType    = cfg.stitchType;
+            if (cfg.needle)        state.needle        = cfg.needle;
+            if (cfg.thread)        state.thread        = cfg.thread;
+            if (cfg.careLabel)     state.careLabel     = cfg.careLabel;
+            if (cfg.brandLabel)    state.brandLabel    = cfg.brandLabel;
+            if (cfg.brandLabelQty) state.brandLabelQty = cfg.brandLabelQty;
+            if (cfg.colorHex)      state.colorHex      = cfg.colorHex;
             if (cfg.print)         state.print         = cfg.print;
 
-            // Expand compressed print format. Stripe metadata packs each zone
-            // as a positional [zone, methodCode, image_key] tuple (no key
-            // names, 2-letter method code) to stay under the 500-char limit
-            // — see js/checkout.js. Position/scale do NOT survive this
-            // round-trip (no budget left for them), so restored images
-            // always come back centered at scale 1.0.
-            if (state.print && state.print.enabled && state.print.zones && !state.print.placements) {
-                state.print.placements = await Promise.all(
-                    state.print.zones
-                        .filter(([zoneKey]) => PRINT_ZONES[zoneKey])
-                        .map(async ([zoneKey, methodCode, imageKey]) => {
-                            const z = PRINT_ZONES[zoneKey];
-                            const method = Object.keys(PRINT_METHODS)
-                                .find(k => PRINT_METHODS[k].code === methodCode) || null;
-
-                            const placement = {
-                                side: z.side, mode: 'zone', zone: zoneKey,
-                                x_cm: z.x_cm, y_cm: z.y_cm,
-                                width_cm: z.width_cm, height_cm: z.height_cm,
-                                image: null, method, colors: []
-                            };
-
-                            if (imageKey) {
-                                try {
-                                    const res  = await fetch(`/api/get-print-image?key=${encodeURIComponent(imageKey)}`);
-                                    const json = await res.json();
-                                    if (json.ok) {
-                                        const ratio = await new Promise(resolve => {
-                                            const img = new Image();
-                                            img.onload  = () => resolve(img.naturalWidth / img.naturalHeight);
-                                            img.onerror = () => resolve(1);
-                                            img.src = json.dataURI;
-                                        });
-                                        placement.image = {
-                                            dataURI: json.dataURI, filename: '', ratio,
-                                            offsetX_pct: 0, offsetY_pct: 0, scale: 1.0,
-                                            blob_key: imageKey
-                                        };
-                                    } else {
-                                        console.warn('[FlatLabs] Print image restore failed:', json.error);
-                                    }
-                                } catch (e) {
-                                    console.warn('[FlatLabs] Print image fetch failed:', e);
+            // garment_config (stored in Netlify Blobs, not Stripe metadata —
+            // see js/checkout.js) already has each placement's full shape,
+            // offset/scale included. Only the image dataURI was dropped when
+            // saving, so re-fetch that from Netlify Blobs via blob_key.
+            if (state.print && state.print.enabled && state.print.placements) {
+                await Promise.all(
+                    state.print.placements
+                        .filter(p => p.image && p.image.blob_key && !p.image.dataURI)
+                        .map(async (p) => {
+                            try {
+                                const res  = await fetch(`/api/get-print-image?key=${encodeURIComponent(p.image.blob_key)}`);
+                                const json = await res.json();
+                                if (json.ok) {
+                                    p.image.dataURI = json.dataURI;
+                                } else {
+                                    console.warn('[FlatLabs] Print image restore failed:', json.error);
                                 }
+                            } catch (e) {
+                                console.warn('[FlatLabs] Print image fetch failed:', e);
                             }
-
-                            return placement;
                         })
                 );
-                delete state.print.zones; // clean up compressed format
             }
 
             if (!state.print || !state.print.enabled) {

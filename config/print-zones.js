@@ -22,12 +22,9 @@ export const PRINT_ZONES = {
 };
 
 // ─── Level 2: print methods ──────────────────────────────────────────────────
-// `code` is a 2-letter tag used only to keep the Stripe metadata payload
-// (500-char limit) under budget when checkout compresses print placements —
-// see js/checkout.js and app.js.
 export const PRINT_METHODS = {
-    screen:      { id: 'screen',      label: 'Screen Print',                code: 'sc' },
-    dtg:         { id: 'dtg',         label: 'DTG (Direct to Garment)',      code: 'dt' },
-    embroidery:  { id: 'embroidery',  label: 'Embroidery',                  code: 'em' },
-    sublimation: { id: 'sublimation', label: 'Sublimation',                 code: 'su' }
+    screen:      { id: 'screen',      label: 'Screen Print' },
+    dtg:         { id: 'dtg',         label: 'DTG (Direct to Garment)' },
+    embroidery:  { id: 'embroidery',  label: 'Embroidery' },
+    sublimation: { id: 'sublimation', label: 'Sublimation' }
 };
