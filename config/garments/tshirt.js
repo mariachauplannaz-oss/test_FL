@@ -19,7 +19,7 @@ export const COMPONENT_META = {
             },
             back_measures: {
                 across_back: { letter: 'TS-N', label: 'Across Back (1/2)', value: 37, unit: 'cm', pom: 'Armhole seam to armhole seam, 10 cm below CB neck, measured flat' },
-                back_length: { letter: 'TS-O', label: 'CB Length',         value: 64, unit: 'cm', pom: 'From CB neck seam straight down to hem edge' }
+                back_length: { letter: 'TS-O', label: 'CB Length',         value: 60, unit: 'cm', pom: 'From CB neck seam straight down to hem edge' }
             },
             construction: 'Side seams: ISO 514 (overlock 4-thread). Hem: double-needle coverseam 2 cm.',
             iso_norm: 'ISO 514'
@@ -37,7 +37,7 @@ export const COMPONENT_META = {
             },
             back_measures: {
                 across_back: { letter: 'TS-N', label: 'Across Back (1/2)', value: 37, unit: 'cm', pom: 'Armhole seam to armhole seam, 10 cm below CB neck, measured flat' },
-                back_length: { letter: 'TS-O', label: 'CB Length',         value: 50, unit: 'cm', pom: 'From CB neck seam straight down to hem edge' }
+                back_length: { letter: 'TS-O', label: 'CB Length',         value: 46, unit: 'cm', pom: 'From CB neck seam straight down to hem edge' }
             },
             construction: 'Side seams: ISO 514 (overlock 4-thread). Hem: exposed raw edge or coverseam.',
             iso_norm: 'ISO 514'
@@ -55,7 +55,7 @@ export const COMPONENT_META = {
             },
             back_measures: {
                 across_back: { letter: 'TS-N', label: 'Across Back (1/2)', value: 36, unit: 'cm', pom: 'Armhole seam to armhole seam, 10 cm below CB neck, measured flat' },
-                back_length: { letter: 'TS-O', label: 'CB Length',         value: 64, unit: 'cm', pom: 'From CB neck seam straight down to hem edge' }
+                back_length: { letter: 'TS-O', label: 'CB Length',         value: 60, unit: 'cm', pom: 'From CB neck seam straight down to hem edge' }
             },
             construction: 'Side seams: ISO 514 (overlock 4-thread). Hem: double-needle coverseam 2 cm.',
             iso_norm: 'ISO 514'
@@ -96,7 +96,7 @@ export const COMPONENT_META = {
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 2.5,  unit: 'cm', pom: 'From HPS to lowest point of back neckline, straight' },
                 binding_width:  { letter: 'TS-J', label: 'Rib Binding Width',   value: 1.5,  unit: 'cm', pom: 'Finished width of neck binding' }
             },
-            construction: 'Rib binding 2×1 (cotton/elastane). Attached with ISO 607 flatlock stitch 0.1 cm from edge. Binding stretched 90% of neckline length.',
+            construction: 'Rib binding 1×1 (cotton/elastane). Attached with ISO 607 flatlock stitch 0.1 cm from edge. Binding stretched 90% of neckline length.',
             iso_norm: 'ISO 607'
         },
         v: {
@@ -107,7 +107,7 @@ export const COMPONENT_META = {
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 2.5,  unit: 'cm', pom: 'From HPS to lowest point of back neckline, straight' },
                 binding_width:  { letter: 'TS-J', label: 'Rib Binding Width',   value: 1.5,  unit: 'cm', pom: 'Finished width of neck binding' }
             },
-            construction: 'Rib binding 2×1. ISO 607 flatlock stitch. V-point: mitered finish with tape reinforcement.',
+            construction: 'Rib binding 1×1. ISO 607 flatlock stitch. V-point: mitered finish with tape reinforcement.',
             iso_norm: 'ISO 607'
         },
         mok: {
@@ -129,7 +129,7 @@ export const COMPONENT_META = {
                 back_drop:      { letter: 'TS-I', label: 'Back Neck Drop',      value: 2.5,  unit: 'cm', pom: 'From HPS to lowest point of back neckline, straight' },
                 binding_width:  { letter: 'TS-J', label: 'Rib Binding Width',   value: 1.2,  unit: 'cm', pom: 'Finished width of neck binding' }
             },
-            construction: 'Rib binding 2×1 (cotton/elastane). ISO 607 flatlock stitch 0.1 cm from edge.',
+            construction: 'Rib binding 1×1 (cotton/elastane). ISO 607 flatlock stitch 0.1 cm from edge.',
             iso_norm: 'ISO 607'
         },
         bot: {
