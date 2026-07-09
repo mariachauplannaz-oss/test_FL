@@ -225,10 +225,21 @@
                 <input type="checkbox" id="emailAcceptTC">
                 I accept the <a href="/legal/terms.html" target="_blank">Terms and Conditions</a> and <a href="/legal/privacy.html" target="_blank">Privacy Policy</a>
             </label>
+            <p style="font-size:11px;color:var(--gray2);margin:6px 0 0;line-height:1.4">No spam — just your file and updates on new modules.</p>
             <div id="emailModalError" hidden style="margin-bottom:10px"></div>
             <button type="submit" class="btn btn-blue" style="width:100%;margin-top:12px">Download SVG</button>
         </form>
         <button id="btnCloseEmailModal" style="background:none;border:none;color:var(--gray2);margin-top:15px;cursor:pointer;font-size:12px;font-family:inherit">Close</button>
+    </div>
+</div>
+
+<!-- Post-download upsell -->
+<div class="modal-overlay" id="postDownloadUpsell" role="dialog" aria-modal="true">
+    <div class="modal-content">
+        <h3 class="modal-title">Your SVG is ready!</h3>
+        <p class="modal-text">Want the full spec sheet? Get POM, BOM, grading, and construction notes — ready for your factory.</p>
+        <button class="btn btn-blue" id="btnPostUpsellTechPack" style="width:100%">Get Tech Pack — 10€</button>
+        <button id="btnClosePostUpsell" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Not now</button>
     </div>
 </div>
 
@@ -244,7 +255,7 @@
 <!-- Tech Pack Modal -->
 <div class="modal-overlay" id="techPackModal" role="dialog" aria-modal="true" aria-labelledby="techPackModalTitle">
     <div class="modal-content">
-        <h3 class="modal-title" id="techPackModalTitle">Export Tech Pack</h3>
+        <h3 class="modal-title" id="techPackModalTitle">Export Tech Pack — 10€</h3>
         <p class="modal-text">Fill in your project details. These will appear on the cover of your spec sheet.</p>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
             <input type="text" id="tpBrand"   placeholder="Brand name"     maxlength="60"
@@ -256,6 +267,7 @@
             <input type="text" id="tpSeason"  placeholder="Season (e.g. SS26)"       maxlength="20"
                 style="width:100%;padding:12px;border:1.5px solid var(--gray3);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s">
         </div>
+        <p style="font-size:11px;color:var(--gray2);margin:0 0 10px;text-align:center">🔒 Secure payment via Stripe</p>
         <button class="btn btn-blue" id="btnConfirmTechPack" style="width:100%">Generate PDF</button>
         <button id="btnCloseTechPackModal" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Cancel</button>
     </div>
