@@ -40,10 +40,10 @@ const GLOSSARY = [
 /* ── 6-tab taxonomy: "All" + the 5-group harmonized palette ── */
 const GROUPS = [
   { key:'all',           label:'All',          color:'#1A1A1A', colorSoft:'rgba(26,26,26,.08)',     cats:[] },
-  { key:'materials',     label:'Materials',    color:'#0078A8', colorSoft:'#E8F4FA',               cats:['Fabric','Finish'] },
-  { key:'construction',  label:'Construction', color:'#5A7A1A', colorSoft:'#F4FFE3',               cats:['Seam','Stitch','Needle','Thread'] },
-  { key:'color-dye',     label:'Color & Dye',  color:'#C24433', colorSoft:'rgba(255,107,87,.10)',   cats:['Color','Dyeing'] },
-  { key:'decoration',    label:'Decoration',   color:'#B8860B', colorSoft:'#FFF6E0',               cats:['Print','Embroidery'] },
+  { key:'materials',     label:'Materials',    color:'#0f9ed7', colorSoft:'#E8F4FA',               cats:['Fabric','Finish'] },
+  { key:'construction',  label:'Construction', color:'#64b916', colorSoft:'#F4FFE3',               cats:['Seam','Stitch','Needle','Thread'] },
+  { key:'color-dye',     label:'Color & Dye',  color:'#c31700', colorSoft:'rgba(255,107,87,.10)',   cats:['Color','Dyeing'] },
+  { key:'decoration',    label:'Decoration',   color:'#ffb500', colorSoft:'#FFF6E0',               cats:['Print','Embroidery'] },
   { key:'trims-packing', label:'Trims',        color:'#5C5C5C', colorSoft:'#EFEFEA',               cats:['Label','Packing'] },
 ];
 

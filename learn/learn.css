@@ -27,10 +27,10 @@
   --group-soft: var(--accent-soft);
 }
 
-[data-group="materials"]     { --group: #0078A8; --group-soft: #E8F4FA; }
-[data-group="construction"]  { --group: #5A7A1A; --group-soft: #F4FFE3; }
-[data-group="color-dye"]     { --group: #C24433; --group-soft: rgba(255,107,87,.10); }
-[data-group="decoration"]    { --group: #B8860B; --group-soft: #FFF6E0; }
+[data-group="materials"]     { --group: #0f9ed7; --group-soft: #E8F4FA; }
+[data-group="construction"]  { --group: #64b916; --group-soft: #F4FFE3; }
+[data-group="color-dye"]     { --group: #c31700; --group-soft: rgba(255,107,87,.10); }
+[data-group="decoration"]    { --group: #ffb500; --group-soft: #FFF6E0; }
 [data-group="trims-packing"] { --group: #5C5C5C; --group-soft: #EFEFEA; }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -506,7 +506,7 @@ nav.site-nav {
   border-radius: 20px;
   padding: 56px 48px;
   text-align: center;
-  margin: 0 0 64px;
+  margin: 64px 0;
   position: relative;
   overflow: hidden;
 }
