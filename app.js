@@ -483,6 +483,15 @@ async function init() {
         document.getElementById('proModal').classList.remove('show');
     });
 
+    // Post-download upsell modal
+    document.getElementById('btnPostUpsellTechPack')?.addEventListener('click', () => {
+        document.getElementById('postDownloadUpsell')?.classList.remove('show');
+        doExportTechPack();
+    });
+    document.getElementById('btnClosePostUpsell')?.addEventListener('click', () => {
+        document.getElementById('postDownloadUpsell')?.classList.remove('show');
+    });
+
     // Email input focus/blur styles
     const emailInput = document.getElementById('emailInput');
     emailInput?.addEventListener('focus', function() { this.style.borderColor = 'var(--accent)'; });
@@ -497,6 +506,13 @@ async function init() {
             log(`Sizing standard: ${state.gender}`, 'info');
         });
     });
+
+    // Auto-open sidebar on first mobile visit
+    if (window.innerWidth <= 800 && !localStorage.getItem('flatlabs_visited')) {
+        localStorage.setItem('flatlabs_visited', '1');
+        // Small delay to let layout settle
+        setTimeout(() => { toggleSidebar(); }, 300);
+    }
 
     // CHANGE 5 — Handle return from Stripe payment (if applicable)
     await handlePaymentReturn();

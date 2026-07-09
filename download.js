@@ -250,6 +250,10 @@ async function _registerFreeDownload(email, state, log) {
       _hideEmailModal();
       log('Free download approved', 'ok');
       triggerDownload(state, log);
+      // Show Tech Pack upsell after successful free download (slight delay so file download initiates first)
+      setTimeout(() => {
+        document.getElementById('postDownloadUpsell')?.classList.add('show');
+      }, 1500);
       return;
     }
 
