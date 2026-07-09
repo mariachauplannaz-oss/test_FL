@@ -160,3 +160,181 @@ footer.site-footer a:hover { color: var(--accent); }
   .nav-cta { padding: 7px 14px !important; font-size: 11px !important; }
   body > footer, footer.site-footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   GLOSSARY WIDGET — shared tabs + grid, rendered by
+   /js/glossary-widget.js into any #glossaryWidget container.
+   Renders identically on index.html and learn/index.html — same
+   markup, same "glw-" prefixed classes, same colors (set inline
+   from js/glossary-widget.js's GROUPS array via --glw-group /
+   --glw-group-soft custom properties, not from a parallel CSS
+   block that could drift out of sync).
+   ════════════════════════════════════════════════════════════ */
+.glw-tabs-wrap {
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--radius-sm);
+  margin-bottom: 32px;
+}
+.glw-tabs-inner {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.glw-tabs-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  flex-shrink: 0;
+}
+/* Horizontal scroll on mobile instead of wrapping to multiple lines —
+   flex-wrap: nowrap + overflow-x: auto, not flex-wrap: wrap. */
+.glw-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  flex: 1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.glw-tabs::-webkit-scrollbar { display: none; }
+.glw-tab {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .2s var(--ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.glw-tab:hover { border-color: var(--glw-group); color: var(--glw-group); }
+.glw-tab.active {
+  background: var(--glw-group);
+  border-color: var(--glw-group);
+  color: white;
+}
+.glw-tab-count { font-size: 10px; font-weight: 600; opacity: .55; }
+.glw-tab.active .glw-tab-count { opacity: .85; color: white; }
+
+.glw-section-heading {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  margin-bottom: 32px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.glw-section-heading h2 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -.8px;
+  color: var(--ink);
+}
+.glw-section-heading h2 em { font-style: italic; font-weight: 400; color: var(--ink-soft); }
+.glw-section-count {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.glw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  min-height: 280px;
+}
+.glw-card {
+  background: #fff;
+  border: 1px solid var(--rule-soft);
+  border-radius: 14px;
+  padding: 22px 22px 18px;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: all .25s var(--ease);
+  animation: glwFadeIn .3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.glw-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
+  pointer-events: none;
+  transition: border-color .25s var(--ease);
+}
+.glw-card:hover {
+  background: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(33, 43, 49, .06);
+}
+.glw-card:hover::after { border-color: var(--glw-group); }
+.glw-card-cat {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--glw-group);
+  background: var(--glw-group-soft);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.glw-card-id {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--glw-group);
+  font-feature-settings: 'tnum' 1;
+}
+.glw-card-name {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  letter-spacing: -.4px;
+  margin-top: 4px;
+}
+.glw-card-tooltip { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; flex: 1; }
+.glw-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 4px; padding-top: 12px;
+  border-top: 1px solid var(--rule-soft);
+}
+.glw-card-link {
+  font-size: 11px; font-weight: 600;
+  color: var(--glw-group);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: gap .2s;
+}
+.glw-card:hover .glw-card-link { gap: 8px; }
+@keyframes glwFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .glw-tabs-inner { padding: 14px 16px; }
+  .glw-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}
+@media (max-width: 600px) {
+  .glw-tabs-label { display: none; }
+  .glw-grid { grid-template-columns: 1fr; }
+  .glw-card { padding: 20px; }
+  .glw-section-heading { flex-direction: column; align-items: flex-start; gap: 4px; }
+}

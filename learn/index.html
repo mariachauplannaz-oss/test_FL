@@ -56,7 +56,7 @@
 
       <div class="stats-row">
         <div class="stat">
-          <span class="stat-num">24</span>
+          <span class="stat-num" id="learnTermCount">26</span>
           <span class="stat-label">Terms covered<br>and counting</span>
         </div>
         <div class="stat">
@@ -72,23 +72,10 @@
 
   </div>
 
-  <!-- TABS (sticky) -->
-  <div class="tabs-wrap">
-    <div class="tabs-inner">
-      <span class="tabs-label">Browse by</span>
-      <div class="gl-tabs" role="tablist" id="glTabs"></div>
-    </div>
-  </div>
-
   <div class="container">
 
-    <section class="grid-section">
-      <div class="section-heading">
-        <h2 id="sectionHeading">Fabric <em>terms</em></h2>
-        <span class="section-count" id="sectionCount">— terms</span>
-      </div>
-      <div class="gl-grid" id="glGrid"></div>
-    </section>
+    <div id="glossaryWidget"></div>
+    <script src="/js/glossary-widget.js"></script>
 
     <section class="cta-section">
       <div class="kicker">Apply it</div>
@@ -114,98 +101,8 @@
 </footer>
 
 <script>
-const GLOSSARY = [
-  { id:'FT-TEX-001', category:'Fabric',     name:'Lightweight Jersey',      tooltip:'Breathable and soft, perfect for summer garments or inner layers.',         production:'140-150 g/m²', url:'/learn/fabrics/lightweight-jersey.html' },
-  { id:'FT-TEX-002', category:'Fabric',     name:'Midweight Jersey',        tooltip:'The industry standard for high-quality T-shirts.',                          production:'180 g/m²',     url:'/learn/fabrics/midweight-jersey.html' },
-  { id:'FT-TEX-003', category:'Fabric',     name:'Heavyweight Jersey',      tooltip:'Thick, structured fabric for a premium "Oversized" look.',                  production:'220-240 g/m²', url:'/learn/fabrics/heavyweight-jersey.html' },
-  { id:'FT-TEX-004', category:'Fabric',     name:'1×1 Rib',                 tooltip:'Highly elastic knitted fabric used for finishing.',                         production:'95% Cot, 5% Ela', url:'/learn/fabrics/rib-knit-basics.html' },
-  { id:'ISO-514',    category:'Seam',       name:'4-Thread Overlock',       tooltip:'Secure and elastic seam for joining knitted panels.',                       production:'ISO 514',      url:'/learn/seams/iso-514-overlock.html' },
-  { id:'ISO-406',    category:'Seam',       name:'Coverseam',               tooltip:'Professional flat finish for hems and sleeve openings.',                    production:'ISO 406',      url:'/learn/seams/iso-406-coverseam.html' },
-  { id:'ND-BP-01',   category:'Needle',     name:'Ball Point (SES)',        tooltip:'Designed to pass between fabric loops without cutting fibers.',              production:'70/10-80/12',  url:'/learn/needles/ball-point-ses.html' },
-  { id:'LAB-WVN-01', category:'Label',      name:'Main Brand Label',        tooltip:'Woven label for brand identification.',                                     production:'Woven Polyester', url:'/learn/trims/woven-labels.html' },
-  { id:'LAB-CARE-01',category:'Label',      name:'Care & Content Label',    tooltip:'Required label for legal and care information.',                            production:'Satin or Nylon', url:'/learn/trims/care-labels-standards.html' },
-  { id:'LAB-SIZE-01',category:'Label',      name:'Size Label',              tooltip:'Small woven label indicating the garment size.',                            production:'EU/US Sizing', url:'/learn/trims/size-labeling.html' },
-  { id:'THR-P-27',   category:'Thread',     name:'Polyester Thread Tex 27', tooltip:'Standard high-tenacity thread for general sewing.',                        production:'Tex 27 / Ticket 120', url:'/learn/threads/polyester-tex-27.html' },
-  { id:'THR-C-18',   category:'Thread',     name:'Coverseam Thread Tex 18', tooltip:'Finer thread for soft, low-profile seams.',                                production:'Tex 18 / Ticket 180', url:'/learn/threads/low-profile-seams.html' },
-  { id:'SPI-1012',   category:'Stitch',     name:'10-12 SPI',               tooltip:'Standard stitch density for knitted garments.',                            production:'10-12 SPI',    url:'/learn/construction/stitches-per-inch.html' },
-  { id:'PKG-POLY-01',category:'Packing',    name:'Recycled Polybag',        tooltip:'Protective bag for storage and shipping.',                                  production:'35×45 cm',     url:'/learn/packing/recycled-polybags.html' },
-  { id:'PKG-FOLD-01',category:'Packing',    name:'Standard Flat Fold',      tooltip:'Garment is folded flat to fit the polybag.',                               production:'Flat Fold',    url:'/learn/packing/folding-guides.html' },
-  { id:'FT-CLR-001', category:'Color',      name:'Pantone TCX',             tooltip:'The global standard for textile color on cotton.',                         production:'Pantone FHI',  url:'/learn/color/pantone-tcx-system.html' },
-  { id:'FT-DYE-001', category:'Dyeing',     name:'Piece Dyed',              tooltip:'Fabric is dyed in rolls before the garment is cut.',                       production:'Reactive',     url:'/learn/dyeing/piece-dyed-process.html' },
-  { id:'FT-DYE-002', category:'Dyeing',     name:'Garment Dyed',            tooltip:'The finished garment is dyed after being sewn.',                           production:'Post-Assembly', url:'/learn/dyeing/garment-dye-guide.html' },
-  { id:'FT-PRT-001', category:'Print',      name:'Water-based Screen Print',tooltip:'Eco-friendly ink that integrates into the fabric.',                        production:'Pigment Ink',  url:'/learn/printing/water-based-screen.html' },
-  { id:'FT-PRT-002', category:'Print',      name:'Plastisol Print',         tooltip:'Standard durable ink with vibrant color opacity.',                         production:'PVC-Free',     url:'/learn/printing/plastisol-guide.html' },
-  { id:'FT-EMB-001', category:'Embroidery', name:'Flat Embroidery',         tooltip:'Classic thread-based logo or design.',                                     production:'Rayon/Poly',   url:'/learn/embellishments/embroidery-basics.html' },
-  { id:'FT-PRT-003', category:'Print',      name:'DTG (Direct to Garment)', tooltip:'Digital inkjet ink for unlimited colors and photo-real detail.',           production:'Water-based CMYK', url:'/learn/printing/dtg-direct-to-garment.html' },
-  { id:'FT-PRT-004', category:'Print',      name:'Sublimation',             tooltip:'Dye fuses into polyester for zero-texture, all-over graphics.',            production:'Dye-Sublimation', url:'/learn/printing/sublimation-printing.html' },
-  { id:'FT-FIN-001', category:'Finish',     name:'Silicon Wash',            tooltip:'Gives the fabric an ultra-soft, silky touch.',                             production:'Softener',     url:'/learn/finishes/silicon-wash.html' },
-  { id:'FT-FIN-002', category:'Finish',     name:'Enzyme Wash',             tooltip:'Removes surface fuzz for a clean, pill-resistant look.',                   production:'Bio-Polishing', url:'/learn/finishes/enzyme-wash.html' },
-  { id:'FT-FIN-003', category:'Finish',     name:'Sanforized',              tooltip:'Pre-shrinking process to ensure dimensional stability.',                   production:'Pre-shrunk',   url:'/learn/finishes/sanforized-standards.html' },
-];
-
-/* ── 5-group taxonomy ── */
-const GROUPS = [
-  { key:'materials',     label:'Materials',    color:'#2BA8D6', colorSoft:'rgba(43,168,214,.12)',  cats:['Fabric','Finish'] },
-  { key:'construction',  label:'Construction', color:'#8B7BC4', colorSoft:'rgba(139,123,196,.12)', cats:['Seam','Stitch','Needle','Thread'] },
-  { key:'color-dye',     label:'Color & Dye',  color:'#2BBFA4', colorSoft:'rgba(43,191,164,.12)',  cats:['Color','Dyeing'] },
-  { key:'decoration',    label:'Decoration',   color:'#F0A040', colorSoft:'rgba(240,160,64,.12)',  cats:['Print','Embroidery'] },
-  { key:'trims-packing', label:'Trims',        color:'#4CB86A', colorSoft:'rgba(76,184,106,.12)',  cats:['Label','Packing'] },
-];
-
-const catToGroup = {};
-GROUPS.forEach(g => g.cats.forEach(c => catToGroup[c] = g.key));
-GLOSSARY.forEach(t => t.group = catToGroup[t.category] || 'materials');
-
-const tabsEl = document.getElementById('glTabs');
-let activeGroup = 'materials';
-
-GROUPS.forEach(g => {
-  const count = GLOSSARY.filter(t => t.group === g.key).length;
-  const btn = document.createElement('button');
-  btn.className = 'gl-tab' + (g.key === activeGroup ? ' active' : '');
-  btn.dataset.group = g.key;
-  btn.setAttribute('role', 'tab');
-  btn.setAttribute('aria-selected', g.key === activeGroup ? 'true' : 'false');
-  btn.style.setProperty('--group', g.color);
-  btn.style.setProperty('--group-soft', g.colorSoft);
-  btn.innerHTML = `${g.label}<span class="gl-tab-count">${String(count).padStart(2,'0')}</span>`;
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.gl-tab').forEach(t => {
-      t.classList.remove('active');
-      t.setAttribute('aria-selected', 'false');
-    });
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected', 'true');
-    activeGroup = g.key;
-    renderGrid(g.key);
-  });
-  tabsEl.appendChild(btn);
-});
-
-function renderGrid(groupKey) {
-  const grid = document.getElementById('glGrid');
-  const heading = document.getElementById('sectionHeading');
-  const countEl = document.getElementById('sectionCount');
-  const group = GROUPS.find(g => g.key === groupKey);
-  const terms = GLOSSARY.filter(t => t.group === groupKey);
-
-  heading.innerHTML = `${group.label} <em>terms</em>`;
-  countEl.textContent = `${String(terms.length).padStart(2,'0')} ${terms.length === 1 ? 'term' : 'terms'}`;
-
-  grid.innerHTML = terms.map(t => `
-    <a class="gl-card" href="${t.url}" data-group="${t.group}" style="--group:${group.color};--group-soft:${group.colorSoft}">
-      <span class="gl-card-cat">${t.category}</span>
-      <span class="gl-card-name">${t.name}</span>
-      <span class="gl-card-tooltip">${t.tooltip}</span>
-      <div class="gl-card-footer">
-        <span class="gl-card-id">${t.id}</span>
-        <span class="gl-card-link">Read more →</span>
-      </div>
-    </a>
-  `).join('');
-}
-
-renderGrid(activeGroup);
+  const el = document.getElementById('learnTermCount');
+  if (el && window.GLOSSARY_COUNT) el.textContent = window.GLOSSARY_COUNT;
 </script>
 
 </body>

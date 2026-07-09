@@ -845,7 +845,7 @@ nav {
 
 /* ── GLOSSARY ── */
 .glossary {
-  background: var(--cyan-bg);
+  background: var(--bg);
   padding: 140px 0 120px;
   position: relative;
   overflow: hidden;
@@ -895,77 +895,6 @@ nav {
   max-width: 620px;
 }
 .glossary-body strong { color: var(--ink); font-weight: 500; }
-
-.glossary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 8px;
-}
-.gl-term-card {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px 22px 20px;
-  text-decoration: none;
-  color: var(--ink);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: border-color .2s, transform .2s, box-shadow .2s;
-  position: relative;
-}
-.gl-term-card:hover {
-  border-color: var(--ink);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(17,17,17,.06);
-}
-.gl-term-cat {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 4px 9px;
-  border-radius: 100px;
-  align-self: flex-start;
-  background: var(--surface);
-  color: var(--ink-soft);
-}
-.gl-term-card[data-cat="fabric"] .gl-term-cat { background: var(--cyan-soft); color: #0078A8; }
-.gl-term-card[data-cat="seam"]   .gl-term-cat { background: var(--lime-soft); color: #5A7A1A; }
-.gl-term-card[data-cat="color"]  .gl-term-cat { background: var(--accent-soft); color: #C24433; }
-.gl-term-card[data-cat="label"]  .gl-term-cat { background: var(--surface-2); color: var(--ink); }
-.gl-term-card[data-cat="print"]  .gl-term-cat { background: var(--cyan-soft); color: #0078A8; }
-.gl-term-card[data-cat="finish"] .gl-term-cat { background: var(--lime-soft); color: #5A7A1A; }
-
-.gl-term-name {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -.6px;
-  color: var(--ink);
-  margin-top: 2px;
-}
-.gl-term-desc {
-  font-size: 13px;
-  color: var(--ink-soft);
-  line-height: 1.55;
-}
-.gl-term-link {
-  margin-top: auto;
-  padding-top: 8px;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
 
 .glossary-cta {
   margin-top: 40px;
@@ -1332,7 +1261,6 @@ footer {
   .glossary-inner { padding: 0 20px; }
   .glossary-header { margin-bottom: 48px; }
   .glossary-bg-num { font-size: clamp(120px, 32vw, 200px); }
-  .glossary-grid { grid-template-columns: 1fr; }
 
   .status { padding: 88px 0; }
   .status-inner {
@@ -1637,54 +1565,16 @@ footer {
       <p class="glossary-body">The FlatLabs glossary is <strong>completely open.</strong> Fabrics, seams, finishes, and specs — explained clearly, without paywalls or inflated industry jargon. Built for apparel designers, fashion students, and independent brands.</p>
     </div>
 
-    <div class="glossary-grid fade">
-      <a href="learn/fabrics/midweight-jersey.html" class="gl-term-card" data-cat="fabric">
-        <span class="gl-term-cat">Fabric</span>
-        <span class="gl-term-name">Midweight Jersey</span>
-        <span class="gl-term-desc">The apparel industry standard for premium retail T-shirts.</span>
-        <span class="gl-term-link">Read more →</span>
-      </a>
-
-      <a href="learn/seams/iso-514-overlock.html" class="gl-term-card" data-cat="seam">
-        <span class="gl-term-cat">Seam</span>
-        <span class="gl-term-name">4-Thread Overlock</span>
-        <span class="gl-term-desc">Elastic ISO reinforcement seam for knitwear manufacturing.</span>
-        <span class="gl-term-link">Read more →</span>
-      </a>
-
-      <a href="learn/color/pantone-tcx-system.html" class="gl-term-card" data-cat="color">
-        <span class="gl-term-cat">Color</span>
-        <span class="gl-term-name">Pantone TCX</span>
-        <span class="gl-term-desc">The global standard for textile color specification on cotton.</span>
-        <span class="gl-term-link">Read more →</span>
-      </a>
-
-      <a href="learn/trims/care-labels-standards.html" class="gl-term-card" data-cat="label">
-        <span class="gl-term-cat">Label</span>
-        <span class="gl-term-name">Care &amp; Content Label</span>
-        <span class="gl-term-desc">Required garment information label for legal and care compliance.</span>
-        <span class="gl-term-link">Read more →</span>
-      </a>
-
-      <a href="learn/printing/water-based-screen.html" class="gl-term-card" data-cat="print">
-        <span class="gl-term-cat">Print</span>
-        <span class="gl-term-name">Water-based Screen Print</span>
-        <span class="gl-term-desc">Softer print finish where eco-friendly ink is absorbed into the fabric.</span>
-        <span class="gl-term-link">Read more →</span>
-      </a>
-
-      <a href="learn/finishes/sanforized-standards.html" class="gl-term-card" data-cat="finish">
-        <span class="gl-term-cat">Finish</span>
-        <span class="gl-term-name">Sanforized</span>
-        <span class="gl-term-desc">Pre-shrinking textile treatment to ensure dimensional stability.</span>
-        <span class="gl-term-link">Read more →</span>
-      </a>
-    </div>
-
+    <div id="glossaryWidget"></div>
     <div class="glossary-cta">
-      <a href="learn/index.html">Browse all 24 terms →</a>
-      <span class="glossary-cta-count">// 24 entries · open access</span>
+      <a href="learn/index.html" id="glossaryCta">Browse all terms →</a>
+      <span class="glossary-cta-count" id="glossaryCtaCount"></span>
     </div>
+    <script src="/js/glossary-widget.js"></script>
+    <script>
+      document.getElementById('glossaryCta').textContent = 'Browse all ' + (window.GLOSSARY_COUNT || 26) + ' terms →';
+      document.getElementById('glossaryCtaCount').textContent = '// ' + (window.GLOSSARY_COUNT || 26) + ' entries · open access';
+    </script>
   </div>
 </section>
 
