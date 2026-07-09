@@ -13,7 +13,7 @@ export default async function handler(req, context) {
   }
   try {
     const body = await req.json();
-    const { email: rawEmail, garment_config, product_key } = body;
+    const { email: rawEmail, product_key, config_key } = body;
     const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
     if (!email) {
       return new Response(JSON.stringify({ error: "Email is required" }), {
@@ -23,6 +23,12 @@ export default async function handler(req, context) {
     }
     if (!product_key || !(product_key in PRODUCT_MAP)) {
       return new Response(JSON.stringify({ error: `Unknown product_key: "${product_key}"` }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    if (!config_key) {
+      return new Response(JSON.stringify({ error: "config_key is required" }), {
         status: 400,
         headers: { "Content-Type": "application/json" }
       });
@@ -46,9 +52,9 @@ export default async function handler(req, context) {
         }
       ],
       metadata: {
-        garment_config: JSON.stringify(garment_config || {}),
         product_key,
-        tc_version: "1.0"
+        tc_version: "1.0",
+        config_key
       },
       success_url: `${req.headers.get("origin")}/app.html?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/app.html?payment=cancelled`

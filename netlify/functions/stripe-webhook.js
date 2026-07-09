@@ -144,11 +144,38 @@ async function handleSubscriptionCheckout(session, sql) {
 async function handlePaymentCheckout(session, sql) {
   const email = typeof session.customer_email === "string" ? session.customer_email.trim().toLowerCase() : session.customer_email;
   const stripeSessionId = session.id;
-  const garmentConfig = session.metadata?.garment_config
-    ? JSON.parse(session.metadata.garment_config)
-    : {};
   const tcVersion = session.metadata?.tc_version || "1.0";
   const productKey = session.metadata?.product_key ?? null;
+  const configKey = session.metadata?.config_key ?? null;
+  const baseUrl = process.env.APP_BASE_URL || "https://flatsgenerator.com";
+
+  // The full garment_config (with print offset/scale) lives in a Netlify
+  // Blob, not Stripe metadata — metadata only carries the config_key that
+  // points at it (see js/checkout.js / save-checkout-config.js). Bounded by
+  // a timeout so a slow/failed fetch can't hang the webhook — Stripe must
+  // still get a response, and the downloads row is inserted regardless.
+  let garmentConfig = {};
+  if (configKey) {
+    const controller = new AbortController();
+    const configTimeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      const res = await fetch(`${baseUrl}/api/get-checkout-config?key=${encodeURIComponent(configKey)}`, {
+        signal: controller.signal,
+      });
+      const json = await res.json();
+      if (json.ok) {
+        garmentConfig = json.config;
+      } else {
+        console.error("get-checkout-config returned an error:", json.error);
+      }
+    } catch (err) {
+      console.error("get-checkout-config fetch failed:", err.message);
+    } finally {
+      clearTimeout(configTimeout);
+    }
+  } else {
+    console.warn("handlePaymentCheckout: config_key missing from session.metadata");
+  }
 
   try {
     const existing = await sql`
@@ -222,7 +249,6 @@ async function handlePaymentCheckout(session, sql) {
     // Send purchase emails — awaited so the runtime doesn't kill the request,
     // but bounded by a 3s timeout via AbortController. If it times out or fails,
     // we log and continue — INSERT already succeeded, Stripe must get 200.
-    const baseUrl = process.env.APP_BASE_URL || "https://flatsgenerator.com";
     const controller = new AbortController();
     const emailTimeout = setTimeout(() => controller.abort(), 3000);
     try {
