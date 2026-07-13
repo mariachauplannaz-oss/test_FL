@@ -580,6 +580,31 @@ export function buildStep4(state) {
         methodSec.appendChild(methodScroll);
         panel.appendChild(methodSec);
 
+        // ── Print compatibility check ──────────────────────────
+        if (placement && placement.method) {
+            const printCtx = {
+                fabric:      FABRIC_SPECS[state.fabric],
+                printMethod: placement.method,
+                printZone:   zone
+            };
+            const printWarnings = checkCompatibility(printCtx)
+                .filter(w => ['sublimation_needs_polyester',
+                              'embroidery_zone_too_large',
+                              'embroidery_on_lightweight'].includes(w.id));
+
+            if (printWarnings.length > 0) {
+                const warnBox = document.createElement('div');
+                warnBox.className = 'print-compat-warning';
+                printWarnings.forEach(w => {
+                    const msg = document.createElement('div');
+                    msg.style.cssText = 'margin-bottom:4px;';
+                    msg.innerHTML = `<strong>⚠</strong> ${w.message}`;
+                    warnBox.appendChild(msg);
+                });
+                panel.appendChild(warnBox);
+            }
+        }
+
         // Scale slider — only meaningful once there's an image to scale.
         if (placement && placement.image) {
             const scaleRow = document.createElement('div');

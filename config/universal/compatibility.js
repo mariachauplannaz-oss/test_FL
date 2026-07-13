@@ -112,6 +112,53 @@ export const COMPATIBILITY_RULES = [
         message: (ctx) =>
             `Drawcord ${ctx.drawcord.label} won't physically fit through eyelet ${ctx.eyelet.label}. ` +
             `Use a smaller cord or a larger eyelet.`
+    },
+
+    // ─── Print method × fabric/zone rules ────────────────────
+    {
+        id:    'sublimation_needs_polyester',
+        level: 'warning',
+        check: (ctx) => {
+            if (!ctx.fabric || !ctx.printMethod || ctx.printMethod !== 'sublimation') return false;
+            const comp = ctx.fabric.composition.toLowerCase();
+            const polyMatch = comp.match(/(\d+)%\s*polyester/);
+            const polyPct = polyMatch ? parseInt(polyMatch[1], 10) : 0;
+            return polyPct < 65;
+        },
+        message: (ctx) => {
+            const comp = ctx.fabric.composition.toLowerCase();
+            const polyMatch = comp.match(/(\d+)%\s*polyester/);
+            const polyPct = polyMatch ? parseInt(polyMatch[1], 10) : 0;
+            return `Sublimation requires minimum 65% polyester content. ` +
+                   `${ctx.fabric.label} is ${ctx.fabric.composition} (${polyPct}% polyester). ` +
+                   `Use DTG or Screen Print for cotton-based fabrics.`;
+        }
+    },
+    {
+        id:    'embroidery_zone_too_large',
+        level: 'warning',
+        check: (ctx) => {
+            if (!ctx.printMethod || ctx.printMethod !== 'embroidery' || !ctx.printZone) return false;
+            return (ctx.printZone.width_cm * ctx.printZone.height_cm) > 400;
+        },
+        message: (ctx) => {
+            const area = ctx.printZone.width_cm * ctx.printZone.height_cm;
+            return `Embroidery on ${ctx.printZone.label} (${ctx.printZone.width_cm} × ${ctx.printZone.height_cm} cm = ${area} cm²) ` +
+                   `exceeds standard embroidery frame capacity (~20 × 20 cm). ` +
+                   `Use Screen Print or DTG for large print areas.`;
+        }
+    },
+    {
+        id:    'embroidery_on_lightweight',
+        level: 'warning',
+        check: (ctx) => {
+            if (!ctx.fabric || !ctx.printMethod || ctx.printMethod !== 'embroidery') return false;
+            return ctx.fabric.weight <= 150;
+        },
+        message: (ctx) =>
+            `Embroidery on ${ctx.fabric.label} (${ctx.fabric.weight} g/m²) risks fabric ` +
+            `distortion and puckering. Use cutaway stabilizer backing or consider ` +
+            `a heavier fabric (180+ g/m²).`
     }
 ];
 

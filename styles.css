@@ -396,6 +396,16 @@ body {
     border: 2.5px solid var(--danger-text);
     background: rgba(179, 54, 31, .05);
 }
+.print-compat-warning {
+    margin: 10px 0 4px;
+    padding: 10px 12px;
+    background: #FFF8E1;
+    border: 1px solid #FFD54F;
+    border-radius: 8px;
+    color: #5D4037;
+    font-size: 12px;
+    line-height: 1.5;
+}
 /* Front/Back toggle alert state — whole button recolors (not a small badge)
    when its side has an unresolved missing-method zone. Uses !important:
    this must visually win over .active, :hover, AND body.iso-mode .man-btn.active
