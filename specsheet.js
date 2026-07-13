@@ -518,7 +518,7 @@ function drawMeasurementSpecs(doc, selections, y, gender = 'female') {
     const noteY = doc.lastAutoTable.finalY + 4;
     setFont(doc, 'italic', FONT.small);
     setColor(doc, COLORS.gray3);
-    doc.text('* Measurement without grading rule — base-size value shown. All unmarked measurements are graded per ISO size increments.', MARGIN.left, noteY);
+    doc.text('* Base-size value shown (grading rule pending). All unmarked measurements are graded per ISO 3635. Custom grading validated with fit sample.', MARGIN.left, noteY);
     doc.text('All (1/2) measurements are taken with the garment laid flat, edge to edge.', MARGIN.left, noteY + 4);
 
     return noteY + 12;
@@ -738,12 +738,16 @@ function drawConstructionNotes(doc, notes, y) {
     const rowMinH  = 12;
 
     notes.forEach(({ component, norm, note }) => {
-        if (y > pageHeight(doc) - 30) { doc.addPage(); y = MARGIN.top; }
-
+        // Calculate row height FIRST so the page break check uses it
         setFont(doc, 'normal', FONT.small);
         const lines = doc.splitTextToSize(note, textColW);
         const textH = lines.length * 4;
         const rowH  = Math.max(rowMinH, textH + 4);
+
+        if (y + rowH > pageHeight(doc) - MARGIN.top) {
+            doc.addPage();
+            y = MARGIN.top;
+        }
 
         const pillText = component + '  ' + norm;
         setFont(doc, 'bold', FONT.small);
