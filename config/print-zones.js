@@ -23,8 +23,48 @@ export const PRINT_ZONES = {
 
 // ─── Level 2: print methods ──────────────────────────────────────────────────
 export const PRINT_METHODS = {
-    screen:      { id: 'screen',      label: 'Screen Print' },
-    dtg:         { id: 'dtg',         label: 'DTG (Direct to Garment)' },
-    embroidery:  { id: 'embroidery',  label: 'Embroidery' },
-    sublimation: { id: 'sublimation', label: 'Sublimation' }
+    screen: {
+        id: 'screen',
+        label: 'Screen Print',
+        specs: [
+            ['Artwork format', 'Vector (.AI, .EPS, .PDF) — color-separated'],
+            ['Color system',   'Pantone Solid Coated (PMS)'],
+            ['Ink type',       'Specify: Plastisol or Water-based'],
+            ['Mesh count',     '110–160 threads/inch (adjust to detail level)'],
+            ['Note',           'Provide color-separated vector file to factory. Each spot color = 1 screen.']
+        ]
+    },
+    dtg: {
+        id: 'dtg',
+        label: 'DTG (Direct to Garment)',
+        specs: [
+            ['Artwork format', 'Raster (.PNG, .TIFF) — min 300 DPI at actual print size'],
+            ['Color profile',  'sRGB (printer converts internally)'],
+            ['Pre-treatment',  'Required on dark garments; not required on white/light'],
+            ['Print resolution', 'Up to 1200 DPI output'],
+            ['Note',           'Provide high-resolution raster file at actual print dimensions. White underbase auto-generated for dark fabrics.']
+        ]
+    },
+    embroidery: {
+        id: 'embroidery',
+        label: 'Embroidery',
+        specs: [
+            ['Artwork format', 'Digitized stitch file (.DST, .EMB, .PES) — or vector (.AI) for factory digitization'],
+            ['Thread type',    'Polyester embroidery thread (Madeira, Isacord, or equivalent)'],
+            ['Stitch density', '5–7 SPI for fill stitches, 10–12 SPI for satin borders'],
+            ['Backing',        'Cutaway stabilizer for knit fabrics; tearaway for woven'],
+            ['Note',           'If only vector artwork is available, factory digitization is required — confirm lead time with manufacturer.']
+        ]
+    },
+    sublimation: {
+        id: 'sublimation',
+        label: 'Sublimation',
+        specs: [
+            ['Artwork format', 'Raster (.PNG, .TIFF) — min 300 DPI at actual print size'],
+            ['Color profile',  'CMYK'],
+            ['Substrate',      'Minimum 65% polyester content required'],
+            ['Transfer',       'Heat press 190–210 °C, 45–60 seconds'],
+            ['Note',           'Not suitable for 100% cotton fabrics. Colors shift on dark substrates — white or light base recommended.']
+        ]
+    }
 };
