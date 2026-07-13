@@ -477,11 +477,10 @@ export function buildStep4(state) {
         return sec;
     }
 
-    // ── Helper: per-zone artwork panel — upload, method, scale. Rendered for
-    // EVERY zone of the active side (not just selected ones): zones not yet
-    // added to state.print.placements render dimmed/inert via
-    // .zone-panel--disabled (opacity + pointer-events:none in styles.css),
-    // and switch to interactive the moment their zone card is clicked above.
+    // ── Helper: per-zone artwork panel — upload, method, scale. Only called
+    // by the caller below for zones already in state.print.placements, so
+    // isActive is always true here; the .zone-panel--disabled branch is
+    // dead code kept for a possible future "preview unselected zones" mode.
     // Rendered full-width BELOW the zone-picker row (not inside the 96px
     // opt-card, which has no room for a file input + method selector +
     // slider). Drag-to-reposition happens directly on the flat preview
@@ -703,8 +702,14 @@ export function buildStep4(state) {
             const zoneEntries = Object.entries(PRINT_ZONES).filter(([, z]) => z.side === activeSide);
 
             content.appendChild(buildZoneRow(sideLabel, activeSide, zoneEntries));
+            // Only render detail panels for zones the user has actually selected
             zoneEntries.forEach(([zoneKey, zone]) => {
-                content.appendChild(buildZoneDetailPanel(zoneKey, zone, activeSide));
+                const isSelected = state.print.placements.some(
+                    p => p.side === activeSide && p.zone === zoneKey
+                );
+                if (isSelected) {
+                    content.appendChild(buildZoneDetailPanel(zoneKey, zone, activeSide));
+                }
             });
         }
     });

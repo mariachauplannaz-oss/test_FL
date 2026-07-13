@@ -91,6 +91,16 @@ function nextAction() {
         goStep(2, state, doUpdateButton);
         buildStep2(state);
     } else if (state.currentStep === 2) {
+        // Generate the garment flat BEFORE showing the Print step
+        // so users can see where print zones land on the garment
+        const missing = [];
+        if (!state.selections.torso) missing.push('Torso');
+        if (!state.selections.neck)  missing.push('Neckline');
+        if (missing.length > 0) {
+            alert(`Please select: ${missing.join(' and ')} before continuing.`);
+            return;
+        }
+        generate(state, log);
         goStep(3, state, doUpdateButton);
         buildStep4(state);
     } else {
