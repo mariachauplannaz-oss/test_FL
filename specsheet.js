@@ -518,7 +518,7 @@ function drawMeasurementSpecs(doc, selections, y, gender = 'female') {
     const noteY = doc.lastAutoTable.finalY + 4;
     setFont(doc, 'italic', FONT.small);
     setColor(doc, COLORS.gray3);
-    doc.text('* Grading rule pending — base value applies until validated.', MARGIN.left, noteY);
+    doc.text('* Measurement without grading rule — base-size value shown. All unmarked measurements are graded per ISO size increments.', MARGIN.left, noteY);
     doc.text('All (1/2) measurements are taken with the garment laid flat, edge to edge.', MARGIN.left, noteY + 4);
 
     return noteY + 12;
@@ -677,7 +677,55 @@ function drawArtworkSection(doc, printState, y) {
         alternateRowStyles: { fillColor: COLORS.gray1 },
     });
 
-    return doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 6;
+
+    // ── Per-method production specs ──────────────────────────
+    // Group placements by method to avoid repeating the same spec block
+    const methodsUsed = new Map();
+    placements.forEach(p => {
+        if (p.method && PRINT_METHODS[p.method]?.specs) {
+            if (!methodsUsed.has(p.method)) {
+                methodsUsed.set(p.method, []);
+            }
+            const zoneLabel = PRINT_ZONES[p.zone]?.label || p.zone;
+            methodsUsed.get(p.method).push(zoneLabel);
+        }
+    });
+
+    for (const [methodKey, zones] of methodsUsed) {
+        const method = PRINT_METHODS[methodKey];
+        // Page break check
+        if (y > pageHeight(doc) - 50) { doc.addPage(); y = MARGIN.top + 10; }
+
+        setFont(doc, 'bold', FONT.body);
+        setColor(doc, COLORS.gray4);
+        doc.text(`${method.label} — applies to: ${zones.join(', ')}`, MARGIN.left, y);
+        y += 5;
+
+        doc.autoTable({
+            startY: y,
+            body: method.specs,
+            margin: { left: MARGIN.left + 2, right: MARGIN.right },
+            styles: {
+                font: 'helvetica',
+                fontSize: FONT.small,
+                cellPadding: 2,
+                textColor: COLORS.gray4,
+                lineColor: COLORS.gray2,
+                lineWidth: 0.1,
+            },
+            columnStyles: {
+                0: { cellWidth: 32, fontStyle: 'bold', textColor: COLORS.gray3 },
+                1: { cellWidth: 'auto' },
+            },
+            theme: 'plain',
+            alternateRowStyles: { fillColor: COLORS.gray1 },
+        });
+
+        y = doc.lastAutoTable.finalY + 6;
+    }
+
+    return y + 2;
 }
 
 // ─── CONSTRUCTION NOTES ──────────────────────────────────────────────────────
