@@ -640,6 +640,10 @@ export function buildStep4(state) {
                 placement.pantone_refs = pantoneInput.value.trim();
             };
             pantoneRow.appendChild(pantoneInput);
+            const pantoneHint = document.createElement('div');
+            pantoneHint.style.cssText = 'font-size:11px; color:var(--ink-dim); margin-top:3px;';
+            pantoneHint.textContent = 'Optional. Factory can color-match from your artwork file.';
+            pantoneRow.appendChild(pantoneHint);
             l3Sec.appendChild(pantoneRow);
 
             // Artwork file reference
