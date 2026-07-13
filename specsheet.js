@@ -634,7 +634,7 @@ function drawArtworkSection(doc, printState, y) {
         return y + 10;
     }
 
-    const head = [['Side', 'Zone', 'Position', 'Size', 'Method']];
+    const head = [['Side', 'Zone', 'Position', 'Size', 'Method', 'Colors', 'Pantone', 'Artwork File']];
     const body = placements.map(p => {
         const zoneLabel = PRINT_ZONES[p.zone]?.label || p.zone;
         const side = p.side.charAt(0).toUpperCase() + p.side.slice(1);
@@ -644,7 +644,10 @@ function drawArtworkSection(doc, printState, y) {
         const position = `${posDesc}, ${p.y_cm} cm below HPS`;
         const size = `${p.width_cm} × ${p.height_cm} cm`;
         const method = PRINT_METHODS[p.method]?.label || 'TBD';
-        return [side, zoneLabel, position, size, method];
+        const numColors = p.num_colors ? String(p.num_colors) : '—';
+        const pantone = p.pantone_refs || '—';
+        const fileRef = p.file_reference || '—';
+        return [side, zoneLabel, position, size, method, numColors, pantone, fileRef];
     });
 
     doc.autoTable({
@@ -670,9 +673,12 @@ function drawArtworkSection(doc, printState, y) {
         columnStyles: {
             0: { cellWidth: 16, fontStyle: 'bold', textColor: COLORS.accent },
             1: { cellWidth: 28 },
-            2: { cellWidth: 'auto' },
+            2: { cellWidth: 26 },
             3: { cellWidth: 22, halign: 'center' },
             4: { cellWidth: 26, halign: 'center' },
+            5: { cellWidth: 12 },
+            6: { cellWidth: 28 },
+            7: { cellWidth: 24 },
         },
         alternateRowStyles: { fillColor: COLORS.gray1 },
     });

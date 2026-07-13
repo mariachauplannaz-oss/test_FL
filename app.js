@@ -43,9 +43,11 @@ const state = {
         placements: []
         // Each placement: { side, mode:'zone', zone (key from PRINT_ZONES),
         //   x_cm, y_cm, width_cm, height_cm,
-        //   image: null,   // Level 2
-        //   method: null,  // Level 3
-        //   colors: []     // Level 3
+        //   image: null,          // Level 2
+        //   method: null,         // Level 2
+        //   num_colors: null,     // Level 3 — integer, number of spot colors / thread changes
+        //   pantone_refs: '',     // Level 3 — comma-separated Pantone codes (e.g. "PMS 485 C, PMS 300 C")
+        //   file_reference: ''    // Level 3 — filename the factory should expect (e.g. "LOGO_v3.DST")
         // }
     }
 };
