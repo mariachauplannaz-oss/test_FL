@@ -1490,12 +1490,272 @@ footer {
   </div>
 </section>
 
+<!-- ───── TECH PACK PREVIEW (03) ───── -->
+<section class="tp-section" id="techpack-preview" data-screen-label="04 Tech Pack Preview">
+<style>
+.tp-section { background: var(--bg); padding: 100px 20px; position: relative; overflow: hidden; }
+.tp-inner { max-width: 900px; margin: 0 auto; }
+.tp-header { max-width: 640px; margin: 0 auto 48px; text-align: center; }
+.tp-header .section-label { justify-content: center; }
+.tp-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4.2vw, 56px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -1.4px;
+  color: var(--ink);
+  margin-bottom: 18px;
+  text-wrap: balance;
+}
+.tp-header h2 em { font-style: italic; font-weight: 400; color: var(--accent); }
+.tp-header p {
+  font-size: 16px; color: var(--ink-soft); line-height: 1.65;
+}
+
+.tp-tabs {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 8px; margin-bottom: 28px;
+}
+.tp-tab {
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .2s var(--ease);
+}
+.tp-tab:hover { border-color: var(--ink); color: var(--ink); }
+.tp-tab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+.tp-panel { display: none; }
+.tp-panel.active { display: block; }
+
+.tp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+.tp-card-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 22px;
+}
+.tp-card-num {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+}
+.tp-card-title { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -.3px; }
+.tp-card-subtitle { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+
+.tp-table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.tp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tp-table th {
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 12px 14px;
+  white-space: nowrap;
+}
+.tp-table td {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 14px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.tp-table tr:last-child td { border-bottom: none; }
+.tp-blur { filter: blur(4px); user-select: none; }
+
+.tp-note {
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.tp-cta {
+  margin-top: 56px;
+  background: var(--surface-dark);
+  border-radius: var(--radius);
+  padding: 44px 32px;
+  text-align: center;
+}
+.tp-cta h3 {
+  font-family: var(--serif);
+  font-size: 26px; font-weight: 700;
+  color: #fff; letter-spacing: -.4px;
+  margin-bottom: 8px;
+}
+.tp-cta p { font-size: 14px; color: rgba(255,255,255,.6); margin-bottom: 22px; }
+.tp-cta a {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  padding: 13px 24px; border-radius: 100px;
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  text-decoration: none;
+  transition: all .25s var(--ease);
+}
+.tp-cta a:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+@media (max-width: 900px) {
+  .tp-section { padding: 72px 16px; }
+  .tp-card { padding: 22px; }
+  .tp-card-num { width: 34px; height: 34px; font-size: 12px; }
+  .tp-card-title { font-size: 17px; }
+  .tp-table { font-size: 12px; }
+  .tp-table th, .tp-table td { padding: 10px 10px; }
+  .tp-tab { font-size: 12px; padding: 9px 14px; }
+}
+</style>
+
+<div class="tp-inner">
+  <div class="tp-header">
+    <div class="section-label"><span class="num">02</span> What's inside</div>
+    <h2>4 pages. Zero guesswork for <em>your factory.</em></h2>
+    <p>Every section a manufacturer needs. Preview the structure below — generate yours in minutes.</p>
+  </div>
+
+  <div class="tp-tabs">
+    <button class="tp-tab active" data-tp-tab="1" onclick="showTpPage(1)">Page 1 — Flat &amp; Specs</button>
+    <button class="tp-tab" data-tp-tab="2" onclick="showTpPage(2)">Page 2 — BOM &amp; Stitching</button>
+    <button class="tp-tab" data-tp-tab="3" onclick="showTpPage(3)">Page 3 — Fabric &amp; Construction</button>
+    <button class="tp-tab" data-tp-tab="4" onclick="showTpPage(4)">Page 4 — Artwork &amp; Print</button>
+  </div>
+
+  <div class="tp-panel active" data-tp-panel="1">
+    <div class="tp-card">
+      <div class="tp-card-header">
+        <div class="tp-card-num">01</div>
+        <div>
+          <div class="tp-card-title">Flat &amp; Specs</div>
+          <div class="tp-card-subtitle">Points of measure, by size</div>
+        </div>
+      </div>
+      <div class="tp-table-wrap">
+        <table class="tp-table">
+          <thead><tr><th>POM</th><th>Description</th><th>EU34</th><th>EU36</th><th>EU38</th><th>EU40</th><th>EU42</th><th>EU44</th><th>Tol.</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>Chest 1/2</td><td class="tp-blur">44.5</td><td class="tp-blur">46.5</td><td class="tp-blur">48.5</td><td class="tp-blur">50.5</td><td class="tp-blur">52.5</td><td class="tp-blur">54.5</td><td class="tp-blur">±0.5</td></tr>
+            <tr><td>B</td><td>Waist 1/2</td><td class="tp-blur">41.0</td><td class="tp-blur">43.0</td><td class="tp-blur">45.0</td><td class="tp-blur">47.0</td><td class="tp-blur">49.0</td><td class="tp-blur">51.0</td><td class="tp-blur">±0.5</td></tr>
+            <tr><td>C</td><td>Body Length HPS</td><td class="tp-blur">68.0</td><td class="tp-blur">69.5</td><td class="tp-blur">71.0</td><td class="tp-blur">72.5</td><td class="tp-blur">74.0</td><td class="tp-blur">75.5</td><td class="tp-blur">±1.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tp-note">Exact measurements + tolerances. The factory measures, compares, and knows immediately if the sample passes.</div>
+    </div>
+  </div>
+
+  <div class="tp-panel" data-tp-panel="2">
+    <div class="tp-card">
+      <div class="tp-card-header">
+        <div class="tp-card-num">02</div>
+        <div>
+          <div class="tp-card-title">BOM &amp; Stitching</div>
+          <div class="tp-card-subtitle">Seam types, standards, and machine setup</div>
+        </div>
+      </div>
+      <div class="tp-table-wrap">
+        <table class="tp-table">
+          <thead><tr><th>Stitch</th><th>ISO</th><th>SPI</th><th>Needle</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td>4-Thread Overlock</td><td>ISO 514</td><td class="tp-blur">12</td><td class="tp-blur">80/12</td><td class="tp-blur">Side &amp; shoulder seams</td></tr>
+            <tr><td>Coverseam</td><td>ISO 406</td><td class="tp-blur">10</td><td class="tp-blur">75/11</td><td class="tp-blur">Hem &amp; sleeve cuff</td></tr>
+            <tr><td>Flatlock</td><td>ISO 607</td><td class="tp-blur">11</td><td class="tp-blur">80/12</td><td class="tp-blur">Neck binding</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tp-note">Wrong needle = broken threads. Wrong SPI = weak seams. Every stitch specified.</div>
+    </div>
+  </div>
+
+  <div class="tp-panel" data-tp-panel="3">
+    <div class="tp-card">
+      <div class="tp-card-header">
+        <div class="tp-card-num">03</div>
+        <div>
+          <div class="tp-card-title">Fabric &amp; Construction</div>
+          <div class="tp-card-subtitle">Composition, weight, and shrinkage compensation</div>
+        </div>
+      </div>
+      <div class="tp-table-wrap">
+        <table class="tp-table">
+          <thead><tr><th>Property</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Fabric</td><td class="tp-blur">Midweight Jersey, 180gsm</td></tr>
+            <tr><td>Composition</td><td class="tp-blur">100% Combed Cotton</td></tr>
+            <tr><td>Shrinkage Length</td><td class="tp-blur">-3.2%</td></tr>
+            <tr><td>Shrinkage Width</td><td class="tp-blur">-2.1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tp-note">Shrinkage compensation is built into the pattern. Without it, a size M becomes a size S after the first wash.</div>
+    </div>
+  </div>
+
+  <div class="tp-panel" data-tp-panel="4">
+    <div class="tp-card">
+      <div class="tp-card-header">
+        <div class="tp-card-num">04</div>
+        <div>
+          <div class="tp-card-title">Artwork &amp; Print</div>
+          <div class="tp-card-subtitle">Placement, method, and file specs</div>
+        </div>
+      </div>
+      <div class="tp-table-wrap">
+        <table class="tp-table">
+          <thead><tr><th>Side</th><th>Zone</th><th>Position</th><th>Size</th><th>Method</th></tr></thead>
+          <tbody>
+            <tr><td>Front</td><td>Center Chest</td><td class="tp-blur">8cm below HPS</td><td class="tp-blur">9 x 9cm</td><td class="tp-blur">Embroidery</td></tr>
+            <tr><td>Back</td><td>Full Back</td><td class="tp-blur">4cm below neck</td><td class="tp-blur">28 x 32cm</td><td class="tp-blur">DTG</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tp-note">Exact placement, method, and file specs. No back-and-forth with the factory.</div>
+    </div>
+  </div>
+
+  <div class="tp-cta">
+    <h3>Production-ready in minutes</h3>
+    <p>ISO 8559-1 compliant. Not AI-generated.</p>
+    <a href="app.html">
+      Generate Your Tech Pack
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<script>
+function showTpPage(n) {
+  document.querySelectorAll('.tp-tab').forEach(el => el.classList.toggle('active', el.dataset.tpTab === String(n)));
+  document.querySelectorAll('.tp-panel').forEach(el => el.classList.toggle('active', el.dataset.tpPanel === String(n)));
+}
+</script>
+</section>
+
 <!-- ───── PRICING (02) ───── -->
-<section class="pricing" id="pricing" data-screen-label="04 Pricing">
-  <div class="pricing-bg-num">02</div>
+<section class="pricing" id="pricing" data-screen-label="05 Pricing">
+  <div class="pricing-bg-num">03</div>
   <div class="pricing-inner">
     <div class="pricing-header">
-      <div class="section-label"><span class="num">02</span> Transparent pricing</div>
+      <div class="section-label"><span class="num">03</span> Transparent pricing</div>
       <h2>Flexible pricing for <em>growing fashion brands.</em></h2>
       <p class="pricing-intro"><strong>Design for free. Download only when you need production-ready vectors.</strong></p>
     </div>
@@ -1556,11 +1816,11 @@ footer {
 </section>
 
 <!-- ───── GLOSSARY (03) ───── -->
-<section class="glossary" id="glossary" data-screen-label="05 Glossary">
-  <div class="glossary-bg-num">03</div>
+<section class="glossary" id="glossary" data-screen-label="06 Glossary">
+  <div class="glossary-bg-num">04</div>
   <div class="glossary-inner">
     <div class="glossary-header">
-      <div class="section-label"><span class="num">03</span> Free Tech Pack Glossary</div>
+      <div class="section-label"><span class="num">04</span> Free Tech Pack Glossary</div>
       <h2>Master the technical language of <em>apparel manufacturing.</em></h2>
       <p class="glossary-body">The FlatLabs glossary is <strong>completely open.</strong> Fabrics, seams, finishes, and specs — explained clearly, without paywalls or inflated industry jargon. Built for apparel designers, fashion students, and independent brands.</p>
     </div>
@@ -1570,7 +1830,7 @@ footer {
       <a href="learn/index.html" id="glossaryCta">Browse all terms →</a>
       <span class="glossary-cta-count" id="glossaryCtaCount"></span>
     </div>
-    <script src="/js/glossary-widget.js"></script>
+    <script src="js/glossary-widget.js"></script>
     <script>
       document.getElementById('glossaryCta').textContent = 'Browse all ' + (window.GLOSSARY_COUNT || 26) + ' terms →';
       document.getElementById('glossaryCtaCount').textContent = '// ' + (window.GLOSSARY_COUNT || 26) + ' entries · open access';
@@ -1579,11 +1839,11 @@ footer {
 </section>
 
 <!-- ───── STATUS (04) ───── -->
-<section class="status" id="status" data-screen-label="06 Status">
-  <div class="status-bg-num">04</div>
+<section class="status" id="status" data-screen-label="07 Status">
+  <div class="status-bg-num">05</div>
   <div class="status-inner">
     <div>
-      <div class="section-label"><span class="num">04</span> Product roadmap</div>
+      <div class="section-label"><span class="num">05</span> Product roadmap</div>
       <h2>Built for production. <em>Evolving in public.</em></h2>
       <p><strong>Our interactive T-shirt is live right now.</strong></p>
       <p>Pants, hoodies, expanded tech pack PDF generation, and modular garment components are rolling out progressively throughout the SS27 season.</p>
@@ -1622,9 +1882,9 @@ footer {
 </section>
 
 <!-- ───── FINAL CTA (05) ───── -->
-<section class="final-cta" id="start" data-screen-label="07 Final CTA">
+<section class="final-cta" id="start" data-screen-label="08 Final CTA">
   <div class="final-cta-inner">
-    <div class="section-label"><span class="num">05</span> Instant CAD exports</div>
+    <div class="section-label"><span class="num">06</span> Instant CAD exports</div>
     <h2>Production-ready fashion flats, without <em>the Illustrator overhead.</em></h2>
     <p>Start completely free and <strong>pay only per export</strong> when you need production-ready vectors. Built for fashion designers, independent apparel brands, and clothing production teams working on real timelines.</p>
     <div class="final-cta-buttons">
