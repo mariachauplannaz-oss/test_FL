@@ -519,8 +519,9 @@ function drawMeasurementSpecs(doc, selections, y, gender = 'female') {
     setFont(doc, 'italic', FONT.small);
     setColor(doc, COLORS.gray3);
     doc.text('* Grading rule pending — base value applies until validated.', MARGIN.left, noteY);
+    doc.text('All (1/2) measurements are taken with the garment laid flat, edge to edge.', MARGIN.left, noteY + 4);
 
-    return noteY + 8;
+    return noteY + 12;
 }
 
 // ─── SIZE EQUIVALENCES TABLE ──────────────────────────────────────────────────

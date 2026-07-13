@@ -7,7 +7,8 @@ export const FABRIC_SPECS = {
         composition:    '100% Cotton',
         width:          150,
         shrinkage:      { length: 5, width: 3 },
-        knit_type:      'knit',
+        knit_type:      'Single Jersey',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['lightweight', 'breathable'],
         recommended_for: ['Lightweight tees', 'Summer basics']
@@ -18,7 +19,8 @@ export const FABRIC_SPECS = {
         composition:    '95% Cotton, 5% Elastane',
         width:          160,
         shrinkage:      { length: 5, width: 3 },
-        knit_type:      'knit',
+        knit_type:      'Single Jersey',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['standard'],
         recommended_for: ['Standard tees', 'Year-round basics']
@@ -29,7 +31,8 @@ export const FABRIC_SPECS = {
         composition:    '100% Cotton',
         width:          150,
         shrinkage:      { length: 3, width: 2 },
-        knit_type:      'knit',
+        knit_type:      'Single Jersey',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['heavyweight', 'premium'],
         recommended_for: ['Premium tees', 'Heavyweight basics']
@@ -40,7 +43,8 @@ rib_1x1: {
         composition:    '95% Cotton, 5% Elastane',
         width:          80,
         shrinkage:      { length: 5, width: 5 },
-        knit_type:      'knit',
+        knit_type:      '1×1 Rib',
+        is_knit:        true,
         stretch:        'high',
         tags:           ['ribbed', 'trim'],
         recommended_for: ['Neckbands', 'Cuffs', 'Hem bands']
@@ -53,7 +57,8 @@ rib_1x1: {
         composition:    '100% Cotton',
         width:          180,
         shrinkage:      { length: 5, width: 3 },
-        knit_type:      'knit',
+        knit_type:      'French Terry (loop-back)',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['medium-weight', 'breathable', 'loop-back'],
         recommended_for: ['Mid-season hoodies', 'Premium minimalist hoodies', 'Yoga / lounge']
@@ -64,7 +69,8 @@ rib_1x1: {
         composition:    '80% Cotton, 20% Polyester',
         width:          180,
         shrinkage:      { length: 5, width: 3 },
-        knit_type:      'knit',
+        knit_type:      'Brushed Fleece (3-end)',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['heavyweight', 'warm', 'brushed'],
         recommended_for: ['Classic hoodies', 'University / sport style']
@@ -75,7 +81,8 @@ rib_1x1: {
         composition:    '80% Cotton, 20% Polyester',
         width:          180,
         shrinkage:      { length: 4, width: 3 },
-        knit_type:      'knit',
+        knit_type:      'Brushed Fleece (3-end)',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['heavyweight', 'warm', 'brushed', 'winter'],
         recommended_for: ['Winter hoodies', 'Heavy classic style']
@@ -86,7 +93,8 @@ rib_1x1: {
         composition:    '100% Cotton',
         width:          180,
         shrinkage:      { length: 3, width: 2 },
-        knit_type:      'knit',
+        knit_type:      'Brushed Fleece (heavy)',
+        is_knit:        true,
         stretch:        'low',
         tags:           ['heavyweight', 'premium', 'streetwear', 'structured'],
         recommended_for: ['Premium streetwear', 'High-end oversize hoodies', 'Structured silhouettes']
@@ -97,7 +105,8 @@ rib_1x1: {
         composition:    '95% Cotton, 5% Elastane',
         width:          80,
         shrinkage:      { length: 5, width: 5 },
-        knit_type:      'knit',
+        knit_type:      '2×2 Rib',
+        is_knit:        true,
         stretch:        'high',
         tags:           ['ribbed', 'trim', 'heavy', 'wide'],
         recommended_for: ['Wide cuffs', 'Wide waistbands', 'Oversize / retro hoodies']

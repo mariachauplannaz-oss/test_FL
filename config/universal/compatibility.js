@@ -20,7 +20,7 @@ export const COMPATIBILITY_RULES = [
         level: 'warning',
         check: (ctx) => {
             if (!ctx.fabric || !ctx.needle) return false;
-            return ctx.fabric.knit_type === 'knit' && ctx.needle.point_type === 'sharp';
+            return ctx.fabric.is_knit === true && ctx.needle.point_type === 'sharp';
         },
         message: (ctx) =>
             `Sharp needles can damage knit fabrics like ${ctx.fabric.label} by ` +
