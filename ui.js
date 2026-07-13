@@ -465,7 +465,7 @@ export function buildStep4(state) {
                         side: sideKey, mode: 'zone', zone: zoneKey,
                         x_cm: zone.x_cm, y_cm: zone.y_cm,
                         width_cm: zone.width_cm, height_cm: zone.height_cm,
-                        image: null, method: null, colors: []
+                        image: null, method: null, num_colors: null, pantone_refs: '', file_reference: ''
                     });
                 }
                 buildStep4(state);
@@ -603,6 +603,60 @@ export function buildStep4(state) {
                 });
                 panel.appendChild(warnBox);
             }
+        }
+
+        // ── Level 3: color count, Pantone refs, file reference ──
+        // Only show when a method is selected (no point asking before)
+        if (placement && placement.method) {
+            const l3Sec = document.createElement('div');
+            l3Sec.style.cssText = 'margin-top:10px; display:flex; flex-direction:column; gap:8px;';
+
+            // Number of colors
+            const colorsRow = document.createElement('div');
+            colorsRow.innerHTML = '<div class="sec-label" style="margin:0 0 4px">Number of colors / inks</div>';
+            const colorsInput = document.createElement('input');
+            colorsInput.type = 'number';
+            colorsInput.min = '1';
+            colorsInput.max = '20';
+            colorsInput.placeholder = 'e.g. 3';
+            colorsInput.value = placement.num_colors || '';
+            colorsInput.style.cssText = 'width:80px; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-family:var(--sans);';
+            colorsInput.onchange = () => {
+                const val = parseInt(colorsInput.value, 10);
+                placement.num_colors = (val > 0) ? val : null;
+            };
+            colorsRow.appendChild(colorsInput);
+            l3Sec.appendChild(colorsRow);
+
+            // Pantone references
+            const pantoneRow = document.createElement('div');
+            pantoneRow.innerHTML = '<div class="sec-label" style="margin:0 0 4px">Pantone reference(s)</div>';
+            const pantoneInput = document.createElement('input');
+            pantoneInput.type = 'text';
+            pantoneInput.placeholder = 'e.g. PMS 485 C, PMS 300 C';
+            pantoneInput.value = placement.pantone_refs || '';
+            pantoneInput.style.cssText = 'width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-family:var(--sans);';
+            pantoneInput.onchange = () => {
+                placement.pantone_refs = pantoneInput.value.trim();
+            };
+            pantoneRow.appendChild(pantoneInput);
+            l3Sec.appendChild(pantoneRow);
+
+            // Artwork file reference
+            const fileRow = document.createElement('div');
+            fileRow.innerHTML = '<div class="sec-label" style="margin:0 0 4px">Artwork file reference</div>';
+            const fileInput = document.createElement('input');
+            fileInput.type = 'text';
+            fileInput.placeholder = 'e.g. LOGO_chest_v3.DST';
+            fileInput.value = placement.file_reference || '';
+            fileInput.style.cssText = 'width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-family:var(--sans);';
+            fileInput.onchange = () => {
+                placement.file_reference = fileInput.value.trim();
+            };
+            fileRow.appendChild(fileInput);
+            l3Sec.appendChild(fileRow);
+
+            panel.appendChild(l3Sec);
         }
 
         // Scale slider — only meaningful once there's an image to scale.
