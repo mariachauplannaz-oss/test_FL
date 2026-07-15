@@ -311,6 +311,19 @@ export const CARE_SYMBOLS = {
             <text x="16" y="13" dy=".35em" text-anchor="middle" font-size="10" fill="currentColor" font-family="system-ui, -apple-system, sans-serif" font-weight="700">W</text>
             <line x1="6" y1="27" x2="26" y2="27" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
         </svg>`
+    },
+    do_not_wet_clean: {
+        id: 'do_not_wet_clean',
+        category: 'professional',
+        label: 'Do Not Wet Clean',
+        svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" color="currentColor">
+            <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            <text x="16" y="16" dy=".35em" text-anchor="middle" font-size="10" fill="currentColor" font-family="system-ui, -apple-system, sans-serif" font-weight="700">W</text>
+            <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <line x1="7" y1="7" x2="25" y2="25"/>
+                <line x1="25" y1="7" x2="7" y2="25"/>
+            </g>
+        </svg>`
     }
 };
 

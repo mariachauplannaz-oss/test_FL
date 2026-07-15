@@ -37,6 +37,7 @@ export const CATEGORIES = [
 
 // ─── Re-exports — keeps existing imports working everywhere ───
 export { FABRIC_SPECS }                                              from './config/universal/fabrics.js';
+export { CARE_SYMBOLS, FABRIC_CARE_MAP }                     from './config/universal/care-symbols.js';
 export { STITCH_SPECS }                                              from './config/universal/stitches.js';
 export { COMPONENT_META, collectMeasurements, collectConstruction }  from './config/garments/tshirt.js';
 export { ISO_BODY, SIZE_EQUIV, TOLERANCES, GRADING, PANTONE_APPROX, findClosestPantone } from './config/measurements.js';
