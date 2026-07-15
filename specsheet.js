@@ -4,7 +4,7 @@
 //   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
 import { buildTechPackState } from './techpack.js';
-import { findClosestPantone, collectMeasurements, STITCH_SPECS, FABRIC_SPECS, PACKING_SPECS, SIZE_EQUIV } from './config.js';
+import { findClosestPantone, collectMeasurements, STITCH_SPECS, FABRIC_SPECS, PACKING_SPECS, SIZE_EQUIV, CARE_SYMBOLS, FABRIC_CARE_MAP } from './config.js';
 import { PRINT_ZONES, PRINT_METHODS } from './config/print-zones.js';
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
@@ -814,6 +814,77 @@ function drawStitchTable(doc, y) {
     return doc.lastAutoTable.finalY + 8;
 }
 
+// ─── CARE SYMBOL SVG → PNG helper ────────────────────────────────────────────
+function careSvgToPng(svgString, size = 64) {
+    return new Promise((resolve) => {
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, size, size);
+            URL.revokeObjectURL(url);
+            resolve(canvas.toDataURL('image/png'));
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+        };
+        img.src = url;
+    });
+}
+
+async function drawCareSymbols(doc, fabricKey, y) {
+    const symbolIds = FABRIC_CARE_MAP[fabricKey];
+    if (!symbolIds || symbolIds.length === 0) return y;
+
+    // Page break check
+    if (y > pageHeight(doc) - 40) { doc.addPage(); y = MARGIN.top; }
+
+    // Sub-header
+    setFont(doc, 'bold', FONT.label);
+    setColor(doc, COLORS.gray3);
+    doc.text('Care Symbols · ISO 3758', MARGIN.left, y);
+    y += 5;
+
+    // Render all 5 SVGs to PNG in parallel
+    const pngs = await Promise.all(
+        symbolIds.map(id => {
+            const sym = CARE_SYMBOLS[id];
+            return sym ? careSvgToPng(sym.svg, 96) : Promise.resolve(null);
+        })
+    );
+
+    const pw = pageWidth(doc) - MARGIN.left - MARGIN.right;
+    const iconSize = 10;  // mm in the PDF
+    const cellW = pw / symbolIds.length;
+
+    // Draw icons
+    symbolIds.forEach((id, i) => {
+        const x = MARGIN.left + (i * cellW) + (cellW - iconSize) / 2;
+        if (pngs[i]) {
+            doc.addImage(pngs[i], 'PNG', x, y, iconSize, iconSize);
+        }
+    });
+
+    y += iconSize + 2;
+
+    // Draw labels below icons
+    setFont(doc, 'normal', FONT.small);
+    setColor(doc, COLORS.gray3);
+    symbolIds.forEach((id, i) => {
+        const sym = CARE_SYMBOLS[id];
+        if (!sym) return;
+        const x = MARGIN.left + (i * cellW) + cellW / 2;
+        doc.text(sym.label, x, y, { align: 'center' });
+    });
+
+    return y + 6;
+}
+
 // ─── FABRIC SPECIFICATIONS TABLE ─────────────────────────────────────────────
 function drawFabricTable(doc, fabricKey, y) {
     const fabric = FABRIC_SPECS[fabricKey] || FABRIC_SPECS['jersey_180'];
@@ -950,6 +1021,7 @@ export async function exportSpecSheet(state, projectMeta = {}) {
     doc.addPage(); y = MARGIN.top + 10;
     y = drawSectionLabel(doc, '04 — Fabric Specifications', y);
     y = drawFabricTable(doc, state.fabric || 'jersey_180', y);
+    y = await drawCareSymbols(doc, state.fabric || 'jersey_180', y);
 
     // ── 05 — Packing Instructions ───────────────────────────────────────────
     if (y > pageHeight(doc) - 70) { doc.addPage(); y = MARGIN.top + 10; }
