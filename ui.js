@@ -465,7 +465,7 @@ export function buildStep4(state) {
                         side: sideKey, mode: 'zone', zone: zoneKey,
                         x_cm: zone.x_cm, y_cm: zone.y_cm,
                         width_cm: zone.width_cm, height_cm: zone.height_cm,
-                        image: null, method: null, num_colors: null, pantone_refs: '', file_reference: ''
+                        image: null, method: null, ink_type: null, num_colors: null, pantone_refs: '', file_reference: ''
                     });
                 }
                 buildStep4(state);
@@ -610,6 +610,31 @@ export function buildStep4(state) {
         if (placement && placement.method) {
             const l3Sec = document.createElement('div');
             l3Sec.style.cssText = 'margin-top:10px; display:flex; flex-direction:column; gap:8px;';
+
+            // Ink type (only for Screen Print)
+            if (placement.method === 'screen') {
+                const inkRow = document.createElement('div');
+                inkRow.innerHTML = '<div class="sec-label" style="margin:0 0 4px">Ink type</div>';
+                const inkSelect = document.createElement('select');
+                inkSelect.style.cssText = 'width:180px; padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-family:var(--sans); background:var(--bg);';
+                const opts = [
+                    ['', 'Select ink type...'],
+                    ['plastisol', 'Plastisol'],
+                    ['water_based', 'Water-based'],
+                ];
+                opts.forEach(([val, label]) => {
+                    const o = document.createElement('option');
+                    o.value = val;
+                    o.textContent = label;
+                    if (placement.ink_type === val) o.selected = true;
+                    inkSelect.appendChild(o);
+                });
+                inkSelect.onchange = () => {
+                    placement.ink_type = inkSelect.value || null;
+                };
+                inkRow.appendChild(inkSelect);
+                l3Sec.appendChild(inkRow);
+            }
 
             // Number of colors
             const colorsRow = document.createElement('div');

@@ -643,7 +643,11 @@ function drawArtworkSection(doc, printState, y) {
             : `${Math.abs(p.x_cm)} cm ${p.x_cm < 0 ? 'left' : 'right'} of CF`;
         const position = `${posDesc}, ${p.y_cm} cm below HPS`;
         const size = `${p.width_cm} × ${p.height_cm} cm`;
-        const method = PRINT_METHODS[p.method]?.label || 'TBD';
+        let method = PRINT_METHODS[p.method]?.label || 'TBD';
+        if (p.method === 'screen' && p.ink_type) {
+            const inkLabel = p.ink_type === 'plastisol' ? 'Plastisol' : 'Water-based';
+            method += ` (${inkLabel})`;
+        }
         const numColors = p.num_colors ? String(p.num_colors) : '—';
         const pantone = p.pantone_refs || '—';
         const fileRef = p.file_reference || '—';
@@ -700,6 +704,19 @@ function drawArtworkSection(doc, printState, y) {
 
     for (const [methodKey, zones] of methodsUsed) {
         const method = PRINT_METHODS[methodKey];
+
+        // Override ink type spec row if user made a selection
+        let specs = method.specs;
+        if (methodKey === 'screen') {
+            const screenPlacements = placements.filter(p => p.method === 'screen');
+            const inkTypes = screenPlacements.map(p => p.ink_type).filter(Boolean);
+            if (inkTypes.length > 0) {
+                const inkLabel = inkTypes[0] === 'plastisol' ? 'Plastisol' : 'Water-based';
+                specs = specs.map(([k, v]) =>
+                    k === 'Ink type' ? [k, inkLabel] : [k, v]
+                );
+            }
+        }
         // Page break check
         if (y > pageHeight(doc) - 50) { doc.addPage(); y = MARGIN.top + 10; }
 
@@ -710,7 +727,7 @@ function drawArtworkSection(doc, printState, y) {
 
         doc.autoTable({
             startY: y,
-            body: method.specs,
+            body: specs,
             margin: { left: MARGIN.left + 2, right: MARGIN.right },
             styles: {
                 font: 'helvetica',
@@ -927,7 +944,57 @@ function drawFabricTable(doc, fabricKey, y) {
         alternateRowStyles: { fillColor: COLORS.gray1 },
     });
 
-    return doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 6;
+
+    // ── Shrinkage compensation reference ─────────────────────
+    const shrinkL = fabric.shrinkage?.length || 0;
+    const shrinkW = fabric.shrinkage?.width  || 0;
+
+    if (shrinkL > 0 || shrinkW > 0) {
+        setFont(doc, 'bold', FONT.label);
+        setColor(doc, COLORS.gray3);
+        doc.text('Shrinkage Compensation Reference', MARGIN.left, y);
+        y += 4;
+
+        const compRows = [];
+        if (shrinkL > 0) {
+            const factor = (1 / (1 - shrinkL / 100)).toFixed(4);
+            const addPct = ((1 / (1 - shrinkL / 100) - 1) * 100).toFixed(1);
+            compRows.push(['Length', `${shrinkL}%`, `× ${factor}  (+${addPct}%)`, `62 cm body -> ${(62 / (1 - shrinkL / 100)).toFixed(1)} cm pattern`]);
+        }
+        if (shrinkW > 0) {
+            const factor = (1 / (1 - shrinkW / 100)).toFixed(4);
+            const addPct = ((1 / (1 - shrinkW / 100) - 1) * 100).toFixed(1);
+            compRows.push(['Width', `${shrinkW}%`, `× ${factor}  (+${addPct}%)`, `46 cm chest -> ${(46 / (1 - shrinkW / 100)).toFixed(1)} cm pattern`]);
+        }
+
+        doc.autoTable({
+            startY: y,
+            head: [['Direction', 'Shrinkage', 'Compensation Factor', 'Example']],
+            body: compRows,
+            margin: { left: MARGIN.left, right: MARGIN.right },
+            styles: {
+                font: 'helvetica',
+                fontSize: FONT.small,
+                cellPadding: 2,
+                textColor: COLORS.gray4,
+                lineColor: COLORS.gray2,
+                lineWidth: 0.1,
+            },
+            headStyles: {
+                fillColor: COLORS.sectionBg,
+                textColor: [255, 255, 255],
+                fontSize: FONT.label,
+                fontStyle: 'bold',
+            },
+            alternateRowStyles: { fillColor: COLORS.gray1 },
+            theme: 'grid',
+        });
+
+        y = doc.lastAutoTable.finalY + 4;
+    }
+
+    return y + 4;
 }
 
 // ─── PACKING INSTRUCTIONS ────────────────────────────────────────────────────
