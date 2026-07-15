@@ -133,7 +133,7 @@ export function buildTechPackState(state, projectMeta = {}) {
             sku:         projectMeta.sku   || `FL-${garmentType.toUpperCase()}-${now.getFullYear()}`,
             season:      projectMeta.season || `SS${String(now.getFullYear()).slice(2)}`,
             date:        dateStr,
-            size:        'EU 38 (ISO 3635)',
+            size:        state.gender === 'male' ? 'EU 50 (ISO 3635)' : 'EU 38 (ISO 3635)',
             brand:  projectMeta.brand  || 'FlatLabs',
             fabric: state.fabric || 'jersey_180',
             components:  activeComponents.join(' · ')
@@ -162,8 +162,8 @@ function buildBOM(state) {
     return [
         { ref: 'FAB-001', description: `Main fabric — ${fabric.label} (${fabric.composition})`, unit: 'm', qty: '1.2' },
         { ref: 'FAB-002', description: 'Rib fabric — 1×1 rib (95% Cotton, 5% Elastane)',         unit: 'm', qty: '0.15' },
-        { ref: 'THR-001', description: `Sewing thread — ${thread.label} (${thread.use})`,        unit: 'cone', qty: '1' },
-        { ref: 'THR-002', description: 'Coverseam thread — Polyester Tex 18',                    unit: 'cone', qty: '1' },
+        { ref: 'THR-001', description: `Sewing thread — ${thread.label} (${thread.use}) — color: to match garment (${state.colorHex || '#000000'})`,        unit: 'cone', qty: '1' },
+        { ref: 'THR-002', description: `Coverseam thread — Polyester Tex 18 — color: to match garment (${state.colorHex || '#000000'})`,                    unit: 'cone', qty: '1' },
         { ref: 'NDL-001', description: `Needle — ${needle.label} (${needle.use})`,               unit: 'pc',   qty: '—' },
         { ref: 'LAB-001', description: `Care label — ${careLabel.label}. ${careLabel.construction}`, unit: 'pc', qty: '1' },
         { ref: 'LAB-002', description: `Brand label — ${brandLabel.label}. ${brandLabel.construction}`, unit: 'pc', qty: String(brandQty) },

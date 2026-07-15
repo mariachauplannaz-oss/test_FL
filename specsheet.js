@@ -649,7 +649,10 @@ function drawArtworkSection(doc, printState, y) {
             method += ` (${inkLabel})`;
         }
         const numColors = p.num_colors ? String(p.num_colors) : '—';
-        const pantone = p.pantone_refs || '—';
+        let pantone = p.pantone_refs || '—';
+        if (p.method === 'dtg' && !p.pantone_refs) {
+            pantone = 'N/A (full color CMYK)';
+        }
         const fileRef = p.file_reference || '—';
         return [side, zoneLabel, position, size, method, numColors, pantone, fileRef];
     });
