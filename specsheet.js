@@ -946,15 +946,24 @@ function drawPackingInstructions(doc, packingKey, y) {
     ];
 
     items.forEach(([key, val]) => {
+        setFont(doc, 'normal', FONT.small);
+        const lines = doc.splitTextToSize(val, colW - 25);
+        const blockH = lines.length * 4.5 + 3;
+
+        // Page break if this block won't fit
+        if (y + blockH > pageHeight(doc) - MARGIN.top) {
+            doc.addPage();
+            y = MARGIN.top;
+        }
+
         setFont(doc, 'bold', FONT.small);
         setColor(doc, COLORS.accent);
         doc.text(key.toUpperCase(), MARGIN.left, y);
 
         setFont(doc, 'normal', FONT.small);
         setColor(doc, COLORS.gray4);
-        const lines = doc.splitTextToSize(val, colW - 25);
         doc.text(lines, MARGIN.left + 22, y);
-        y += lines.length * 4.5 + 3;
+        y += blockH;
     });
 
     return y + 4;
@@ -1024,18 +1033,18 @@ export async function exportSpecSheet(state, projectMeta = {}) {
     y = await drawCareSymbols(doc, state.fabric || 'jersey_180', y);
 
     // ── 05 — Packing Instructions ───────────────────────────────────────────
-    if (y > pageHeight(doc) - 70) { doc.addPage(); y = MARGIN.top + 10; }
+    if (y > pageHeight(doc) - 90) { doc.addPage(); y = MARGIN.top + 10; }
     y = drawSectionLabel(doc, '05 — Packing Instructions', y);
     y = drawPackingInstructions(doc, 'standard', y);
 
     // ── 06 — Construction Notes ─────────────────────────────────────────────
-    if (y > pageHeight(doc) - 50) { doc.addPage(); y = MARGIN.top + 10; }
+    if (y > pageHeight(doc) - 80) { doc.addPage(); y = MARGIN.top + 10; }
     y = drawSectionLabel(doc, '06 — Construction Notes & ISO Standards', y);
     y += 4;
     y = drawConstructionNotes(doc, techPack.constructionNotes, y);
 
     // ── 07 — Artwork / Print ────────────────────────────────────────────────
-    if (y > pageHeight(doc) - 60) { doc.addPage(); y = MARGIN.top + 10; }
+    if (y > pageHeight(doc) - 80) { doc.addPage(); y = MARGIN.top + 10; }
     y = drawSectionLabel(doc, '07 — Artwork / Print', y);
     y = drawArtworkSection(doc, state.print, y);
 
