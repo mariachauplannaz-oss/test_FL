@@ -60,6 +60,33 @@ const svgCache = {};
 // so it never leaks between the two flows.
 let techPackExportPending = false;
 
+// The shared emailModal's copy is hardcoded in app.html for the free SVG
+// download. Capture it once at module load (app.html stays the single
+// source of truth — nothing here is hardcoded) so it can be swapped to
+// Tech Pack copy while that flow is pending, and restored exactly whenever
+// the flag returns to false.
+const emailModalTitleEl   = document.getElementById('emailModalTitle');
+const emailModalDescEl    = document.querySelector('#emailModal .modal-text');
+const emailModalSubmitBtn = document.querySelector('#leadForm button[type="submit"]');
+
+const SVG_MODAL_COPY = {
+    title:       emailModalTitleEl?.textContent   ?? '',
+    description: emailModalDescEl?.textContent    ?? '',
+    buttonLabel: emailModalSubmitBtn?.textContent  ?? ''
+};
+
+function applyTechPackModalCopy() {
+    if (emailModalTitleEl)   emailModalTitleEl.textContent   = 'Almost there!';
+    if (emailModalDescEl)    emailModalDescEl.textContent    = 'Enter your email to generate your Tech Pack PDF and get notified about new modules.';
+    if (emailModalSubmitBtn) emailModalSubmitBtn.textContent = 'Generate Tech Pack';
+}
+
+function restoreSvgModalCopy() {
+    if (emailModalTitleEl)   emailModalTitleEl.textContent   = SVG_MODAL_COPY.title;
+    if (emailModalDescEl)    emailModalDescEl.textContent    = SVG_MODAL_COPY.description;
+    if (emailModalSubmitBtn) emailModalSubmitBtn.textContent = SVG_MODAL_COPY.buttonLabel;
+}
+
 // ═══ ATTRIBUTION ═══
 // Reads ?src= and ?cta= from the URL (added by static-page CTA links — a
 // separate later task) and records first-touch attribution for the session.
@@ -282,6 +309,7 @@ async function doExportTechPack() {
     // instead of redirecting to /checkout.html. checkout.html/js/checkout.js stay
     // dormant in the repo for when Stripe is activated.
     techPackExportPending = true;
+    applyTechPackModalCopy();
 
     const savedEmail = localStorage.getItem('fl_user_email');
     const emailInput = document.getElementById('emailInput');
@@ -408,6 +436,7 @@ async function doTechPackEmailSubmit() {
             localStorage.setItem('fl_user_email', email);
             track('techpack_free_granted', { order_number: data.order_number });
             techPackExportPending = false;
+            restoreSvgModalCopy();
             window.location.href = `/app.html?payment=success&session_id=${data.session_id}`;
             return;
         }
@@ -428,6 +457,7 @@ async function doTechPackEmailSubmit() {
             document.getElementById('emailModal')?.classList.remove('show');
             showAlreadyUsedModal(data.resets_at);
             techPackExportPending = false;
+            restoreSvgModalCopy();
             return;
         }
 
@@ -435,6 +465,7 @@ async function doTechPackEmailSubmit() {
             document.getElementById('emailModal')?.classList.remove('show');
             document.getElementById('ipBlockedModal')?.classList.add('show');
             techPackExportPending = false;
+            restoreSvgModalCopy();
             return;
         }
 
@@ -679,6 +710,7 @@ async function init() {
     document.getElementById('btnCloseEmailModal')?.addEventListener('click', () => {
         document.getElementById('emailModal').classList.remove('show');
         techPackExportPending = false;
+        restoreSvgModalCopy();
     });
     document.getElementById('btnCloseAlreadyUsedModal')?.addEventListener('click', () => {
         document.getElementById('alreadyUsedModal').classList.remove('show');

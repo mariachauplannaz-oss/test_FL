@@ -160,7 +160,7 @@ export default async function handler(req, context) {
             ip_hash
           ) VALUES (
             ${email},
-            'PROMO',
+            'FREE',
             ${garment_config || {}},
             '1.0',
             ${sessionId},
