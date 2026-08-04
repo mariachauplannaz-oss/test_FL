@@ -238,7 +238,10 @@
     <div class="modal-content">
         <h3 class="modal-title">Your SVG is ready!</h3>
         <p class="modal-text">Want the full spec sheet? Get POM, BOM, grading, and construction notes — ready for your factory.</p>
+        <!-- PROMO-HIDDEN-START
         <button class="btn btn-blue" id="btnPostUpsellTechPack" style="width:100%">Get Tech Pack — 10€</button>
+        PROMO-HIDDEN-END -->
+        <button class="btn btn-blue" id="btnPostUpsellTechPack" style="width:100%">Get Tech Pack</button>
         <button id="btnClosePostUpsell" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Not now</button>
     </div>
 </div>
@@ -255,7 +258,10 @@
 <!-- Tech Pack Modal -->
 <div class="modal-overlay" id="techPackModal" role="dialog" aria-modal="true" aria-labelledby="techPackModalTitle">
     <div class="modal-content">
+        <!-- PROMO-HIDDEN-START
         <h3 class="modal-title" id="techPackModalTitle">Export Tech Pack — 10€</h3>
+        PROMO-HIDDEN-END -->
+        <h3 class="modal-title" id="techPackModalTitle">Export Tech Pack</h3>
         <p class="modal-text">Fill in your project details. These will appear on the cover of your spec sheet.</p>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
             <input type="text" id="tpBrand"   placeholder="Brand name"     maxlength="60"
@@ -267,7 +273,10 @@
             <input type="text" id="tpSeason"  placeholder="Season (e.g. SS26)"       maxlength="20"
                 style="width:100%;padding:12px;border:1.5px solid var(--gray3);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s">
         </div>
+        <!-- PROMO-HIDDEN-START
         <p style="font-size:11px;color:var(--gray2);margin:0 0 10px;text-align:center">🔒 Secure payment via Stripe</p>
+        PROMO-HIDDEN-END -->
+        <p style="font-size:11px;color:var(--gray2);margin:0 0 10px;text-align:center">Free during the FlatLabs launch period</p>
         <button class="btn btn-blue" id="btnConfirmTechPack" style="width:100%">Generate PDF</button>
         <button id="btnCloseTechPackModal" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Cancel</button>
     </div>
@@ -276,9 +285,15 @@
 <!-- Already Used Free Download Modal — upsell toward Tech Pack -->
 <div class="modal-overlay" id="alreadyUsedModal" role="dialog" aria-modal="true" aria-labelledby="alreadyUsedModalTitle">
     <div class="modal-content">
+        <!-- PROMO-HIDDEN-START
         <h3 class="modal-title" id="alreadyUsedModalTitle">You've already used your free download</h3>
         <p class="modal-text">Ready for the full Tech Pack? Get POM, BOM, and construction notes.</p>
         <button class="btn btn-blue" id="btnGetTechPack" style="width:100%">Get Tech Pack — 10€ →</button>
+        PROMO-HIDDEN-END -->
+        <h3 class="modal-title" id="alreadyUsedModalTitle">Download limit reached</h3>
+        <p class="modal-text">You've reached 5 downloads in the last 30 days. Your limit resets soon — check back then.</p>
+        <p class="modal-text" style="font-size:12px;color:var(--gray2)">Resets on: <span id="alreadyUsedResetDate"></span></p>
+        <button class="btn btn-blue" id="btnGetTechPack" style="width:100%">Try the Tech Pack →</button>
         <button id="btnCloseAlreadyUsedModal" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Maybe later</button>
     </div>
 </div>

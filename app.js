@@ -53,6 +53,13 @@ const state = {
 };
 const svgCache = {};
 
+// Tracks whether the shared emailModal was opened for a Tech Pack export
+// (routed through /api/create-free-techpack) rather than the free SVG
+// download (routed through download.js's handleEmailSubmit). Reset on every
+// exit path — successful submit, modal close, limit/IP-blocked branches —
+// so it never leaks between the two flows.
+let techPackExportPending = false;
+
 // ═══ ATTRIBUTION ═══
 // Reads ?src= and ?cta= from the URL (added by static-page CTA links — a
 // separate later task) and records first-touch attribution for the session.
@@ -178,7 +185,14 @@ function nextAction() {
 // ═══ DOWNLOAD WRAPPERS ═══
 function doDownload()      { downloadSVG(state, log); }
 function doTriggerDownload() { triggerDownload(state, log); }
-function doEmailSubmit(e)  { handleEmailSubmit(e, state, log); }
+function doEmailSubmit(e) {
+    if (techPackExportPending) {
+        e.preventDefault();
+        doTechPackEmailSubmit();
+        return;
+    }
+    handleEmailSubmit(e, state, log);
+}
 
 // Captures the current front-view SVG canvas as a PNG dataURL.
 // Returns null if capture fails — caller must handle gracefully.
@@ -264,8 +278,174 @@ async function doExportTechPack() {
         print:        state.print
     }));
 
-    // Redirect to checkout page
-    window.location.href = '/checkout.html?product=techpack_tshirt';
+    // Free launch: route through the shared emailModal + /api/create-free-techpack
+    // instead of redirecting to /checkout.html. checkout.html/js/checkout.js stay
+    // dormant in the repo for when Stripe is activated.
+    techPackExportPending = true;
+
+    const savedEmail = localStorage.getItem('fl_user_email');
+    const emailInput = document.getElementById('emailInput');
+    if (emailInput && savedEmail) emailInput.value = savedEmail;
+
+    const errEl = document.getElementById('emailModalError');
+    if (errEl) { errEl.textContent = ''; errEl.hidden = true; }
+
+    // Consent is given per download, not once forever — always start unchecked,
+    // even for a returning user whose email was just prefilled above.
+    const tcCheckbox = document.getElementById('emailAcceptTC');
+    if (tcCheckbox) tcCheckbox.checked = false;
+
+    document.getElementById('emailModal')?.classList.add('show');
+}
+
+// Builds garment_config for the free Tech Pack grant with the EXACT same
+// shape js/checkout.js builds before calling save-checkout-config (see that
+// file) — print placements keep side/mode/zone/x_cm/y_cm/width_cm/height_cm/
+// method/colors, and each image sub-object keeps filename/ratio/blob_key/
+// offsetX_pct/offsetY_pct/scale. dataURI is dropped; blob_key is what
+// survives and is re-fetched via /api/get-print-image in handlePaymentReturn.
+function buildTechPackGarmentConfig() {
+    return {
+        garment:       state.selectedCategory || 'tshirt',
+        selections:    state.selections,
+        gender:        state.gender,
+        fabric:        state.fabric,
+        stitchType:    state.stitchType,
+        needle:        state.needle,
+        thread:        state.thread,
+        careLabel:     state.careLabel,
+        brandLabel:    state.brandLabel,
+        brandLabelQty: state.brandLabelQty,
+        colorHex:      state.colorHex,
+        print: state.print && state.print.enabled
+            ? { enabled: true, placements: state.print.placements.map(p => ({
+                    side: p.side, mode: p.mode, zone: p.zone,
+                    x_cm: p.x_cm, y_cm: p.y_cm, width_cm: p.width_cm, height_cm: p.height_cm,
+                    method: p.method, colors: p.colors,
+                    image: p.image ? {
+                        filename:    p.image.filename,
+                        ratio:       p.image.ratio,
+                        blob_key:    p.image.blob_key || null,
+                        offsetX_pct: p.image.offsetX_pct,
+                        offsetY_pct: p.image.offsetY_pct,
+                        scale:       p.image.scale
+                    } : null
+                })) }
+            : { enabled: false }
+    };
+}
+
+function showTechPackModalError(message) {
+    const errEl = document.getElementById('emailModalError');
+    if (errEl) {
+        errEl.textContent = message;
+        errEl.hidden = false;
+    }
+}
+
+function showAlreadyUsedModal(resetsAt) {
+    const resetEl = document.getElementById('alreadyUsedResetDate');
+    if (resetEl) {
+        const d = resetsAt ? new Date(resetsAt) : null;
+        resetEl.textContent = (d && !isNaN(d.getTime()))
+            ? d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : '';
+    }
+    document.getElementById('alreadyUsedModal')?.classList.add('show');
+}
+
+// Tech Pack branch of the shared emailModal submit — mirrors download.js's
+// handleEmailSubmit/_registerFreeDownload structure, but grants a free Tech
+// Pack via /api/create-free-techpack instead of the free SVG.
+async function doTechPackEmailSubmit() {
+    const submitBtn = document.querySelector('#leadForm button[type="submit"]');
+
+    // A request is already in flight (button was disabled below) — a rapid
+    // double-submit must never fire two grants for the same click.
+    if (submitBtn && submitBtn.disabled) return;
+
+    const emailInput = document.getElementById('emailInput');
+    const tcCheckbox = document.getElementById('emailAcceptTC');
+    const errEl      = document.getElementById('emailModalError');
+
+    const email    = emailInput?.value.trim() || '';
+    const accepted = tcCheckbox?.checked;
+
+    if (errEl) { errEl.textContent = ''; errEl.hidden = true; }
+
+    if (!email.includes('@')) {
+        showTechPackModalError('Please enter a valid email address.');
+        return;
+    }
+    if (!accepted) {
+        showTechPackModalError('Please accept the Terms and Privacy Policy to continue.');
+        return;
+    }
+
+    const originalLabel = submitBtn ? submitBtn.textContent : '';
+    if (submitBtn) {
+        submitBtn.disabled    = true;
+        submitBtn.textContent = 'Generating...';
+    }
+
+    try {
+        const garment_config = buildTechPackGarmentConfig();
+
+        const response = await fetch('/api/create-free-techpack', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email,
+                product_key: 'techpack_tshirt',
+                garment_config,
+                accepted_tc: true
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.ok) {
+            localStorage.setItem('fl_user_email', email);
+            track('techpack_free_granted', { order_number: data.order_number });
+            techPackExportPending = false;
+            window.location.href = `/app.html?payment=success&session_id=${data.session_id}`;
+            return;
+        }
+
+        if (data.status === 'invalid_email') {
+            let msg = 'Please enter a valid email address.';
+            if (data.reason === 'disposable') {
+                msg = 'Please use a permanent email address — temporary/disposable addresses are not accepted.';
+            } else if (data.reason === 'no_mx') {
+                msg = 'This email domain cannot receive mail. Please check for typos or use a different address.';
+            }
+            showTechPackModalError(msg);
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalLabel; }
+            return;
+        }
+
+        if (data.status === 'limit_reached') {
+            document.getElementById('emailModal')?.classList.remove('show');
+            showAlreadyUsedModal(data.resets_at);
+            techPackExportPending = false;
+            return;
+        }
+
+        if (data.status === 'ip_blocked') {
+            document.getElementById('emailModal')?.classList.remove('show');
+            document.getElementById('ipBlockedModal')?.classList.add('show');
+            techPackExportPending = false;
+            return;
+        }
+
+        showTechPackModalError(data.error || 'Something went wrong. Please try again.');
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalLabel; }
+
+    } catch (err) {
+        log(`create-free-techpack network error: ${err.message}`, 'err');
+        showTechPackModalError('Network error. Please check your connection and try again.');
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalLabel; }
+    }
 }
 
 // CHANGE 2 — doConfirmTechPack removed (no longer used — PDF generated post-payment via handlePaymentReturn)
@@ -498,6 +678,7 @@ async function init() {
     document.getElementById('leadForm')?.addEventListener('submit', doEmailSubmit);
     document.getElementById('btnCloseEmailModal')?.addEventListener('click', () => {
         document.getElementById('emailModal').classList.remove('show');
+        techPackExportPending = false;
     });
     document.getElementById('btnCloseAlreadyUsedModal')?.addEventListener('click', () => {
         document.getElementById('alreadyUsedModal').classList.remove('show');
