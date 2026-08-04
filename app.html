@@ -241,7 +241,7 @@
         <!-- PROMO-HIDDEN-START
         <button class="btn btn-blue" id="btnPostUpsellTechPack" style="width:100%">Get Tech Pack — 10€</button>
         PROMO-HIDDEN-END -->
-        <button class="btn btn-blue" id="btnPostUpsellTechPack" style="width:100%">Get Tech Pack</button>
+        <button class="btn btn-blue" id="btnPostUpsellTechPack" style="width:100%">Get your Tech Pack</button>
         <button id="btnClosePostUpsell" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Not now</button>
     </div>
 </div>
@@ -276,7 +276,7 @@
         <!-- PROMO-HIDDEN-START
         <p style="font-size:11px;color:var(--gray2);margin:0 0 10px;text-align:center">🔒 Secure payment via Stripe</p>
         PROMO-HIDDEN-END -->
-        <p style="font-size:11px;color:var(--gray2);margin:0 0 10px;text-align:center">Free during the FlatLabs launch period</p>
+        <p style="font-size:11px;color:var(--gray2);margin:0 0 10px;text-align:center">Free during the FlatLabs launch</p>
         <button class="btn btn-blue" id="btnConfirmTechPack" style="width:100%">Generate PDF</button>
         <button id="btnCloseTechPackModal" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Cancel</button>
     </div>
@@ -293,7 +293,7 @@
         <h3 class="modal-title" id="alreadyUsedModalTitle">Download limit reached</h3>
         <p class="modal-text">You've reached 5 downloads in the last 30 days. Your limit resets soon — check back then.</p>
         <p class="modal-text" style="font-size:12px;color:var(--gray2)">Resets on: <span id="alreadyUsedResetDate"></span></p>
-        <button class="btn btn-blue" id="btnGetTechPack" style="width:100%">Try the Tech Pack →</button>
+        <button class="btn btn-blue" id="btnGetTechPack" style="width:100%">Got it</button>
         <button id="btnCloseAlreadyUsedModal" style="background:none;border:none;color:var(--gray2);font-size:12px;cursor:pointer;margin-top:10px;width:100%;text-align:center;opacity:.6">Maybe later</button>
     </div>
 </div>
@@ -312,7 +312,10 @@
 <div id="paymentOverlay" style="display:none;position:fixed;inset:0;z-index:2000;background:#212B31;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px">
     <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ff9a6e;display:flex;align-items:center;gap:8px">
         <span style="width:6px;height:6px;border-radius:50%;background:#ff9a6e;box-shadow:0 0 0 4px rgba(255,154,110,.2)"></span>
+        <!-- PROMO-HIDDEN-START
         Verifying payment
+        PROMO-HIDDEN-END -->
+        Preparing your Tech Pack
     </div>
     <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px">Preparing your Tech Pack...</div>
     <div style="font-family:'DM Sans',sans-serif;font-size:14px;color:rgba(255,255,255,.6)">This will only take a moment.</div>

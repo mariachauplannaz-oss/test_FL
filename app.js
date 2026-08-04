@@ -266,7 +266,7 @@ async function captureCanvasAsPNG() {
 async function doExportTechPack() {
     // Guard: require completed design before purchasing
     if (!state.selections.torso || !state.selections.neck) {
-        alert('⚠ Please complete your design before purchasing the Tech Pack.');
+        alert('⚠ Please complete your design before exporting the Tech Pack.');
         return;
     }
 
@@ -537,7 +537,7 @@ async function handlePaymentReturn() {
     // All attempts exhausted without a verified token → genuine failure
     if (!data) {
         log(`Payment verification failed after ${VERIFY_MAX_ATTEMPTS} attempts: ${lastError?.message}`, 'err');
-        alert(`Payment verification error: ${lastError?.message || 'Unknown error'}\n\nIf you were charged, please contact support.`);
+        alert(`We couldn't prepare your Tech Pack: ${lastError?.message || 'Unknown error'}\n\nPlease try again, or contact support if it keeps happening.`);
         const ol = document.getElementById('paymentOverlay');
         if (ol) ol.style.display = 'none';
         return;
@@ -608,7 +608,7 @@ async function handlePaymentReturn() {
 
     } catch (err) {
         log(`Post-verification error: ${err.message}`, 'err');
-        alert(`Something went wrong after payment: ${err.message}\n\nIf you were charged, please contact support.`);
+        alert(`Something went wrong while generating your Tech Pack: ${err.message}\n\nYour download is still available — try the link in your email.`);
         const ol = document.getElementById('paymentOverlay');
         if (ol) ol.style.display = 'none';
     }
@@ -720,7 +720,6 @@ async function init() {
     });
     document.getElementById('btnGetTechPack')?.addEventListener('click', () => {
         document.getElementById('alreadyUsedModal').classList.remove('show');
-        doExportTechPack();
     });
     document.getElementById('btnCloseProModal')?.addEventListener('click', () => {
         document.getElementById('proModal').classList.remove('show');
