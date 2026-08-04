@@ -1,5 +1,6 @@
 import { neon } from "@netlify/neon";
 import crypto from "node:crypto";
+import { validateEmail } from "./lib/email.js";
 
 const sql = neon(process.env.NETLIFY_DATABASE_URL);
 
@@ -20,10 +21,6 @@ function getClientIp(req) {
   );
 }
 
-function isValidEmail(email) {
-  return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 export default async function handler(req, context) {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -35,14 +32,16 @@ export default async function handler(req, context) {
   try {
     const body = await req.json();
     const { email: rawEmail, garment_config, accepted_tc } = body;
-    const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
-    // 1. Validate inputs
-    if (!isValidEmail(email)) {
-      return new Response(JSON.stringify({ ok: false, error: "Invalid email address" }), {
-        status: 400,
+
+    // 1. Validate + normalize email
+    const validation = await validateEmail(rawEmail);
+    if (!validation.ok) {
+      return new Response(JSON.stringify({ ok: false, status: "invalid_email", reason: validation.reason }), {
+        status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
+    const email = validation.email;
 
     if (accepted_tc !== true) {
       return new Response(JSON.stringify({ ok: false, error: "You must accept the Terms and Privacy Policy" }), {
@@ -55,11 +54,12 @@ export default async function handler(req, context) {
     const rawIp = getClientIp(req);
     const ipHash = hashIp(rawIp);
 
-    // 3. Check IP abuse — max 20 free downloads in last 30 days
+    // 3. Check IP abuse — max 20 free/promo downloads in last 30 days.
+    // FREE and PROMO (create-free-techpack.js) share one IP budget.
     const ipCount = await sql`
       SELECT COUNT(*) AS cnt FROM downloads
       WHERE ip_hash = ${ipHash}
-        AND tier = 'FREE'
+        AND tier IN ('FREE', 'PROMO')
         AND created_at > NOW() - INTERVAL '30 days'
     `;
 
@@ -70,19 +70,26 @@ export default async function handler(req, context) {
       });
     }
 
-    // 4. Check if email already used free download
-    const existingUser = await sql`
-      SELECT free_download_used FROM users WHERE email = ${email}
+    // 4. Rolling 30-day download count for this email — FREE and PROMO
+    // (create-free-techpack.js) share one budget, blocked at 5 or more.
+    // Status string stays "already_used_free" for frontend compatibility;
+    // renaming it is a separate frontend task.
+    const emailCount = await sql`
+      SELECT COUNT(*) AS cnt FROM downloads
+      WHERE user_email = ${email}
+        AND tier IN ('FREE', 'PROMO')
+        AND created_at > NOW() - INTERVAL '30 days'
     `;
 
-    if (existingUser.length > 0 && existingUser[0].free_download_used === true) {
+    if (parseInt(emailCount[0].cnt, 10) >= 5) {
       return new Response(JSON.stringify({ ok: false, status: "already_used_free" }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // 5. All checks passed — upsert user and record download
+    // 5. All checks passed — upsert user (free_download_used kept for
+    // backward compatibility; it's no longer the gate) and record download
     await sql`
       INSERT INTO users (email, free_download_used, free_download_at, created_at)
       VALUES (${email}, TRUE, NOW(), NOW())
