@@ -53,6 +53,51 @@ const state = {
 };
 const svgCache = {};
 
+// ═══ ATTRIBUTION ═══
+// Reads ?src= and ?cta= from the URL (added by static-page CTA links — a
+// separate later task) and records first-touch attribution for the session.
+// Never mutates the URL/history — the payment-return flow reads its own
+// params (?payment=, ?session_id=) from the same query string.
+function sanitizeAttrValue(raw) {
+    const cleaned = String(raw ?? '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, '')
+        .slice(0, 64);
+    return cleaned || 'unknown';
+}
+
+function captureAttribution() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const rawSrc = params.get('src');
+        const rawCta = params.get('cta');
+
+        if (rawSrc === null && rawCta === null) return;
+
+        const src = sanitizeAttrValue(rawSrc);
+        const cta = sanitizeAttrValue(rawCta);
+
+        // Dedupe on the sanitized pair so a reload of the same link doesn't
+        // double-count, while a genuinely different src/cta later in the
+        // same session still fires its own event.
+        const dedupeKey = `fl_attr_seen:${src}:${cta}`;
+        if (!sessionStorage.getItem(dedupeKey)) {
+            track('landing_cta_clicked', { src, cta });
+            sessionStorage.setItem(dedupeKey, '1');
+        }
+
+        // First-touch attribution — write once, never overwrite.
+        if (!sessionStorage.getItem('fl_attribution')) {
+            sessionStorage.setItem('fl_attribution', JSON.stringify({
+                src, cta, timestamp: new Date().toISOString()
+            }));
+        }
+    } catch (err) {
+        console.warn('[FlatLabs] captureAttribution failed:', err);
+    }
+}
+
 // ═══ LOGGER (console only, no UI) ═══
 function log(m, t='info') {
     const prefix = t === 'ok' ? '✓' : t === 'err' ? '✗' : t === 'warn' ? '⚠' : 'ℹ';
@@ -419,6 +464,8 @@ function showPostPaymentModal(garmentConfig) {
 
 // ═══ INIT ═══
 async function init() {
+    captureAttribution();
+
     const paymentOverlay = document.getElementById('paymentOverlay');
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') {
