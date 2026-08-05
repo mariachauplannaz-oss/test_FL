@@ -5,7 +5,7 @@ import { parseSVG } from './parser.js';
 import { generate } from './generator.js';
 import { track } from './tracker.js';
 import { initCategories, goStep, updateButton, buildStep1, buildStep2, buildStep4, initToggles, toggleSidebar, closeSidebar, setIsoMode, awaitPendingUploads, getMissingMethodZones } from './ui.js';
-import { downloadSVG, triggerDownload, handleEmailSubmit } from './download.js';
+import { downloadSVG, triggerDownload, handleEmailSubmit, showAlreadyUsedModal } from './download.js';
 import { exportSpecSheet } from './specsheet.js';
 import { showTooltip, hideTooltip, openInfoPanel, closeInfoPanel } from './infoPanel.js';
 import { updatePrintZones } from './print-renderer.js';
@@ -369,17 +369,6 @@ function showTechPackModalError(message) {
         errEl.textContent = message;
         errEl.hidden = false;
     }
-}
-
-function showAlreadyUsedModal(resetsAt) {
-    const resetEl = document.getElementById('alreadyUsedResetDate');
-    if (resetEl) {
-        const d = resetsAt ? new Date(resetsAt) : null;
-        resetEl.textContent = (d && !isNaN(d.getTime()))
-            ? d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-            : '';
-    }
-    document.getElementById('alreadyUsedModal')?.classList.add('show');
 }
 
 // Tech Pack branch of the shared emailModal submit — mirrors download.js's
