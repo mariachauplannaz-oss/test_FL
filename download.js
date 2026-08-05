@@ -42,6 +42,26 @@ export function handleEmailSubmit(event, state, log) {
   _registerFreeDownload(email, state, log);
 }
 
+// Shared by both free flows (SVG here, Tech Pack in app.js) so there is one
+// implementation, not two that can drift on formatting or hide/show logic.
+// When no usable date is available the "Resets on:" line is hidden entirely
+// (via the span's parentElement) rather than left dangling with no date.
+export function showAlreadyUsedModal(resetsAt) {
+  const resetEl = document.getElementById('alreadyUsedResetDate');
+  if (resetEl) {
+    const parent = resetEl.parentElement;
+    const d = resetsAt ? new Date(resetsAt) : null;
+    if (d && !isNaN(d.getTime())) {
+      resetEl.textContent = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      if (parent) parent.hidden = false;
+    } else {
+      resetEl.textContent = '';
+      if (parent) parent.hidden = true;
+    }
+  }
+  document.getElementById('alreadyUsedModal')?.classList.add('show');
+}
+
 export function triggerDownload(state, log) {
   // Actual SVG export — called only after backend confirms 'allowed'
   const frontSvgEl = document.getElementById('svg-preview')?.querySelector('svg');
@@ -262,7 +282,7 @@ async function _registerFreeDownload(email, state, log) {
       track('email_submitted', { outcome: 'already_used' });
       _hideEmailModal();
       log('Email already used free download — showing upsell', 'warn');
-      document.getElementById('alreadyUsedModal')?.classList.add('show');
+      showAlreadyUsedModal(data.resets_at);
       return;
     }
 

@@ -73,16 +73,25 @@ export default async function handler(req, context) {
     // 4. Rolling 30-day download count for this email — FREE and PROMO
     // (create-free-techpack.js) share one budget, blocked at 5 or more.
     // Status string stays "already_used_free" for frontend compatibility;
-    // renaming it is a separate frontend task.
-    const emailCount = await sql`
-      SELECT COUNT(*) AS cnt FROM downloads
+    // renaming it is a separate frontend task. Query and resets_at
+    // arithmetic mirror create-free-techpack.js's "limit_reached" branch
+    // exactly — the two flows share one limit and must never disagree
+    // about when it lifts.
+    const emailAgg = await sql`
+      SELECT COUNT(*) AS cnt, MIN(created_at) AS oldest FROM downloads
       WHERE user_email = ${email}
         AND tier IN ('FREE', 'PROMO')
         AND created_at > NOW() - INTERVAL '30 days'
     `;
 
-    if (parseInt(emailCount[0].cnt, 10) >= 5) {
-      return new Response(JSON.stringify({ ok: false, status: "already_used_free" }), {
+    if (parseInt(emailAgg[0].cnt, 10) >= 5) {
+      const resetsAt = new Date(emailAgg[0].oldest);
+      resetsAt.setDate(resetsAt.getDate() + 30);
+      return new Response(JSON.stringify({
+        ok: false,
+        status: "already_used_free",
+        resets_at: resetsAt.toISOString(),
+      }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
